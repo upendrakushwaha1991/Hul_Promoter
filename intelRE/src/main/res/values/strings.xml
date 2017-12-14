@@ -18,4 +18,23 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing emailcompletions."</string>
+
+
+    <string name="menu_daily_route_plan">Daily Route Plan</string>
+    <string name="menu_daily_download">Download Data</string>
+    <string name="menu_upload_data">Upload Data</string>
+    <string name="menu_geotag">Geo Tag</string>
+    <string name="menu_exit">Exit</string>
+    <string name="menu_setting">Settings</string>
+    <string name="menu_services">Services</string>
+    <string name="NodataAvailable">No data available</string>
+    <string name="Pleasedownaloaddata">Please download data</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="export_database">Export Database</string>
+    <string name="Areyou_sure_take_backup"> Are you sure you want to take the backup of your data</string>
+    <string name="errordatabase_not_exporting">Error in Database Exporting</string>
+    <string name="cancel">Cancel</string>
+    <string name="main_menu_activity_name">INTAL Mer.</string>
 </resources>
