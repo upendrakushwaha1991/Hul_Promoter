@@ -203,9 +203,9 @@ public class IntelLoginActivty extends AppCompatActivity {
                                     editor.commit();
                                     if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
                                         loading.dismiss();
-                                      /*  Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
+                                        Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
                                         startActivity(intent);
-                                        finish();*/
+                                        finish();
                                     } else {
                                         loading.dismiss();
                                         // if app version code does not match with live apk version code then update will be called.
