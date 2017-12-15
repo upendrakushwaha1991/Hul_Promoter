@@ -1,11 +1,8 @@
 
 package intelre.cpm.com.intelre.gettersetter;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
 public class Result {
-
     @SerializedName("Rightname")
     @Expose
     private String rightname;
