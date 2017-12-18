@@ -29,4 +29,20 @@ public class AlertandMessages {
         alert.show();
     }
 
+    public static void showAlertlogin(final Activity activity, String str) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle("Parinaam");
+        builder.setMessage(str).setCancelable(false)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+
+
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
 }
