@@ -28,8 +28,9 @@ public class ServiceActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //preference data
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        visitdate = preferences.getString(CommonString.KEY_DATE,"");
-        getSupportActionBar().setTitle("BackUp - "+visitdate);
+       // visitdate = preferences.getString(CommonString.KEY_DATE,"");
+       /* getSupportActionBar().setTitle("BackUp - "+visitdate);*/
+        getSupportActionBar().setTitle("BackUp - ");
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

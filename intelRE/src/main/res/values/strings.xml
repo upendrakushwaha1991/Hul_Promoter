@@ -37,4 +37,13 @@
     <string name="errordatabase_not_exporting">Error in Database Exporting</string>
     <string name="cancel">Cancel</string>
     <string name="main_menu_activity_name">INTAL Mer.</string>
+
+    <string name="data_uploaded_successfully">Database Uploaded Successfully</string>
+    <string name="errordatabase_not_uploaded">Error in Database Uploading</string>
+    <string name="database_not_uploaded">Database Not Uploaded</string>
+    <string name="title_activity_download">DownloadActivity</string>
+    <string name="nonetwork"> No Network Connection. Please Check Your Internet Connection</string>
+    <string name="previous_data_upload">Please Upload Previous Data First</string>
+    <string name="want_download_data">Do you want to Download Data?</string>
+
 </resources>
