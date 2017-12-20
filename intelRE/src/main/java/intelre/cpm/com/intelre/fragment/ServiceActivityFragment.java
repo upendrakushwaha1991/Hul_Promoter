@@ -163,7 +163,8 @@ public class ServiceActivityFragment extends Fragment {
                     @SuppressWarnings("resource")
                     public void onClick(DialogInterface dialog, int id) {
                         try {
-                            File file = new File(Environment.getExternalStorageDirectory(), "INTEL_RE_backup");
+
+                            File file = new File(Environment.getExternalStorageDirectory(), CommonString.BACKUP_FILE_PATH);
                             if (!file.isDirectory()) {
                                 file.mkdir();
                             }
@@ -177,10 +178,10 @@ public class ServiceActivityFragment extends Fragment {
                                 SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yy");
                                 String dateString = sdf.format(date);
 
+
                                 String currentDBPath = "//data//cpm.com.intelre//databases//" + INTEL_RE_DB.DATABASE_NAME;
                                 String backupDBPath = "INTEL_RE_Database_" + user_name.replace(".", "") + "_backup" + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
-
-                                String path = Environment.getExternalStorageDirectory().getPath() + "/INTEL_RE_backup";
+                                String path = Environment.getExternalStorageDirectory().getPath() + CommonString.BACKUP_FILE_PATH;
 
                                 File currentDB = new File(data, currentDBPath);
                                 File backupDB = new File(path, backupDBPath);
@@ -199,6 +200,7 @@ public class ServiceActivityFragment extends Fragment {
                                     RetrofitMethod uploadRetro = new RetrofitMethod(context, "Uploading Backup");
                                     uploadRetro.uploadedFiles = 0;
                                     uploadRetro.UploadBackup(backupDBPath, "DBBackup", path + "/");
+
                                 }
                             }
                         } catch (Exception e) {

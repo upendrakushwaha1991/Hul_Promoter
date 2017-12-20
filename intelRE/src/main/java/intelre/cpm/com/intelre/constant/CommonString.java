@@ -58,9 +58,7 @@ public class CommonString {
     public static final int COVERAGE_NONWORKING= 9;
     //File Path
 
-    public static final String FILE_PATH_Downloaded = Environment.getExternalStorageDirectory() + "/INTEL_MER_download_Img/";
-    public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/INTEL_RE_backup/";
-
+      public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/INTEL_RE_backup/";
 
     ////for insert data key
     public static final String KEY_STORE_CD = "STORE_CD";
@@ -178,5 +176,6 @@ public class CommonString {
 
     public static final String KEY_FOR_SPINNER_DROP_DOWN = "Please select dropDown answer";
     public static final String KEY_FOR_CAMERA_C = "Please click camera";
+
 
 }

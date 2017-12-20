@@ -4,19 +4,27 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Environment;
+
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-
+import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.gettersetter.ReferenceVariablesForDownloadActivity;
@@ -61,6 +69,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
     }
 
     public UploadImageWithRetrofit(Context context, INTEL_RE_DB db, ProgressDialog pd, int from) {
+
         this.context = context;
         this.db = db;
         this.pd = pd;
@@ -99,6 +108,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
             Call<String> call = api.getDownloadAll(jsonData);
             final int[] finalJsonIndex = {jsonIndex};
             final String finalKeyName = KeyName;
+
             call.enqueue(new Callback<String>() {
                 @Override
                 public void onResponse(Call<String> call, Response<String> response) {
@@ -114,6 +124,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                 //data = data.substring(1, data.length() - 1).replace("\\", "");
                                 data_global[0] = data;
                                 if (finalKeyName.equalsIgnoreCase("Table_Structure")) {
+
                                     editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, finalJsonIndex[0]);
                                     editor.apply();
                                     tableStructureObj = new Gson().fromJson(data, TableStructureGetterSetter.class);

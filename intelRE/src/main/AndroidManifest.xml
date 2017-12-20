@@ -27,10 +27,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+
             android:name=".SplashScreenActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -92,6 +95,7 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".dailyentry.IntelVisibilityActivity"></activity>
+
     </application>
 
 </manifest>

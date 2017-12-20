@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IntelRE.iml" filepath="$PROJECT_DIR$/IntelRE.iml" />
-      <module fileurl="file://F:\jeevanAndroidProject\androidProject\Intel\IntelRE\intelRE\app.iml" filepath="F:\jeevanAndroidProject\androidProject\Intel\IntelRE\intelRE\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/intelRE/intelRE.iml" filepath="$PROJECT_DIR$/intelRE/intelRE.iml" />
     </modules>
   </component>

@@ -27,12 +27,12 @@ public interface PostApi {
 /*   @retrofit2.http.POST("DownloadAll")
    Call<ResponseBody> getDownloadAll(@Body RequestBody request);*/
 
+
     @retrofit2.http.POST("DownloadAll")
     Call<String> getDownloadAll(@Body RequestBody request);
 
     @retrofit2.http.POST("DownloadAll")
     Call<ResponseBody> getDownloadAllUSINGLOGIN(@Body RequestBody request);
-
 
 
     @retrofit2.http.POST("CoverageDetail_latest")

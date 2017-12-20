@@ -72,6 +72,7 @@ public class AuditQuestion {
     public void setQuestionCategory(String questionCategory) {
         this.questionCategory = questionCategory;
     }
+
     public String getCurrectanswerCd() {
         return currectanswerCd;
     }
@@ -123,6 +124,5 @@ public class AuditQuestion {
     public void setImageAllow(String imageAllow) {
         this.imageAllow = imageAllow;
     }
-
 
 }

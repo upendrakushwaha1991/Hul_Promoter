@@ -32,6 +32,7 @@ public class AlertandMessages {
         alert.show();
     }
 
+
     public static void showAlertlogin(final Activity activity, String str) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Parinaam");

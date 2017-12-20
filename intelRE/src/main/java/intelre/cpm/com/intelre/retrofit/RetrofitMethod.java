@@ -8,13 +8,28 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+
 import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit.Call;
 import retrofit.Callback;
+import retrofit.Converter;
+
 import retrofit.Response;
 import retrofit.Retrofit;
 

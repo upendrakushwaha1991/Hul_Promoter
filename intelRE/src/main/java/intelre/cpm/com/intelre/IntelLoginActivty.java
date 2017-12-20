@@ -226,6 +226,20 @@ public class IntelLoginActivty extends AppCompatActivity {
                                     //editor.putString(CommonString.KEY_DATE, "11/22/2017");
                                     editor.commit();
 
+                                    if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
+                                        loading.dismiss();
+                                        Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        loading.dismiss();
+                                        // if app version code does not match with live apk version code then update will be called.
+                                        Intent intent = new Intent(getBaseContext(), AutoUpdateActivity.class);
+                                        intent.putExtra(CommonString.KEY_PATH, preferences.getString(CommonString.KEY_PATH, ""));
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
                                     //Download Todays Questions
                                     JSONObject jsonObject = new JSONObject();
                                     jsonObject.put("Username", userid);

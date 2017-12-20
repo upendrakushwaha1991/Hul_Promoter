@@ -26,10 +26,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.dailyentry.ServiceActivity;
 import intelre.cpm.com.intelre.dailyentry.StoreListActivity;
+import intelre.cpm.com.intelre.dailyentry.ServiceActivity;
 import intelre.cpm.com.intelre.download.DownloadActivity;
 
 public class MainMenuActivity extends AppCompatActivity
@@ -43,6 +43,7 @@ public class MainMenuActivity extends AppCompatActivity
     private Context context;
     private int downloadIndex;
     private SharedPreferences preferences;
+
     String visit_date, user_type, user_name;
 
     @Override
@@ -50,11 +51,25 @@ public class MainMenuActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         declaration();
+
+        /*String url = preferences.getString(CommonString.KEY_NOTICE_BOARD_LINK, "");
+        String user_name = preferences.getString(CommonString.KEY_USERNAME, null);
+
+        webView.setWebViewClient(new MyWebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true);
+
+        if (!url.equals("")) {
+
+            webView.loadUrl(url);
+
+        }*/
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         headerView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, navigationView, false);
         TextView tv_username = (TextView) headerView.findViewById(R.id.nav_user_name);
@@ -75,12 +90,12 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
         if (id == R.id.nav_route_plan) {
             startActivity(new Intent(this, StoreListActivity.class));
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
@@ -144,6 +159,7 @@ public class MainMenuActivity extends AppCompatActivity
 
             finish();
         } else if (id == R.id.nav_services) {
+
             Intent startservice = new Intent(this, ServiceActivity.class);
             startActivity(startservice);
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
@@ -171,6 +187,7 @@ public class MainMenuActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
     }
+   
 
     private boolean checkNetIsAvailable() {
         ConnectivityManager cm =
