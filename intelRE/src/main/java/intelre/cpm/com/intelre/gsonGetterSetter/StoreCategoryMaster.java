@@ -161,4 +161,5 @@ public class StoreCategoryMaster implements Serializable {
     public void setIrepregistered(String irepregistered) {
         this.irepregistered = irepregistered;
     }*/
+
 }

@@ -81,6 +81,56 @@ public class AuditQuestion {
     }
 
     public void setImageAllow(Boolean imageAllow) {
+
+    public String getCurrectanswerCd() {
+        return currectanswerCd;
+    }
+
+    public String getCameraFLAG() {
+        return cameraFLAG;
+    }
+
+    public void setCameraFLAG(String cameraFLAG) {
+        this.cameraFLAG = cameraFLAG;
+    }
+
+    public String cameraFLAG;
+
+    public void setCurrectanswerCd(String currectanswerCd) {
+        this.currectanswerCd = currectanswerCd;
+    }
+
+
+    public String getCurrectanswer() {
+        return currectanswer;
+    }
+
+    public void setCurrectanswer(String currectanswer) {
+        this.currectanswer = currectanswer;
+    }
+    public String currectanswerCd;
+    public String currectanswer;
+
+    public String getAudit_cam() {
+        return audit_cam;
+    }
+    @SerializedName("Image_Allow")
+    @Expose
+    private String  imageAllow;
+
+
+
+    public void setAudit_cam(String audit_cam) {
+        this.audit_cam = audit_cam;
+    }
+
+    public String audit_cam;
+
+    public String  getImageAllow() {
+        return imageAllow;
+    }
+
+    public void setImageAllow(String imageAllow) {
         this.imageAllow = imageAllow;
     }
 

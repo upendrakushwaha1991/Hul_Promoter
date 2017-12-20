@@ -19,10 +19,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import intelre.cpm.com.intelre.Database.INTALMerDB;
+
+import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.retrofit.RetrofitMethod;
+
 import intelre.cpm.com.intelre.retrofit.UploadImageWithRetrofit;
 
 public class DownloadActivity extends AppCompatActivity {
@@ -30,7 +32,7 @@ public class DownloadActivity extends AppCompatActivity {
     public int listSize = 0;
     Data data;
     int eventType;
-    INTALMerDB db;
+    INTEL_RE_DB db;
     String userId, date;
     private Dialog dialog;
     private ProgressBar pb;
@@ -97,7 +99,7 @@ public class DownloadActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = this;
-        db = new INTALMerDB(context);
+        db = new INTEL_RE_DB(context);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
        /* userId = preferences.getString(CommonString.KEY_USERNAME, null);
         date = preferences.getString(CommonString.KEY_DATE, "");*/

@@ -27,9 +27,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-
 import intelre.cpm.com.intelre.dailyentry.RspDetailActivity;
 import intelre.cpm.com.intelre.dailyentry.RspListActivity;
+import intelre.cpm.com.intelre.constant.CommonString;
+import intelre.cpm.com.intelre.dailyentry.ServiceActivity;
+import intelre.cpm.com.intelre.dailyentry.StoreListActivity;
 import intelre.cpm.com.intelre.dailyentry.ServiceActivity;
 import intelre.cpm.com.intelre.download.DownloadActivity;
 
@@ -45,11 +47,14 @@ public class MainMenuActivity extends AppCompatActivity
     private int downloadIndex;
     private SharedPreferences preferences;
 
+    String visit_date, user_type, user_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         declaration();
+
         /*String url = preferences.getString(CommonString.KEY_NOTICE_BOARD_LINK, "");
         String user_name = preferences.getString(CommonString.KEY_USERNAME, null);
 
@@ -71,8 +76,9 @@ public class MainMenuActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         headerView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, navigationView, false);
         TextView tv_username = (TextView) headerView.findViewById(R.id.nav_user_name);
-        tv_username.setText("testmer");
-        //tv_usertype.setText(user_type);
+        TextView tv_usertype = (TextView) headerView.findViewById(R.id.nav_user_type);
+        tv_username.setText(user_name);
+        tv_usertype.setText(user_type);
         navigationView.addHeaderView(headerView);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -86,13 +92,6 @@ public class MainMenuActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -101,6 +100,8 @@ public class MainMenuActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_route_plan) {
+            startActivity(new Intent(this, StoreListActivity.class));
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         } else if (id == R.id.nav_download) {
             if (checkNetIsAvailable()) {
@@ -159,11 +160,12 @@ public class MainMenuActivity extends AppCompatActivity
         } else if (id == R.id.nav_geotag) {
 
         } else if (id == R.id.nav_exit) {
+
             ActivityCompat.finishAffinity(this);
             Intent intent = new Intent(getApplicationContext(), IntelLoginActivty.class);
             startActivity(intent);
             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
-
+            finish();
         } else if (id == R.id.nav_services) {
 
             Intent startservice = new Intent(this, ServiceActivity.class);
@@ -175,26 +177,25 @@ public class MainMenuActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
     void declaration() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         context = this;
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-       // date = preferences.getString(CommonString.KEY_DATE, null);
         imageView = (ImageView) findViewById(R.id.img_main);
         webView = (WebView) findViewById(R.id.webview);
-        toolbar.setTitle(getString(R.string.main_menu_activity_name) + " - " + date);
-       /* getSupportActionBar().setTitle(getString(R.string.main_menu_activity_name) + " \n- " + date);
-        db = new GSKGTMerDB(MainActivity.this);
-        db.open();*/
+        visit_date = preferences.getString(CommonString.KEY_DATE, "");
+        user_type = preferences.getString(CommonString.KEY_USER_TYPE, null);
+        user_name = preferences.getString(CommonString.KEY_USERNAME, null);
+        toolbar.setTitle(" Main Menu - " + visit_date);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-       /* downloadIndex = preferences.getInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
-        coverageList = db.getCoverageData(date);
-        storelist = db.getStoreData(date);*/
     }
+   
 
     private boolean checkNetIsAvailable() {
         ConnectivityManager cm =
