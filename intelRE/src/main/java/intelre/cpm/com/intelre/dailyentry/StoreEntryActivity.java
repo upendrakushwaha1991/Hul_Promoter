@@ -1,4 +1,5 @@
 package intelre.cpm.com.intelre.dailyentry;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,30 +16,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.delegates.NavMenuItemGetterSetter;
 
 public class StoreEntryActivity extends AppCompatActivity {
+    INTEL_RE_DB db;
     ValueAdapter adapter;
     RecyclerView recyclerView;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
     String store_cd, visit_date, user_type, username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store_entry);
+        uivalidate();
+        db = new INTEL_RE_DB(this);
     }
-    private void uivalidate(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+    private void uivalidate() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        recyclerView = (RecyclerView) findViewById(R.id.drawer_layout_recycle);
+        recyclerView = findViewById(R.id.drawer_layout_recycle_store);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
         store_cd = preferences.getString(CommonString.KEY_STORE_CD, null);
@@ -51,7 +60,7 @@ public class StoreEntryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        recyclerView = (RecyclerView) findViewById(R.id.drawer_layout_recycle);
+        db.open();
         adapter = new ValueAdapter(getApplicationContext(), getdata());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
@@ -65,7 +74,6 @@ public class StoreEntryActivity extends AppCompatActivity {
             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
             this.finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -76,14 +84,12 @@ public class StoreEntryActivity extends AppCompatActivity {
     }
 
     public class ValueAdapter extends RecyclerView.Adapter<ValueAdapter.MyViewHolder> {
-
         private LayoutInflater inflator;
         List<NavMenuItemGetterSetter> data = Collections.emptyList();
 
         public ValueAdapter(Context context, List<NavMenuItemGetterSetter> data) {
             inflator = LayoutInflater.from(context);
             this.data = data;
-
         }
 
         @Override
@@ -95,19 +101,24 @@ public class StoreEntryActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ValueAdapter.MyViewHolder viewHolder, final int position) {
-           /* final NavMenuItemGetterSetter current = data.get(position);
+            final NavMenuItemGetterSetter current = data.get(position);
             viewHolder.icon.setImageResource(current.getIconImg());
             viewHolder.icon_txtname.setText(current.getIconName());
             viewHolder.icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (current.getIconImg() == R.drawable.audit || current.getIconImg() == R.drawable.audit_done) {
-                        Intent in7 = new Intent(getApplicationContext(), AuditActivity.class);
-                        startActivity(in7);
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    if (current.getIconImg() == R.drawable.store_audit || current.getIconImg() == R.drawable.store_audit) {
+                        if (db.getStoreAuditHeaderData().size() > 0) {
+                            Intent in7 = new Intent(StoreEntryActivity.this, StoreAuditActivity.class);
+                            startActivity(in7);
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        } else {
+                            Snackbar.make(recyclerView, "Store audit data not found", Snackbar.LENGTH_LONG).show();
+                        }
+
                     }
 
-                    if (db.isNoSaleSEntryFilled(store_cd) && current.getIconImg() == R.drawable.sales_entry_done) {
+                   /* if (db.isNoSaleSEntryFilled(store_cd) && current.getIconImg() == R.drawable.sales_entry_done) {
                         Snackbar.make(recyclerView, "You have already click no sale for today. You are not allowed enter more sale today.", Snackbar.LENGTH_LONG).show();
                     } else {
                         if (current.getIconImg() == R.drawable.sales_entry || current.getIconImg() == R.drawable.sales_entry_done) {
@@ -128,11 +139,12 @@ public class StoreEntryActivity extends AppCompatActivity {
                             startActivity(new Intent(getApplicationContext(), StockEntryActivity.class));
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                         }
-                    }*/
-
-              //  }
-          //  });
+                    }
+*/
+                }
+            });
         }
+
         @Override
         public int getItemCount() {
             return data.size();
@@ -150,47 +162,51 @@ public class StoreEntryActivity extends AppCompatActivity {
         }
 
     }
+
     public List<NavMenuItemGetterSetter> getdata() {
         List<NavMenuItemGetterSetter> data = new ArrayList<>();
-        int audit, saleentry, stock_entry;
-       /* if (db.isStockEntryFilled(store_cd)) {
-            stock_entry = R.drawable.stock_entry_done;
-        } else {
-            if (db.isStockEntryWithFilled(store_cd)) {
-                stock_entry = R.drawable.stock_entry_done;
-            } else {
-                stock_entry = R.drawable.stock_entry;
-            }
+        int rspDetail = 0, storeAudit, training, visibility/*,shoperMKTTool,marketInfo*/;
+
+        // if (db.getRspDetailData(store_cd).size() > 0) {
+        // if (db.isSRSPDetailFilled(store_cd)) {
+        //   rspDetail = R.drawable.rsp_detail_done;
+        //   } else {
+        rspDetail = R.drawable.rsp_detail;
+        //  }
+        //  }
+
+
+        // if (db.isAuditEntryFilled(store_cd)) {
+        //   storeAudit = R.drawable.store_audit_done;
+        // } else {
+        storeAudit = R.drawable.store_audit;
+        //  }
+
+        // if (db.isMiddayDataFilled(store_cd)) {
+        // training = R.drawable.training_done;
+        //  } else {
+        training = R.drawable.training;
+        //  }
+
+
+        // if (db.isMiddayDataFilled(store_cd)) {
+        //   visibility = R.drawable.visibility_done;
+        //  } else {
+        visibility = R.drawable.visibility;
+        //  }
+
+        // if (user_type.equalsIgnoreCase("ISD")) {
+        int img[] = {rspDetail, storeAudit, training, visibility/*,shoperMKTTool,marketInfo*/};
+        //   ,Shoper MKT Tool,Market Info
+        String name[] = {"RSP Detail", "Store Audit", "Training", "Visibility"};
+        for (int i = 0; i < img.length; i++) {
+            NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
+            recData.setIconImg(img[i]);
+            recData.setIconName(name[i]);
+            data.add(recData);
         }
-        if (db.isAuditEntryFilled(store_cd)) {
-            audit = R.drawable.audit_done;
-        } else {
-            audit = R.drawable.audit;
-        }
-        if (db.isMiddayDataFilled(store_cd)) {
-            saleentry = R.drawable.sales_entry_done;
-        } else {
-            saleentry = R.drawable.sales_entry;
-        }*/
-       /* if (user_type.equalsIgnoreCase("ISD")) {
-            int img[] = {saleentry, stock_entry};
-            String name[] = {"Sale Entry", "Stock Entry"};
-            for (int i = 0; i < img.length; i++) {
-                NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
-                recData.setIconImg(img[i]);
-                recData.setIconName(name[i]);
-                data.add(recData);
-            }
-        } else if (!user_type.equalsIgnoreCase("ISD")) {
-            int img[] = {audit};
-            String name[] = {"Audit"};
-            for (int i = 0; i < img.length; i++) {
-                NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
-                recData.setIconImg(img[i]);
-                recData.setIconName(name[i]);
-                data.add(recData);
-            }*/
-        //}
+        // }
+
         return data;
     }
 

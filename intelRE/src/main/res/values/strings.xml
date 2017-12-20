@@ -38,4 +38,32 @@
     <string name="errordatabase_not_exporting">Error in Database Exporting</string>
     <string name="cancel">Cancel</string>
     <string name="main_menu_activity_name">INTAL Mer.</string>
+
+    <string name="data_uploaded_successfully">Database Uploaded Successfully</string>
+    <string name="errordatabase_not_uploaded">Error in Database Uploading</string>
+    <string name="database_not_uploaded">Database Not Uploaded</string>
+    <string name="title_activity_download">DownloadActivity</string>
+    <string name="nonetwork"> No Network Connection. Please Check Your Internet Connection</string>
+    <string name="previous_data_upload">Please Upload Previous Data First</string>
+    <string name="want_download_data">Do you want to Download Data?</string>
+
+    //jeevan for storelist
+    <string name="title_store_list_activity_store_already_done">Store Already Uploaded</string>
+    <string name="title_store_list_activity_store_data_uploaded">Store Data Uploaded</string>
+    <string name="title_store_list_activity_store_already_checkout">Store Already Checkout</string>
+    <string name="title_store_list_activity_store_again_uploaded">Please Upload data again</string>
+    <string name="title_store_list_activity_store_closed">Store Closed</string>
+    <string name="title_store_list_activity_already_store_closed">Store Already Closed</string>
+    <string name="title_store_list_checkout_Already_filled">Data already filled</string>
+    <string name="wantcheckout">Are you sure you want to Checkout</string>
+    <string name="closed">Close</string>
+    <string name="store_visited">Store Visited</string>
+    <string name="dialog_title">Parinaam</string>
+    <string name="first_geotag_the_store">First geotag the store</string>
+    <string name="DELETE_ALERT_MESSAGE">Saved data will be lost - Do you want to continue?</string>
+    <string name="storefront">Click Store Front Image</string>
+    <string name="title_store_list_checkout_current">Please checkout from current store</string>
+    <string name="alertsaveData"> Are you sure you want to save data</string>
+
+
 </resources>

@@ -16,22 +16,24 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="?actionBarSize">
 
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:padding="8dp"
             android:layout_height="match_parent"
+            android:padding="8dp"
             card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="5dp">
 
             <LinearLayout
-                android:layout_marginRight="4dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:id="@+id/storePlayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -46,26 +48,29 @@
                         android:layout_gravity="center"
                         android:layout_weight="4"
                         android:gravity="center"
+                        android:textSize="13sp"
                         android:padding="8dp"
                         android:text="Store Name"
                         android:textColor="@color/black" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/storeProfile_userN"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="6"
                         android:background="@drawable/rouded_corner"
+                        android:enabled="false"
+                        android:inputType="text"
                         android:padding="8dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:inputType="text"
-                        android:layout_marginLeft="3dp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal"
                     android:weightSum="10">
 
@@ -76,6 +81,7 @@
                         android:layout_weight="4"
                         android:gravity="center"
                         android:padding="8dp"
+                        android:textSize="13sp"
                         android:text="Address 1"
                         android:textColor="@color/black" />
 
@@ -83,17 +89,19 @@
                         android:id="@+id/storeProfile_address_1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="6"
                         android:background="@drawable/rouded_corner"
+                        android:inputType="text"
                         android:padding="8dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:inputType="text"
-                        android:layout_marginLeft="3dp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="10dp"                    android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal"
                     android:weightSum="10">
 
@@ -105,22 +113,26 @@
                         android:gravity="center"
                         android:padding="8dp"
                         android:text="City"
+                        android:textSize="13sp"
                         android:textColor="@color/black" />
 
-                    <Spinner
-                        android:id="@+id/storeProfile_spinCity"
+                    <TextView
+                        android:id="@+id/storeProfile_City"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="6"
                         android:background="@drawable/rouded_corner"
+                        android:enabled="false"
                         android:padding="8dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:layout_marginLeft="3dp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="10dp"                    android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal"
                     android:weightSum="10">
 
@@ -130,6 +142,7 @@
                         android:layout_gravity="center"
                         android:layout_weight="4"
                         android:gravity="center"
+                        android:textSize="13sp"
                         android:padding="8dp"
                         android:text="Owner Name"
                         android:textColor="@color/black" />
@@ -138,17 +151,19 @@
                         android:id="@+id/storeProfile_ownerN"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="6"
                         android:background="@drawable/rouded_corner"
+                        android:inputType="text"
                         android:padding="8dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:inputType="text"
-                        android:layout_marginLeft="3dp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="10dp"                    android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal"
                     android:weightSum="10">
 
@@ -159,6 +174,7 @@
                         android:layout_weight="4"
                         android:gravity="center"
                         android:padding="8dp"
+                        android:textSize="13sp"
                         android:text="Contact No"
                         android:textColor="@color/black" />
 
@@ -166,18 +182,20 @@
                         android:id="@+id/storeProfile_contctN"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="6"
                         android:background="@drawable/rouded_corner"
+                        android:inputType="number"
+                        android:maxLength="10"
                         android:padding="8dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:inputType="text"
-                        android:layout_marginLeft="3dp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="9dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="9dp"
                     android:orientation="horizontal"
                     android:weightSum="10">
 
@@ -189,31 +207,35 @@
                         android:gravity="center"
                         android:padding="8dp"
                         android:text="DOB"
+                        android:textSize="13sp"
                         android:textColor="@color/black" />
 
                     <TextView
                         android:id="@+id/storeProfile_dob"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="4"
                         android:background="@drawable/rouded_corner"
+                        android:inputType="text"
                         android:padding="8dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:inputType="text"
-                        android:layout_marginLeft="3dp"/>
+                        android:textSize="14sp" />
+
                     <ImageView
-                        android:layout_marginLeft="1.6dp"
-                        android:layout_marginRight="1.6dp"
                         android:id="@+id/img_dob"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="1.6dp"
+                        android:layout_marginRight="1.6dp"
                         android:layout_weight="2"
-                        android:src="@android:drawable/sym_call_missed"/>
+                        android:src="@drawable/calender" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="10dp"                    android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal"
                     android:weightSum="10">
 
@@ -225,6 +247,7 @@
                         android:gravity="center"
                         android:padding="8dp"
                         android:text="DOA"
+                        android:textSize="13sp"
                         android:textColor="@color/black" />
 
 
@@ -232,25 +255,28 @@
                         android:id="@+id/storeProfile_doa"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="4"
                         android:background="@drawable/rouded_corner"
+                        android:inputType="text"
                         android:padding="8dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:inputType="text"
-                        android:layout_marginLeft="3dp"/>
+                        android:textSize="14sp" />
+
                     <ImageView
-                        android:layout_marginLeft="1.6dp"
-                        android:layout_marginRight="1.6dp"
                         android:id="@+id/img_doa"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="1.6dp"
+                        android:layout_marginRight="1.6dp"
                         android:layout_weight="2"
-                        android:src="@android:drawable/sym_call_missed"/>
+                        android:src="@drawable/calender" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="10dp"                    android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal"
                     android:weightSum="10">
 
@@ -261,6 +287,7 @@
                         android:layout_weight="4"
                         android:gravity="center"
                         android:padding="8dp"
+                        android:textSize="13sp"
                         android:text="Visibility Location 1"
                         android:textColor="@color/black" />
 
@@ -268,17 +295,19 @@
                         android:id="@+id/storeProfile_visibtLo"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="6"
                         android:background="@drawable/rouded_corner"
+                        android:inputType="text"
                         android:padding="8dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
-                        android:inputType="text"
-                        android:layout_marginLeft="3dp"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:layout_marginTop="10dp"                    android:layout_width="match_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal"
                     android:weightSum="10">
 
@@ -289,20 +318,146 @@
                         android:layout_weight="4"
                         android:gravity="center"
                         android:padding="8dp"
-                        android:text="Dimention"
+                        android:text="Dimention 1"
+                        android:textSize="13sp"
                         android:textColor="@color/black" />
 
                     <EditText
                         android:id="@+id/storeProfile_dimention"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="6"
                         android:background="@drawable/rouded_corner"
+                        android:inputType="text"
                         android:padding="8dp"
                         android:textColor="@color/black"
-                        android:textSize="14sp"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:textSize="13sp"
+                        android:text="Visibility Location 2"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/storeProfile_visibtLo2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/rouded_corner"
                         android:inputType="text"
-                        android:layout_marginLeft="3dp"/>
+                        android:padding="8dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:padding="8dp"
+                        android:text="Dimention 2"
+                        android:textSize="13sp"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/storeProfile_dimention2"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/rouded_corner"
+                        android:inputType="text"
+                        android:padding="8dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:padding="8dp"
+                        android:text="Visibility Location 3"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/storeProfile_visibtLo3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/rouded_corner"
+                        android:inputType="text"
+                        android:padding="8dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:textSize="13sp"
+                        android:padding="8dp"
+                        android:text="Dimention 3"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/storeProfile_dimention3"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
+                        android:layout_weight="6"
+                        android:background="@drawable/rouded_corner"
+                        android:inputType="text"
+                        android:padding="8dp"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>

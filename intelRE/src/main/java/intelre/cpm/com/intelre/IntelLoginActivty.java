@@ -184,7 +184,7 @@ public class IntelLoginActivty extends AppCompatActivity {
             try {
                 final String[] data_global = {""};
                 RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
-                adapter = new Retrofit.Builder().baseUrl(CommonString.URL + "/")
+                adapter = new Retrofit.Builder().baseUrl(CommonString.URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
                 PostApi api = adapter.create(PostApi.class);
@@ -234,11 +234,11 @@ public class IntelLoginActivty extends AppCompatActivity {
                                     final String[] question_data_global = {""};
                                     RequestBody questionjsonData = RequestBody.create(MediaType.parse("application/json"),
                                             jsonString);
-                                    adapter = new Retrofit.Builder().baseUrl(CommonString.URL + "/")
+                                    adapter = new Retrofit.Builder().baseUrl(CommonString.URL)
                                             .addConverterFactory(GsonConverterFactory.create())
                                             .build();
                                     PostApi api1 = adapter.create(PostApi.class);
-                                    Call<ResponseBody> callquest = api1.getDownloadAll(questionjsonData);
+                                    Call<ResponseBody> callquest = api1.getDownloadAllUSINGLOGIN(questionjsonData);
                                     callquest.enqueue(new Callback<ResponseBody>() {
                                         @Override
                                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -333,7 +333,7 @@ public class IntelLoginActivty extends AppCompatActivity {
 
                                                                                                 loading.setMessage("Uploading answer data..");
                                                                                                 RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
-                                                                                                adapter = new Retrofit.Builder().baseUrl(CommonString.URL + "/").
+                                                                                                adapter = new Retrofit.Builder().baseUrl(CommonString.URL).
                                                                                                         addConverterFactory(GsonConverterFactory.create()).build();
                                                                                                 PostApi api = adapter.create(PostApi.class);
                                                                                                 Call<ResponseBody> call = api.getUploadJsonDetail(jsonData);
@@ -359,8 +359,10 @@ public class IntelLoginActivty extends AppCompatActivity {
                                                                                                                         finish();
                                                                                                                     } else {
                                                                                                                         editor = preferences.edit();
-                                                                                                                        editor.putString(CommonString.KEY_QUESTION_CD + visit_date, qns_cd);
-                                                                                                                        editor.putString(CommonString.KEY_ANSWER_CD + visit_date, ans_cd);
+                                                                                                                        editor.putString(CommonString.KEY_QUESTION_CD +
+                                                                                                                                visit_date, qns_cd);
+                                                                                                                        editor.putString(CommonString.KEY_ANSWER_CD +
+                                                                                                                                visit_date, ans_cd);
                                                                                                                         editor.commit();
                                                                                                                         Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
                                                                                                                         startActivity(intent);
@@ -474,7 +476,7 @@ public class IntelLoginActivty extends AppCompatActivity {
 
                                                                                                 loading.setMessage("Uploading answer data..");
                                                                                                 RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
-                                                                                                adapter = new Retrofit.Builder().baseUrl(CommonString.URL + "/").
+                                                                                                adapter = new Retrofit.Builder().baseUrl(CommonString.URL).
                                                                                                         addConverterFactory(GsonConverterFactory.create()).build();
                                                                                                 PostApi api = adapter.create(PostApi.class);
                                                                                                 Call<ResponseBody> call = api.getUploadJsonDetail(jsonData);
@@ -486,10 +488,11 @@ public class IntelLoginActivty extends AppCompatActivity {
                                                                                                         if (responseBody != null && response.isSuccessful()) {
                                                                                                             try {
                                                                                                                 data = response.body().string();
-                                                                                                                if (data.equalsIgnoreCase("")) {
-                                                                                                                    data = data.substring(1, data.length() - 1).replace("\\", "");
-                                                                                                                    data_global[0] = data;
+                                                                                                               // if (data.equalsIgnoreCase("")) {
+                                                                                                                   // data = data.substring(1, data.length() - 1).replace("\\", "");
+                                                                                                                  //  data_global[0] = data;
                                                                                                                     if (data.contains("Success")) {
+                                                                                                                        loading.dismiss();
                                                                                                                         String visit_date = preferences.getString(CommonString.KEY_DATE, null);
                                                                                                                         editor = preferences.edit();
                                                                                                                         editor.putBoolean(CommonString.KEY_IS_QUIZ_DONE + visit_date, true);
@@ -498,6 +501,7 @@ public class IntelLoginActivty extends AppCompatActivity {
                                                                                                                         startActivity(intent);
                                                                                                                         finish();
                                                                                                                     } else {
+                                                                                                                        loading.dismiss();
                                                                                                                         editor = preferences.edit();
                                                                                                                         editor.putString(CommonString.KEY_QUESTION_CD + visit_date, qns_cd);
                                                                                                                         editor.putString(CommonString.KEY_ANSWER_CD + visit_date, ans_cd);
@@ -506,23 +510,23 @@ public class IntelLoginActivty extends AppCompatActivity {
                                                                                                                         startActivity(intent);
                                                                                                                         finish();
                                                                                                                     }
-                                                                                                                }
+
 
                                                                                                             } catch (Exception e) {
                                                                                                                 loading.dismiss();
                                                                                                                 AlertandMessages.showAlertlogin(IntelLoginActivty.this,
                                                                                                                         e.getLocalizedMessage().toString());
                                                                                                             }
-                                                                                                        } else {
+                                                                                                        } /*else {
                                                                                                             loading.dismiss();
                                                                                                             AlertandMessages.showAlertlogin(IntelLoginActivty.this, "Check Your Internet Connection");
 
-                                                                                                        }
+                                                                                                        }*/
                                                                                                     }
 
                                                                                                     @Override
                                                                                                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                                                                                                        loading.dismiss();
                                                                                                         if (t instanceof SocketTimeoutException) {
                                                                                                             AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
                                                                                                         } else if (t instanceof IOException) {
@@ -539,9 +543,9 @@ public class IntelLoginActivty extends AppCompatActivity {
                                                                                             }
                                                                                             ans_dialog.cancel();
                                                                                         } catch (JSONException e) {
+                                                                                            loading.dismiss();
                                                                                             e.printStackTrace();
                                                                                         }
-
                                                                                     } else {
                                                                                         showToast("No internet connection");
                                                                                     }
@@ -578,12 +582,16 @@ public class IntelLoginActivty extends AppCompatActivity {
                                             loading.dismiss();
                                             if (t instanceof SocketTimeoutException || t instanceof IOException || t instanceof Exception) {
                                                 AlertandMessages.showAlertlogin(IntelLoginActivty.this, t.getLocalizedMessage().toString());
+                                            }else {
+                                                AlertandMessages.showAlertlogin(IntelLoginActivty.this, t.getLocalizedMessage().toString());
+
                                             }
                                         }
                                     });
                                 }
 
                             } catch (Exception e) {
+                                loading.dismiss();
                                 e.printStackTrace();
                                 AlertandMessages.showAlertlogin(IntelLoginActivty.this, e.getLocalizedMessage().toString());
 

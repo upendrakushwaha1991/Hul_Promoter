@@ -1,6 +1,8 @@
 package intelre.cpm.com.intelre;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -8,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,15 +25,20 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.dailyentry.ServiceActivity;
 import intelre.cpm.com.intelre.dailyentry.StoreListActivity;
+import intelre.cpm.com.intelre.download.DownloadActivity;
 
 public class MainMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private WebView webView;
     private ImageView imageView;
+    private String date;
     private View headerView;
+    private String error_msg;
     private Toolbar toolbar;
     private Context context;
     private int downloadIndex;
@@ -67,6 +75,7 @@ public class MainMenuActivity extends AppCompatActivity
     }
 
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -75,7 +84,55 @@ public class MainMenuActivity extends AppCompatActivity
         if (id == R.id.nav_route_plan) {
             startActivity(new Intent(this, StoreListActivity.class));
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
         } else if (id == R.id.nav_download) {
+            if (checkNetIsAvailable()) {
+                boolean isDownloadValid = true;
+/*
+                if (db.isCoveragePreviousDataFilled(date)) {
+                    if (isPreviousDataValid()) {
+                        isDownloadValid = false;
+                    }
+                }
+*/
+                if (isDownloadValid) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
+                    builder.setTitle("Parinaam");
+                    builder.setMessage(getResources().getString(R.string.want_download_data)).setCancelable(false)
+                            .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent in = new Intent(getApplicationContext(), DownloadActivity.class);
+                                    startActivity(in);
+                                }
+                            })
+                            .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
+                    builder.setTitle("Parinaam");
+                    builder.setMessage(getResources().getString(R.string.previous_data_upload)).setCancelable(false)
+                            .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                  /*  Intent in = new Intent(getApplicationContext(), PreviousDataUploadActivity.class);
+                                    startActivity(in);*/
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+
+            } else {
+                Snackbar.make(webView, getResources().getString(R.string.nonetwork), Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+            }
 
         } else if (id == R.id.nav_upload) {
 
@@ -139,5 +196,54 @@ public class MainMenuActivity extends AppCompatActivity
             view.clearCache(true);
         }
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+/*
+    private boolean isPreviousDataValid() {
+
+        boolean flag_isvalid = false;
+
+        JourneyPlan jcp;
+        //ArrayList<CoverageBean> coverage_list = db.getCoverageData(date);
+        ArrayList<CoverageBean> coverage_list = db.getCoverageDataPrevious(date);
+        for (int i = 0; i < coverage_list.size(); i++) {
+
+            if (coverage_list.get(i).getFrom().equals(CommonString.TAG_FROM_JCP)) {
+                jcp = db.getSpecificStoreDataPrevious(date, coverage_list.get(i).getStoreId());
+            } else {
+                jcp = db.getSpecificStoreDataDeviationPrevious(date, coverage_list.get(i).getStoreId());
+            }
+
+            if (jcp.getUploadStatus().equalsIgnoreCase(CommonString.KEY_CHECK_IN)) {
+                if (isValid(jcp.getStoreId()) || isValidForSelf(jcp)) {
+                    flag_isvalid = true;
+                    break;
+                }*/
+/* else {
+                    db.deleteTableWithStoreID(String.valueOf(jcp.getStoreId()));
+                }*//*
+
+            } else if (jcp.getUploadStatus().equalsIgnoreCase(CommonString.KEY_C)
+                    || jcp.getUploadStatus().equalsIgnoreCase(CommonString.KEY_P)
+                    || jcp.getUploadStatus().equalsIgnoreCase(CommonString.KEY_D)
+                    || jcp.getUploadStatus().equalsIgnoreCase(CommonString.STORE_STATUS_LEAVE)
+                    ) {
+                flag_isvalid = true;
+                break;
+            }
+
+        }
+
+        return flag_isvalid;
+    }
+*/
+
 
 }

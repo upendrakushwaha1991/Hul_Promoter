@@ -25,14 +25,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".SplashScreenActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -51,6 +49,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".download.DownloadActivity"
+            android:label="@string/title_activity_download"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".autoupdate.AutoUpdateActivity"
             android:screenOrientation="portrait" />
@@ -71,8 +73,25 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".dailyentry.StoreProfileActivity" />
-        <activity android:name=".dailyentry.StoreEntryActivity"></activity>
+        <activity
+            android:name=".dailyentry.StoreProfileActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".dailyentry.StoreEntryActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".dailyentry.StoreAuditActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".dailyentry.IntelVisibilityActivity"></activity>
     </application>
 
 </manifest>

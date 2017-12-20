@@ -63,7 +63,7 @@
                 android:id="@+id/img_cam_selfie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/cam_icon"
+                android:background="@mipmap/camera_orange"
                 android:layout_centerInParent="true"
                 />
 

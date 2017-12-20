@@ -2,7 +2,10 @@ package intelre.cpm.com.intelre.constant;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.support.design.widget.Snackbar;
+import android.widget.Toast;
 
 import intelre.cpm.com.intelre.R;
 
@@ -44,5 +47,10 @@ public class AlertandMessages {
         alert.show();
     }
 
-
+    public static void showToastMsg(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+    public static void showSnackbarMsg(Context context, String message) {
+        Snackbar.make(((Activity) context).getCurrentFocus(), message, Snackbar.LENGTH_SHORT).show();
+    }
 }

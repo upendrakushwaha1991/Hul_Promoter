@@ -3,7 +3,6 @@ package intelre.cpm.com.intelre.dailyentry;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,7 +15,6 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -30,9 +28,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -43,22 +38,18 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import intelre.cpm.com.intelre.IntelLoginActivty;
+import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.delegates.CoverageBean;
 import intelre.cpm.com.intelre.retrofit.PostApi;
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -72,34 +63,35 @@ public class StoreimageActivity extends AppCompatActivity implements
     private SharedPreferences preferences;
     AlertDialog alert;
     String img_str;
-    // private GSKDatabase database;
+    private INTEL_RE_DB database;
     double lat = 0.0, lon = 0.0;
     GoogleApiClient mGoogleApiClient;
     ByteArrayOutputStream bytearrayoutputstream;
     private static final int REQUEST_LOCATION = 1;
     ProgressDialog loading;
+    CoverageBean cdata;
     String app_ver;
     int mid;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_storeimage);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        img_cam = (ImageView) findViewById(R.id.img_selfie);
-        img_clicked = (ImageView) findViewById(R.id.img_cam_selfie);
+        img_cam = findViewById(R.id.img_selfie);
+        img_clicked = findViewById(R.id.img_cam_selfie);
         bytearrayoutputstream = new ByteArrayOutputStream();
-        btn_save = (Button) findViewById(R.id.btn_save_selfie);
+        btn_save = findViewById(R.id.btn_save_selfie);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         store_cd = preferences.getString(CommonString.KEY_STORE_CD, null);
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
         username = preferences.getString(CommonString.KEY_USERNAME, null);
         app_ver = preferences.getString(CommonString.KEY_VERSION, "");
         str = CommonString.FILE_PATH;
-       /* database = new GSKDatabase(this);
-        database.open();*/
+        database = new INTEL_RE_DB(this);
+        database.open();
         img_cam.setOnClickListener(this);
         img_clicked.setOnClickListener(this);
         btn_save.setOnClickListener(this);
@@ -204,7 +196,7 @@ public class StoreimageActivity extends AppCompatActivity implements
 
                                                 try {
                                                     alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                                                    CoverageBean cdata = new CoverageBean();
+                                                    cdata = new CoverageBean();
                                                     cdata.setStoreId(store_cd);
                                                     cdata.setVisitDate(visit_date);
                                                     cdata.setUserId(username);
@@ -214,7 +206,6 @@ public class StoreimageActivity extends AppCompatActivity implements
                                                     cdata.setLongitude(String.valueOf(lon));
                                                     cdata.setImage(img_str);
                                                     cdata.setRemark("");
-                                                    cdata.setStatus(CommonString.KEY_CHECK_IN);
                                                     //region Coverage Data
                                                     JSONObject jsonObject = new JSONObject();
                                                     jsonObject.put("StoreId", cdata.getStoreId());
@@ -226,7 +217,7 @@ public class StoreimageActivity extends AppCompatActivity implements
                                                     jsonObject.put("Remark", cdata.getRemark());
                                                     jsonObject.put("ImageName", cdata.getImage());
                                                     jsonObject.put("AppVersion", app_ver);
-                                                    jsonObject.put("UploadStatus", cdata.getStatus());
+                                                    jsonObject.put("UploadStatus", CommonString.KEY_CHECK_IN);
                                                     jsonObject.put("UserId", username);
 
                                                     uploadCoverageIntimeDATA(jsonObject.toString());
@@ -265,9 +256,9 @@ public class StoreimageActivity extends AppCompatActivity implements
         return isConnected;
     }
 
+
     protected void startCameraActivity() {
         try {
-
             Log.i("MakeMachine", "startCameraActivity()");
             File file = new File(_path);
             Uri outputFileUri = Uri.fromFile(file);
@@ -282,7 +273,6 @@ public class StoreimageActivity extends AppCompatActivity implements
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         Log.i("MakeMachine", "resultCode: " + resultCode);
         switch (resultCode) {
             case 0:
@@ -353,7 +343,7 @@ public class StoreimageActivity extends AppCompatActivity implements
             loading = ProgressDialog.show(StoreimageActivity.this, "Processing", "Please wait...",
                     false, false);
             RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsondata.toString());
-            Retrofit adapter = new Retrofit.Builder().baseUrl(CommonString.URL + "/")
+            Retrofit adapter = new Retrofit.Builder().baseUrl(CommonString.URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             PostApi api = adapter.create(PostApi.class);
@@ -366,12 +356,17 @@ public class StoreimageActivity extends AppCompatActivity implements
                     if (responseBody != null && response.isSuccessful()) {
                         try {
                             data = response.body().string();
-                            if (data.equalsIgnoreCase("")) {
-                                data = data.substring(1, data.length() - 1).replace("\\", "");
-                                if (data.contains("Success")) {
-                                    loading.dismiss();
-                                }
+                            //  data = data.substring(1, data.length() - 1).replace("\\", "");
+                            if (!data.equals("0")) {
+                                database.open();
+                                database.InsertCoverageData(cdata);
+                                database.updateJaurneyPlanSpecificStoreStatus(cdata.getStoreId(), cdata.getVisitDate(), CommonString.KEY_CHECK_IN);
+                                Intent intent = new Intent(StoreimageActivity.this, StoreProfileActivity.class);
+                                startActivity(intent);
+                                StoreimageActivity.this.finish();
+                                loading.dismiss();
                             }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                             loading.dismiss();

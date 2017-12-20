@@ -1,8 +1,12 @@
 package intelre.cpm.com.intelre.fragment;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -12,11 +16,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
+import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
+import intelre.cpm.com.intelre.retrofit.RetrofitMethod;
 
 
 /**
@@ -83,7 +96,7 @@ public class ServiceActivityFragment extends Fragment {
                                 .addToBackStack(null)
                                 .commit();
                     } else {
-                       // showExportDialog();
+                        showExportDialog();
                     }
 
 
@@ -141,7 +154,6 @@ public class ServiceActivityFragment extends Fragment {
         }
     }
 
-/*
     public void showExportDialog() {
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
@@ -151,7 +163,7 @@ public class ServiceActivityFragment extends Fragment {
                     @SuppressWarnings("resource")
                     public void onClick(DialogInterface dialog, int id) {
                         try {
-                            File file = new File(Environment.getExternalStorageDirectory(), "GSK_GT_MER_backup");
+                            File file = new File(Environment.getExternalStorageDirectory(), "INTEL_RE_backup");
                             if (!file.isDirectory()) {
                                 file.mkdir();
                             }
@@ -165,10 +177,10 @@ public class ServiceActivityFragment extends Fragment {
                                 SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yy");
                                 String dateString = sdf.format(date);
 
-                                String currentDBPath = "//data//com.cpm.gt_gsk1//databases//" + GSKGTMerDB.DATABASE_NAME;
-                                String backupDBPath = "GSKGT_MER_Database_" + user_name.replace(".", "") + "_backup" + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
+                                String currentDBPath = "//data//cpm.com.intelre//databases//" + INTEL_RE_DB.DATABASE_NAME;
+                                String backupDBPath = "INTEL_RE_Database_" + user_name.replace(".", "") + "_backup" + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
 
-                                String path = Environment.getExternalStorageDirectory().getPath() + "/GSK_GT_MER_backup";
+                                String path = Environment.getExternalStorageDirectory().getPath() + "/INTEL_RE_backup";
 
                                 File currentDB = new File(data, currentDBPath);
                                 File backupDB = new File(path, backupDBPath);
@@ -184,9 +196,9 @@ public class ServiceActivityFragment extends Fragment {
                                 }
                                 dialog.dismiss();
                                 if (new File(path + "/" + backupDBPath).exists()) {
-                                    UploadImageWithRetrofitOne uploadRetro = new UploadImageWithRetrofitOne(context, "Uploading Backup");
+                                    RetrofitMethod uploadRetro = new RetrofitMethod(context, "Uploading Backup");
                                     uploadRetro.uploadedFiles = 0;
-                                    uploadRetro.UploadBackup(backupDBPath, "DB_Backup", path + "/");
+                                    uploadRetro.UploadBackup(backupDBPath, "DBBackup", path + "/");
                                 }
                             }
                         } catch (Exception e) {
@@ -203,7 +215,6 @@ public class ServiceActivityFragment extends Fragment {
         AlertDialog alert1 = builder1.create();
         alert1.show();
     }
-*/
 
     public String getCurrentTime() {
 
