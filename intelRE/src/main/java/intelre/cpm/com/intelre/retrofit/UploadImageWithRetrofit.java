@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Environment;
+
 import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
-
+import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,8 +25,6 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import intelre.cpm.com.intelre.Database.INTALMerDB;
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.gettersetter.ReferenceVariablesForDownloadActivity;
@@ -37,7 +37,6 @@ import intelre.cpm.com.intelre.gsonGetterSetter.TableStructure;
 import intelre.cpm.com.intelre.gsonGetterSetter.TableStructureGetterSetter;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,7 +55,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
     public static int uploadedFiles = 0;
     public int listSize = 0;
     int status = 0;
-    INTALMerDB db;
+    INTEL_RE_DB db;
     ProgressDialog pd;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -69,7 +68,8 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
         this.context = context;
     }
 
-    public UploadImageWithRetrofit(Context context, INTALMerDB db, ProgressDialog pd, int from) {
+    public UploadImageWithRetrofit(Context context, INTEL_RE_DB db, ProgressDialog pd, int from) {
+
         this.context = context;
         this.db = db;
         this.pd = pd;
@@ -108,7 +108,6 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
             Call<String> call = api.getDownloadAll(jsonData);
             final int[] finalJsonIndex = {jsonIndex};
             final String finalKeyName = KeyName;
-
 
             call.enqueue(new Callback<String>() {
                 @Override

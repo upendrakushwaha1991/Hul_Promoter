@@ -22,4 +22,18 @@ public class LoginGsonGetterSetter {
         this.result = result;
     }
 
+    //today question
+    @SerializedName("Today_Question")
+    @Expose
+    private List<TodayQuestion> todayQuestion = null;
+
+    public List<TodayQuestion> getTodayQuestion() {
+        return todayQuestion;
+    }
+
+    public void setTodayQuestion(List<TodayQuestion> todayQuestion) {
+        this.todayQuestion = todayQuestion;
+    }
+
+
 }

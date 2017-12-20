@@ -4,7 +4,9 @@ package intelre.cpm.com.intelre.gsonGetterSetter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class StoreCategoryMaster {
+import java.io.Serializable;
+
+public class StoreCategoryMaster implements Serializable {
 
     @SerializedName("Rsp_Id")
     @Expose
@@ -21,6 +23,12 @@ public class StoreCategoryMaster {
     @SerializedName("Store_Id")
     @Expose
     private Integer storeId;
+    @SerializedName("Brand_Id")
+    @Expose
+    private Integer brandId;
+    @SerializedName("IREP_Status")
+    @Expose
+    private Boolean iREPStatus;
 
     public Integer getRspId() {
         return rspId;
@@ -61,5 +69,85 @@ public class StoreCategoryMaster {
     public void setStoreId(Integer storeId) {
         this.storeId = storeId;
     }
+
+    public Integer getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(Integer brandId) {
+        this.brandId = brandId;
+    }
+
+    public Boolean getIREPStatus() {
+        return iREPStatus;
+    }
+
+    public void setIREPStatus(Boolean iREPStatus) {
+        this.iREPStatus = iREPStatus;
+    }
+
+    private String flag="";
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
+/* private String rspname;
+    private String emailid;
+    private String phoneno;
+    private String brand;
+    private String irepregistered;
+    private String rsp_id;
+
+    public String getRsp_id() {
+        return rsp_id;
+    }
+
+    public void setRsp_id(String rsp_id) {
+        this.rsp_id = rsp_id;
+    }
+
+    public String getRspname() {
+        return rspname;
+    }
+
+    public void setRspname(String rspname) {
+        this.rspname = rspname;
+    }
+
+    public String getEmailid() {
+        return emailid;
+    }
+
+    public void setEmailid(String emailid) {
+        this.emailid = emailid;
+    }
+
+    public String getPhoneno() {
+        return phoneno;
+    }
+
+    public void setPhoneno(String phoneno) {
+        this.phoneno = phoneno;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getIrepregistered() {
+        return irepregistered;
+    }
+
+    public void setIrepregistered(String irepregistered) {
+        this.irepregistered = irepregistered;
+    }*/
 
 }

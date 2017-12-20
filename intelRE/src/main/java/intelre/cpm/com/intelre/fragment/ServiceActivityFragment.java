@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import intelre.cpm.com.intelre.Database.INTALMerDB;
+import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
@@ -163,6 +163,7 @@ public class ServiceActivityFragment extends Fragment {
                     @SuppressWarnings("resource")
                     public void onClick(DialogInterface dialog, int id) {
                         try {
+
                             File file = new File(Environment.getExternalStorageDirectory(), CommonString.BACKUP_FILE_PATH);
                             if (!file.isDirectory()) {
                                 file.mkdir();
@@ -177,9 +178,9 @@ public class ServiceActivityFragment extends Fragment {
                                 SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yy");
                                 String dateString = sdf.format(date);
 
-                                String currentDBPath = "//data//cpm.com.intelre//databases//" + INTALMerDB.DATABASE_NAME;
-                                String backupDBPath = "INTEL_MER_Database_" + user_name.replace(".", "") + "_backup" + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
 
+                                String currentDBPath = "//data//cpm.com.intelre//databases//" + INTEL_RE_DB.DATABASE_NAME;
+                                String backupDBPath = "INTEL_RE_Database_" + user_name.replace(".", "") + "_backup" + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
                                 String path = Environment.getExternalStorageDirectory().getPath() + CommonString.BACKUP_FILE_PATH;
 
                                 File currentDB = new File(data, currentDBPath);
@@ -198,7 +199,8 @@ public class ServiceActivityFragment extends Fragment {
                                 if (new File(path + "/" + backupDBPath).exists()) {
                                     RetrofitMethod uploadRetro = new RetrofitMethod(context, "Uploading Backup");
                                     uploadRetro.uploadedFiles = 0;
-                                    uploadRetro.UploadBackup(backupDBPath, "DB_Backup", path + "/");
+                                    uploadRetro.UploadBackup(backupDBPath, "DBBackup", path + "/");
+
                                 }
                             }
                         } catch (Exception e) {

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Intel RE</string>
+    <string name="save">Continue to store</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
@@ -45,5 +46,23 @@
     <string name="nonetwork"> No Network Connection. Please Check Your Internet Connection</string>
     <string name="previous_data_upload">Please Upload Previous Data First</string>
     <string name="want_download_data">Do you want to Download Data?</string>
+
+    //jeevan for storelist
+    <string name="title_store_list_activity_store_already_done">Store Already Uploaded</string>
+    <string name="title_store_list_activity_store_data_uploaded">Store Data Uploaded</string>
+    <string name="title_store_list_activity_store_already_checkout">Store Already Checkout</string>
+    <string name="title_store_list_activity_store_again_uploaded">Please Upload data again</string>
+    <string name="title_store_list_activity_store_closed">Store Closed</string>
+    <string name="title_store_list_activity_already_store_closed">Store Already Closed</string>
+    <string name="title_store_list_checkout_Already_filled">Data already filled</string>
+    <string name="wantcheckout">Are you sure you want to Checkout</string>
+    <string name="closed">Close</string>
+    <string name="store_visited">Store Visited</string>
+    <string name="dialog_title">Parinaam</string>
+    <string name="first_geotag_the_store">First geotag the store</string>
+    <string name="DELETE_ALERT_MESSAGE">Saved data will be lost - Do you want to continue?</string>
+    <string name="storefront">Click Store Front Image</string>
+    <string name="title_store_list_checkout_current">Please checkout from current store</string>
+    <string name="alertsaveData"> Are you sure you want to save data</string>
 
 </resources>

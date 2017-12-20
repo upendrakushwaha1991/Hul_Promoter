@@ -17,9 +17,7 @@ import retrofit2.Call;
 public interface PostApi {
     @retrofit2.http.POST(CommonString.KEY_LOGIN_DETAILS)
     retrofit2.Call<ResponseBody> getLogindetail(@retrofit2.http.Body okhttp3.RequestBody request);
-   /* @Multipart
-    @POST("Uploadimages")
-    Call<ResponseBody> getUploadImage(@Body RequestBody request);*/
+
 
     @retrofit2.http.POST("Uploadimages")
     retrofit2.Call<String> getUploadImage(@retrofit2.http.Body okhttp3.RequestBody request);
@@ -29,8 +27,12 @@ public interface PostApi {
 /*   @retrofit2.http.POST("DownloadAll")
    Call<ResponseBody> getDownloadAll(@Body RequestBody request);*/
 
+
     @retrofit2.http.POST("DownloadAll")
     Call<String> getDownloadAll(@Body RequestBody request);
+
+    @retrofit2.http.POST("DownloadAll")
+    Call<ResponseBody> getDownloadAllUSINGLOGIN(@Body RequestBody request);
 
 
     @retrofit2.http.POST("CoverageDetail_latest")

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class RspDetailGetterSetter {
 
-    @SerializedName("Store_Category_Master")
+    @SerializedName("Rsp_Detail")
     @Expose
     private List<StoreCategoryMaster> storeCategoryMaster = null;
 
