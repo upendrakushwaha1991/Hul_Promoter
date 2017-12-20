@@ -36,7 +36,7 @@
     <string name="Areyou_sure_take_backup"> Are you sure you want to take the backup of your data</string>
     <string name="errordatabase_not_exporting">Error in Database Exporting</string>
     <string name="cancel">Cancel</string>
-    <string name="main_menu_activity_name">INTAL Mer.</string>
+    <string name="main_menu_activity_name">INTEL Re.</string>
 
     <string name="data_uploaded_successfully">Database Uploaded Successfully</string>
     <string name="errordatabase_not_uploaded">Error in Database Uploading</string>
@@ -45,5 +45,19 @@
     <string name="nonetwork"> No Network Connection. Please Check Your Internet Connection</string>
     <string name="previous_data_upload">Please Upload Previous Data First</string>
     <string name="want_download_data">Do you want to Download Data?</string>
+    <string name="title_activity_rsp_list">RSP List</string>
+    <string name="title_activity_rsp_detail">RSP Detail</string>
+
+    //upendra_19dec
+
+    <string name="rsp_name">RSP Name</string>
+    <string name="email_id">Email ID</string>
+    <string name="phone_no">Phone No</string>
+    <string name="other_name">Owner Name</string>
+    <string name="brand">Brand</string>
+    <string name="registerd">IREP Registered</string>
+
+
+
 
 </resources>

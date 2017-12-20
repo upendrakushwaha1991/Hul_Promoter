@@ -163,7 +163,7 @@ public class ServiceActivityFragment extends Fragment {
                     @SuppressWarnings("resource")
                     public void onClick(DialogInterface dialog, int id) {
                         try {
-                            File file = new File(Environment.getExternalStorageDirectory(), CommonString.BACKUP_FILE_PATH);
+                            File file = new File(Environment.getExternalStorageDirectory(), "INTEL_RE_backup");
                             if (!file.isDirectory()) {
                                 file.mkdir();
                             }
@@ -178,9 +178,9 @@ public class ServiceActivityFragment extends Fragment {
                                 String dateString = sdf.format(date);
 
                                 String currentDBPath = "//data//cpm.com.intelre//databases//" + INTALMerDB.DATABASE_NAME;
-                                String backupDBPath = "INTEL_MER_Database_" + user_name.replace(".", "") + "_backup" + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
+                                String backupDBPath = "INTEL_RE_Database_" + user_name.replace(".", "") + "_backup" + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
 
-                                String path = Environment.getExternalStorageDirectory().getPath() + CommonString.BACKUP_FILE_PATH;
+                                String path = Environment.getExternalStorageDirectory().getPath() + "/INTEL_RE_backup";
 
                                 File currentDB = new File(data, currentDBPath);
                                 File backupDB = new File(path, backupDBPath);
@@ -198,7 +198,7 @@ public class ServiceActivityFragment extends Fragment {
                                 if (new File(path + "/" + backupDBPath).exists()) {
                                     RetrofitMethod uploadRetro = new RetrofitMethod(context, "Uploading Backup");
                                     uploadRetro.uploadedFiles = 0;
-                                    uploadRetro.UploadBackup(backupDBPath, "DB_Backup", path + "/");
+                                    uploadRetro.UploadBackup(backupDBPath, "DBBackup", path + "/");
                                 }
                             }
                         } catch (Exception e) {

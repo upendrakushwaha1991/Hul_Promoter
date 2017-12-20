@@ -29,12 +29,19 @@ import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.gettersetter.ReferenceVariablesForDownloadActivity;
 import intelre.cpm.com.intelre.gsonGetterSetter.AuditQuestionGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.BrandMasterGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.CategoryMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.JCPGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.MappingPermanentPosmGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.MappingSoftPosmGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.NonWorkingReasonGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.PosmMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.RspDetailGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.SkuMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.TableStructure;
 import intelre.cpm.com.intelre.gsonGetterSetter.TableStructureGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.TrainingTopicGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.TrainingTypeGetterSetter;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -176,310 +183,57 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
 
                                         //TODAY
                                         case "Training_Type":
-                                          /*  auditQuestionObject = new Gson().fromJson(data, AuditQuestionGetterSetter.class);
-                                            if (auditQuestionObject != null && !db.insertAuditQuestionData(auditQuestionObject)) {
+                                            trainingTypeObject = new Gson().fromJson(data, TrainingTypeGetterSetter.class);
+                                            if (trainingTypeObject != null && !db.insertTrainingTypeData(trainingTypeObject)) {
                                                 pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Audit Question not saved");
-                                            }*/
+                                                AlertandMessages.showSnackbarMsg(context, "Training_Type not saved");
+                                            }
                                             break;
                                         case "Training_Topic":
-                                           /* auditQuestionObject = new Gson().fromJson(data, AuditQuestionGetterSetter.class);
-                                            if (auditQuestionObject != null && !db.insertAuditQuestionData(auditQuestionObject)) {
+                                            trainingTopiceObject = new Gson().fromJson(data, TrainingTopicGetterSetter.class);
+                                            if (trainingTopiceObject != null && !db.insertTrainingTopicData(trainingTopiceObject)) {
                                                 pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Audit Question not saved");
-                                            }*/
+                                                AlertandMessages.showSnackbarMsg(context, "Training Topic not saved");
+                                            }
                                             break;
                                         case "Mapping_Soft_Posm":
-                                           /* auditQuestionObject = new Gson().fromJson(data, AuditQuestionGetterSetter.class);
-                                            if (auditQuestionObject != null && !db.insertAuditQuestionData(auditQuestionObject)) {
+                                            mappingSoftPosmObject = new Gson().fromJson(data, MappingSoftPosmGetterSetter.class);
+                                            if (mappingSoftPosmObject != null && !db.insertMappingSoftPosmData(mappingSoftPosmObject)) {
                                                 pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Audit Question not saved");
-                                            }*/
+                                                AlertandMessages.showSnackbarMsg(context, "Mapping Soft Posm not saved");
+                                            }
                                             break;
                                         case "Mapping_Permanent_Posm":
-                                           /* auditQuestionObject = new Gson().fromJson(data, AuditQuestionGetterSetter.class);
-                                            if (auditQuestionObject != null && !db.insertAuditQuestionData(auditQuestionObject)) {
+                                            mappingPermanentPosmObject = new Gson().fromJson(data, MappingPermanentPosmGetterSetter.class);
+                                            if (mappingPermanentPosmObject != null && !db.insertMappingPermanentPosmData(mappingPermanentPosmObject)) {
                                                 pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Audit Question not saved");
-                                            }*/
+                                                AlertandMessages.showSnackbarMsg(context, "Mapping Permanent Posm not saved");
+                                            }
                                             break;
 
-
-                                       /* case "non_working_sub_reason":
-                                            nonWorkingSubObj = new Gson().fromJson(data, NonWorkingSubReasonGetterSetter.class);
-                                            if (nonWorkingSubObj != null && !db.insertNonWorkingSubReasonData(nonWorkingSubObj)) {
+                                        case "Category_Master":
+                                            categoryMasterObject = new Gson().fromJson(data, CategoryMasterGetterSetter.class);
+                                            if (categoryMasterObject != null && !db.insertCategoryMasterData(categoryMasterObject)) {
                                                 pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Non Working Sub Reason not saved");
+                                                AlertandMessages.showSnackbarMsg(context, "Mapping Permanent Posm not saved");
+                                            }
+                                            break;
+                                            case "Brand_Master":
+                                                brandMasterObject = new Gson().fromJson(data, BrandMasterGetterSetter.class);
+                                            if (brandMasterObject != null && !db.insertBrandMasterData(brandMasterObject)) {
+                                                pd.dismiss();
+                                                AlertandMessages.showSnackbarMsg(context, "Mapping Permanent Posm not saved");
                                             }
                                             break;
                                         case "Sku_Master":
-                                            skuObject = new Gson().fromJson(data, SkuMasterGetterSetter.class);
-                                            if (skuObject != null && !db.InsertSkuMaster(skuObject)) {
+                                            skuMasterObject = new Gson().fromJson(data, SkuMasterGetterSetter.class);
+                                            if (skuMasterObject != null && !db.insertSkuMasterData(skuMasterObject)) {
                                                 pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Sku Master Reason not saved");
-                                            }
-                                            break;
-                                        case "Category_Master":
-                                            categoryObject = new Gson().fromJson(data, CategoryMasterGetterSetter.class);
-                                            if (categoryObject != null && !db.InsertCategoryMaster(categoryObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Category Master data not saved");
-                                            }
-                                            break;
-                                        case "Brand_Group_Master":
-                                            brandGObject = new Gson().fromJson(data, BrandGroupMasterGetterSetter.class);
-                                            if (brandGObject != null && !db.InsertBrandGroupMaster(brandGObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Brand Group data not saved");
-                                            }
-                                            break;
-                                        case "Brand_Master":
-                                            brandMObject = new Gson().fromJson(data, BrandMasterGetterSetter.class);
-                                            if (brandMObject != null && !db.InsertBrandMaster(brandMObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Brand Master not saved");
-                                            }
-                                            break;
-                                        case "Window_Master":
-                                            windowMObject = new Gson().fromJson(data, WindowMasterGetterSetter.class);
-                                            if (windowMObject != null && !db.insertWindowMaster(windowMObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Window Master not saved");
-                                            }
-                                            break;
-                                        case "Window_Checklist":
-                                            windowCObject = new Gson().fromJson(data, WindowChecklistGetterSetter.class);
-                                            if (windowCObject != null && !db.insertWindowChecklist(windowCObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Window Checklist not saved");
+                                                AlertandMessages.showSnackbarMsg(context, "Mapping Permanent Posm not saved");
                                             }
                                             break;
 
-                                        case "Window_Location":
-                                            windowLObject = new Gson().fromJson(data, WindowLocationGetterSetter.class);
-                                            if (windowLObject != null && !db.insertWindowLocation(windowLObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Window Location not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Window":
-                                            mappingWObject = new Gson().fromJson(data, MappingWindowGetterSetter.class);
-                                            if (mappingWObject != null && !db.insertMappingWindow(mappingWObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Mapping Window not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Stock":
-                                            mappingSObject = new Gson().fromJson(data, MappingStockGetterSetter.class);
-                                            if (mappingSObject != null && !db.insertMappingStock(mappingSObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Mapping Stock not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Selfservice_Brand_Group":
-                                            mappingBrandGroupObject = new Gson().fromJson(data, MappingBrandGroupGetterSetter.class);
-                                            if (mappingBrandGroupObject != null && !db.insertMappingBrandGroup(mappingBrandGroupObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Mapping Brand Group not saved");
-                                            }
-                                            break;
-                                        case "Primary_Bay_Master":
-                                            primaryBayMasterObject = new Gson().fromJson(data, PrimaryBayMasterGetterSetter.class);
-                                            if (primaryBayMasterObject != null && !db.insertPrimaryBayMaster(primaryBayMasterObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Primary Bay Master not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Selfservice_Category":
-                                            mappingSSCategoryObject = new Gson().fromJson(data, MappingSelfServiceCategoryGetterSetter.class);
-                                            if (mappingSSCategoryObject != null && !db.insertMappingSelfserviceCategory(mappingSSCategoryObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Mapping Self Service Category not saved");
-                                            }
-                                            break;
-                                        case "Display_Master":
-                                            displayMasterObject = new Gson().fromJson(data, DisplayMasterGetterSetter.class);
-                                            if (displayMasterObject != null && !db.insertDisplayMaster(displayMasterObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Display Master not saved");
-                                            }
-                                            break;
-                                        case "Display_Type_Master":
-                                            displayTypeMasterObject = new Gson().fromJson(data, DisplayTypeMasterGetterSetter.class);
-                                            if (displayTypeMasterObject != null && !db.insertDisplayTypeMaster(displayTypeMasterObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Display Master not saved");
-                                            }
-                                            break;
-                                        case "Display_Term_Master":
-                                            displayTermMasterObject = new Gson().fromJson(data, DisplayTermMasterGetterSetter.class);
-                                            if (displayTermMasterObject != null && !db.insertDisplayTermMaster(displayTermMasterObject)) {
-                                                AlertandMessages.showSnackbarMsg(context, "Display Master not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Selfservice_Category_Display":
-                                            mappingCDObject = new Gson().fromJson(data, MappingSelfserviceCategoryDisplayGetterSetter.class);
-                                            if (mappingCDObject != null && !db.insertMappingCategoryDisplayMaster(mappingCDObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Display Master not saved");
-                                            }
-                                            break;
-                                        case "Promo_Type_Master":
-                                            promoObject = new Gson().fromJson(data, PromoTypeMasterGetterSetter.class);
-                                            if (promoObject != null && !db.insertPromoTypeMaster(promoObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Promo Master not saved");
-                                            }
-                                            break;
-                                        case "Deviation_Journey_Plan":
-                                            deviationObject = new Gson().fromJson(data, DeviationJourneyPlanGetterSetter.class);
-                                            if (deviationObject != null && !db.insertDeviationJourneyPlan(deviationObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Deviation Journey Plan not saved");
-                                            }
-                                            break;
-                                        case "Topup_City":
-                                            topUpObject = new Gson().fromJson(data, TopupCityGetterSetter.class);
-                                            if (topUpObject != null && !db.insertTopUpCity(topUpObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "TopUp City Plan not saved");
-                                            }
-                                            break;
-                                        case "Mydb_Distributor":
-                                            distributerObject = new Gson().fromJson(data, MydbDistributorGetterSetter.class);
-                                            if (distributerObject != null && !db.insertMyDbDistributor(distributerObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "MyDb Distributer Plan not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Posm_MonthlyPriority":
-                                            mapPMPObject = new Gson().fromJson(data, MappingPosmMonthlyPriorityGetterSetter.class);
-                                            if (mapPMPObject != null && !db.insertMappingPosmMonthlyPriority(mapPMPObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "MyDb Posm Monthly Priority not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Posm_MustHave":
-                                            mapPMHObject = new Gson().fromJson(data, MappingMappingPosmMustHaveGetterSetter.class);
-                                            if (mapPMHObject != null && !db.insertMappingPosmMustHave(mapPMHObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "MyDb Posm Must Have not saved");
-                                            }
 
-                                            break;
-                                        case "Mapping_Posm_Activity":
-                                            mapPAObject = new Gson().fromJson(data, MappingMappingPosmActivityGetterSetter.class);
-                                            if (mapPAObject != null && !db.insertMappingPosmActivity(mapPAObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "MyDb Posm Activity not saved");
-                                            }
-
-                                            break;
-                                        case "Mapping_Posm":
-                                            mappingPObject = new Gson().fromJson(data, MappingPosmGetterSetter.class);
-                                            if (mappingPObject != null && !db.insertMappingPosm(mappingPObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Mapping Posm not saved");
-                                            }
-                                            break;
-                                        case "My_performance_Mer":
-                                            myPerformanceObject = new Gson().fromJson(data, MyPerformanceGetterSetter.class);
-                                            if (myPerformanceObject != null && !db.insertMyPerformanceMer(myPerformanceObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "MyDb My performance Mer not saved");
-                                            }
-                                            break;
-                                        case "My_performance_Routewise_Mer":
-                                            myPRObject = new Gson().fromJson(data, MyPerformanceRoutewiseGetterSetter.class);
-                                            if (myPRObject != null && !db.insertMyperformanceRoutewiseMer(myPRObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "MyDb My performance Routewise Mer not saved");
-                                            }
-                                            break;
-                                        case "Store_Layout_Master":
-                                            storeLayoutObject = new Gson().fromJson(data, StoreLayoutMasterGetterSetter.class);
-                                            if (storeLayoutObject != null && !db.insertStoreLayout(storeLayoutObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Store Layout not saved");
-                                            }
-                                            break;
-                                        case "Store_Size_Master":
-                                            storeSizeObject = new Gson().fromJson(data, StoreSizeMasterGetterSetter.class);
-                                            if (storeSizeObject != null && !db.insertStoreSize(storeSizeObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Store Size not saved");
-                                            }
-                                            break;
-                                        case "Store_Classification_Master":
-                                            storeClassMasterObject = new Gson().fromJson(data, StoreClassificationMasterGetterSetter.class);
-                                            if (storeClassMasterObject != null && !db.insertStoreClassificationMaster(storeClassMasterObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Store Classification Master not saved");
-                                            }
-                                            break;
-                                        case "Store_Type_Master":
-                                            storeTypeMasterObject = new Gson().fromJson(data, StoreTypeMasterGetterSetter.class);
-                                            if (storeTypeMasterObject != null && !db.insertStoreTypeMaster(storeTypeMasterObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Store Type Master not saved");
-                                            }
-                                            break;
-                                        case "Topup_Distributor":
-                                            topupDistributorObject = new Gson().fromJson(data, TopupDistributorGetterSetter.class);
-                                            if (topupDistributorObject != null && !db.insertTopupDistributor(topupDistributorObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Top Up Distributer not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Primary_Category_Images":
-                                            mapPCIObject = new Gson().fromJson(data, MappingPrimaryCategoryImagesGetterSetter.class);
-                                            if (mapPCIObject != null && !db.insertMappingMyDbPCI(mapPCIObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "MyDb Posm Plan not saved");
-                                            }
-                                            break;
-                                        case "Store_Category_Master":
-                                            storeCategoryMasterObject = new Gson().fromJson(data, StoreCategoryMasterGetterSetter.class);
-                                            if (storeCategoryMasterObject != null && !db.insertStoreCategoryMaster(storeCategoryMasterObject)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Store_Category_Master not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Mydb_Posm_MustHave":
-                                            mappingMydbPosmMustHaveGetterSetter = new Gson().fromJson(data, MappingMydbPosmMustHaveGetterSetter.class);
-                                            if (mappingMydbPosmMustHaveGetterSetter != null && !db.insertMappingMydbPosmMustHave(mappingMydbPosmMustHaveGetterSetter)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Mapping Mydb Posm MustHave not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Mydb_Posm_MonthlyPriority":
-                                            mappingMydbPosmMonthlyPriorityGetterSetter = new Gson().fromJson(data, MappingMydbPosmMonthlyPriorityGetterSetter.class);
-                                            if (mappingMydbPosmMonthlyPriorityGetterSetter != null && !db.insertMappingMydbPosmMonthlyPriority(mappingMydbPosmMonthlyPriorityGetterSetter)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Mapping Mydb Posm Monthly Priority not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Mydb_Posm_Activity":
-                                            mappingMydbPosmActivityGetterSetter = new Gson().fromJson(data, MappingMydbPosmActivityGetterSetter.class);
-                                            if (mappingMydbPosmActivityGetterSetter != null && !db.insertMappingMydbPosmActivity(mappingMydbPosmActivityGetterSetter)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Mapping Mydb PosmActivity not saved");
-                                            }
-                                            break;
-                                        case "Mapping_Mydb_Posm_Others":
-                                            mappingMydbPosmOthersGetterSetter = new Gson().fromJson(data, MappingMydbPosmOthersGetterSetter.class);
-                                            if (mappingMydbPosmOthersGetterSetter != null && !db.insertMappingMydbPosmOthers(mappingMydbPosmOthersGetterSetter)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "Mapping Mydb Posm Others not saved");
-                                            }
-                                            break;
-                                        case "Kyc_Master":
-                                            kycMasterGetterSetter = new Gson().fromJson(data, KycMasterGetterSetter.class);
-                                            if (kycMasterGetterSetter != null && !db.insertkycMasterData(kycMasterGetterSetter)) {
-                                                pd.dismiss();
-                                                AlertandMessages.showSnackbarMsg(context, "KYC Master Data not saved");
-                                            }
-                                            break;*/
                                         case "Documents_Data":
                                             //documentsDataGetterSetter =  new Gson().fromJson(data, DocumentsDataGetterSetter.class);
                                             //if (documentsDataGetterSetter != null && !db.insertDocumentData(documentsDataGetterSetter)) {

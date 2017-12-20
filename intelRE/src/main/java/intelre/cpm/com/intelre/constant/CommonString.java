@@ -60,4 +60,38 @@ public class CommonString {
     public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/INTEL_RE_backup/";
 
 
+    //upendra19dec
+    public static final String KEY_ID = "Id";
+    public static final String COMMON_ID = "COMMON_ID";
+    public static final String KEY_EMAILID = "Email";
+    public static final String KEY_PHONENO = "Mobile";
+    public static final String KEY_BRAND = "Brand_Id";
+    public static final String KEY_IREP_REGISTERED = "IREP_Status";
+    public static final String KEY_STORE_ID = "Store_Id";
+    public static final String KEY_VISITDATE = "VISIT_DATE";
+    public static final String KEY_RSPID = "Rsp_Id";
+    public static final String KEY_FLAG = "Flag";
+    public static final String KEY_OBJECT = "OBJECT";
+    public static final String KEY_RSPNAME = "Rsp_Name";
+    public static final String KEY_MODE = "MODE";
+
+    public static final String KEY_FROM_ADD_STORE= "FROM_ADD_STORE";
+    public static final String TABLE_INSERT_RSPDETAILS = "DR_RSPDETAILS";
+    public static final String CREATE_TABLE_RSPDETAILS = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_INSERT_RSPDETAILS
+            + "("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + COMMON_ID + " INTEGER,"
+            + KEY_STORE_ID + " INTEGER,"
+            + KEY_FLAG + " VARCHAR,"
+            + KEY_RSPID + " INTEGER,"
+            + KEY_VISITDATE + " VARCHAR,"
+            + KEY_RSPNAME + " VARCHAR,"
+            + KEY_EMAILID + " VARCHAR,"
+            + KEY_PHONENO+ " INTEGER,"
+            + KEY_BRAND + " VARCHAR,"
+            + KEY_IREP_REGISTERED + " VARCHAR"
+            + ")";
+
+
 }

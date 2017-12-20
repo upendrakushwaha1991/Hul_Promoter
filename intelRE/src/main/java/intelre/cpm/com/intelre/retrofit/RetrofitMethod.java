@@ -90,12 +90,14 @@ public class RetrofitMethod {
             status = 0;
             final File finalFile = new File(folderPath + filename);
             isvalid = false;
-          //  RequestBody photo = RequestBody.create(MediaType.parse("application/octet-stream"), finalFile);
-           /* body1 = new MultipartBuilder()
+          /*  RequestBody photo = RequestBody.create(MediaType.parse("application/octet-stream"), finalFile);
+            body1 = new MultipartBuilder()
                     .type(MultipartBuilder.FORM)
                     .addFormDataPart("file", finalFile.getName(), photo)
                     .addFormDataPart("Foldername", foldername)
-                    .build();*/
+                    .build();
+*/
+
             adapter = new Retrofit.Builder()
                     .baseUrl(CommonString.URL)
                     .addConverterFactory(new StringConverterFactory())

@@ -17,13 +17,21 @@ public class ServiceActivity extends AppCompatActivity {
 
     private SharedPreferences preferences;
     String visitdate;
+    Toolbar toolbar;
+    String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        date = preferences.getString(CommonString.KEY_DATE, null);
+        toolbar.setTitle(getString(R.string.main_menu_activity_name) + " - " + date);
+        getSupportActionBar().setTitle(getString(R.string.main_menu_activity_name) + " \n- " + date);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //preference data

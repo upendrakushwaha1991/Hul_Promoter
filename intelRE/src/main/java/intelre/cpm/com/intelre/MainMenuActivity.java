@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -27,6 +28,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import intelre.cpm.com.intelre.dailyentry.RspDetailActivity;
+import intelre.cpm.com.intelre.dailyentry.RspListActivity;
 import intelre.cpm.com.intelre.dailyentry.ServiceActivity;
 import intelre.cpm.com.intelre.download.DownloadActivity;
 
@@ -149,10 +152,17 @@ public class MainMenuActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.nav_upload) {
+            Intent startservice = new Intent(this, RspListActivity.class);
+            startActivity(startservice);
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         } else if (id == R.id.nav_geotag) {
 
         } else if (id == R.id.nav_exit) {
+            ActivityCompat.finishAffinity(this);
+            Intent intent = new Intent(getApplicationContext(), IntelLoginActivty.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
 
         } else if (id == R.id.nav_services) {
 
