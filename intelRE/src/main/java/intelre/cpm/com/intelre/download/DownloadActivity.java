@@ -125,11 +125,13 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.add("Posm_Master");
             keysList.add("Rsp_Detail");
             keysList.add("Audit_Question");
-
             keysList.add("Training_Type");
             keysList.add("Training_Topic");
             keysList.add("Mapping_Soft_Posm");
             keysList.add("Mapping_Permanent_Posm");
+            keysList.add("Category_Master");
+            keysList.add("Brand_Master");
+            keysList.add("Sku_Master");
 
 
            /* keysList.add("non_working_sub_reason");

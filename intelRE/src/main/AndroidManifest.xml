@@ -57,6 +57,17 @@
             android:label="@string/title_activity_download"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".dailyentry.RspListActivity"
+            android:label="@string/title_activity_rsp_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".dailyentry.RspDetailActivity"
+            android:label="@string/title_activity_rsp_detail"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".autoupdate.AutoUpdateActivity"
             android:screenOrientation="portrait" />
         <activity

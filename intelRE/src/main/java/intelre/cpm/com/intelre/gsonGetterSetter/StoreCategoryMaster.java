@@ -34,6 +34,8 @@ public class StoreCategoryMaster implements Serializable {
         return rspId;
     }
 
+
+
     public void setRspId(Integer rspId) {
         this.rspId = rspId;
     }
@@ -84,6 +86,16 @@ public class StoreCategoryMaster implements Serializable {
 
     public void setIREPStatus(Boolean iREPStatus) {
         this.iREPStatus = iREPStatus;
+    }
+
+    private String key_id="0";
+
+    public String getKey_id() {
+        return key_id;
+    }
+
+    public void setKey_id(String key_id) {
+        this.key_id = key_id;
     }
 
     private String flag="";

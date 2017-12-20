@@ -1,11 +1,18 @@
 package intelre.cpm.com.intelre.gettersetter;
 
 import intelre.cpm.com.intelre.gsonGetterSetter.AuditQuestionGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.BrandMasterGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.CategoryMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.JCPGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.MappingPermanentPosmGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.MappingSoftPosmGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.NonWorkingReasonGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.PosmMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.RspDetailGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.SkuMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.TableStructureGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.TrainingTopicGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.TrainingTypeGetterSetter;
 
 /**
  * Created by upendrak on 15-12-2017.
@@ -18,6 +25,15 @@ public class ReferenceVariablesForDownloadActivity {
     protected PosmMasterGetterSetter posmMObject;
     protected RspDetailGetterSetter rspDetailObject;
     protected AuditQuestionGetterSetter auditQuestionObject;
+    protected TrainingTypeGetterSetter trainingTypeObject;
+    protected TrainingTopicGetterSetter trainingTopiceObject;
+    protected MappingSoftPosmGetterSetter mappingSoftPosmObject;
+    protected MappingPermanentPosmGetterSetter mappingPermanentPosmObject;
+    protected CategoryMasterGetterSetter categoryMasterObject;
+    protected BrandMasterGetterSetter brandMasterObject;
+    protected SkuMasterGetterSetter skuMasterObject;
+
+
 
    /* protected com.cpm.gskgtmerchandiser.gsonGetterSetter.NonWorkingReasonGetterSetter nonWorkingObj;
     protected NonWorkingSubReasonGetterSetter nonWorkingSubObj;

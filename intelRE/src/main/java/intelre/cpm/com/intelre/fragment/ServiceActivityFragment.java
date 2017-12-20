@@ -165,6 +165,7 @@ public class ServiceActivityFragment extends Fragment {
                         try {
 
                             File file = new File(Environment.getExternalStorageDirectory(), CommonString.BACKUP_FILE_PATH);
+
                             if (!file.isDirectory()) {
                                 file.mkdir();
                             }
@@ -177,7 +178,6 @@ public class ServiceActivityFragment extends Fragment {
 
                                 SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yy");
                                 String dateString = sdf.format(date);
-
 
                                 String currentDBPath = "//data//cpm.com.intelre//databases//" + INTEL_RE_DB.DATABASE_NAME;
                                 String backupDBPath = "INTEL_RE_Database_" + user_name.replace(".", "") + "_backup" + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
