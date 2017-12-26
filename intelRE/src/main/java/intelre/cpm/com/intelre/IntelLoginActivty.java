@@ -226,20 +226,6 @@ public class IntelLoginActivty extends AppCompatActivity {
                                     //editor.putString(CommonString.KEY_DATE, "11/22/2017");
                                     editor.commit();
 
-                                    if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
-                                        loading.dismiss();
-                                        Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        loading.dismiss();
-                                        // if app version code does not match with live apk version code then update will be called.
-                                        Intent intent = new Intent(getBaseContext(), AutoUpdateActivity.class);
-                                        intent.putExtra(CommonString.KEY_PATH, preferences.getString(CommonString.KEY_PATH, ""));
-                                        startActivity(intent);
-                                        finish();
-                                    }
-
                                     //Download Todays Questions
                                     JSONObject jsonObject = new JSONObject();
                                     jsonObject.put("Username", userid);
@@ -502,28 +488,28 @@ public class IntelLoginActivty extends AppCompatActivity {
                                                                                                         if (responseBody != null && response.isSuccessful()) {
                                                                                                             try {
                                                                                                                 data = response.body().string();
-                                                                                                               // if (data.equalsIgnoreCase("")) {
-                                                                                                                   // data = data.substring(1, data.length() - 1).replace("\\", "");
-                                                                                                                  //  data_global[0] = data;
-                                                                                                                    if (data.contains("Success")) {
-                                                                                                                        loading.dismiss();
-                                                                                                                        String visit_date = preferences.getString(CommonString.KEY_DATE, null);
-                                                                                                                        editor = preferences.edit();
-                                                                                                                        editor.putBoolean(CommonString.KEY_IS_QUIZ_DONE + visit_date, true);
-                                                                                                                        editor.commit();
-                                                                                                                        Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
-                                                                                                                        startActivity(intent);
-                                                                                                                        finish();
-                                                                                                                    } else {
-                                                                                                                        loading.dismiss();
-                                                                                                                        editor = preferences.edit();
-                                                                                                                        editor.putString(CommonString.KEY_QUESTION_CD + visit_date, qns_cd);
-                                                                                                                        editor.putString(CommonString.KEY_ANSWER_CD + visit_date, ans_cd);
-                                                                                                                        editor.commit();
-                                                                                                                        Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
-                                                                                                                        startActivity(intent);
-                                                                                                                        finish();
-                                                                                                                    }
+                                                                                                                // if (data.equalsIgnoreCase("")) {
+                                                                                                                // data = data.substring(1, data.length() - 1).replace("\\", "");
+                                                                                                                //  data_global[0] = data;
+                                                                                                                if (data.contains("Success")) {
+                                                                                                                    loading.dismiss();
+                                                                                                                    String visit_date = preferences.getString(CommonString.KEY_DATE, null);
+                                                                                                                    editor = preferences.edit();
+                                                                                                                    editor.putBoolean(CommonString.KEY_IS_QUIZ_DONE + visit_date, true);
+                                                                                                                    editor.commit();
+                                                                                                                    Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
+                                                                                                                    startActivity(intent);
+                                                                                                                    finish();
+                                                                                                                } else {
+                                                                                                                    loading.dismiss();
+                                                                                                                    editor = preferences.edit();
+                                                                                                                    editor.putString(CommonString.KEY_QUESTION_CD + visit_date, qns_cd);
+                                                                                                                    editor.putString(CommonString.KEY_ANSWER_CD + visit_date, ans_cd);
+                                                                                                                    editor.commit();
+                                                                                                                    Intent intent = new Intent(getBaseContext(), MainMenuActivity.class);
+                                                                                                                    startActivity(intent);
+                                                                                                                    finish();
+                                                                                                                }
 
 
                                                                                                             } catch (Exception e) {

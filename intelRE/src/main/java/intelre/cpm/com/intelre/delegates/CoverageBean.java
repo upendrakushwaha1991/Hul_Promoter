@@ -19,6 +19,16 @@ public class CoverageBean
 	private String reason="";
 	private String image="";
 
+	public String getCkeckout_image() {
+		return ckeckout_image;
+	}
+
+	public void setCkeckout_image(String ckeckout_image) {
+		this.ckeckout_image = ckeckout_image;
+	}
+
+	private String ckeckout_image="";
+
 	public String getImage() {
 		return image;
 	}

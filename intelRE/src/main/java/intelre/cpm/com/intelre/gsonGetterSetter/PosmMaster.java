@@ -19,6 +19,25 @@ public class PosmMaster {
     @Expose
     private String posmType;
 
+    public String deployment_Value;
+
+    public String getDeployment_Value() {
+        return deployment_Value;
+    }
+
+    public void setDeployment_Value(String deployment_Value) {
+        this.deployment_Value = deployment_Value;
+    }
+
+    public String getSoft_merchIMG() {
+        return soft_merchIMG;
+    }
+
+    public void setSoft_merchIMG(String soft_merchIMG) {
+        this.soft_merchIMG = soft_merchIMG;
+    }
+
+    public String soft_merchIMG;
     public Integer getPosmId() {
         return posmId;
     }

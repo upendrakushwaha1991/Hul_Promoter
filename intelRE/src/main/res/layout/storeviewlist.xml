@@ -58,7 +58,7 @@
 
             <Button
                 android:id="@+id/chkout"
-                android:layout_width="40dp"
+                android:layout_width="70dip"
                 android:layout_height="40dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"

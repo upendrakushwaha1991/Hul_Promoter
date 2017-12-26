@@ -24,9 +24,6 @@ public class AuditQuestion {
     @SerializedName("Question_Category")
     @Expose
     private String questionCategory;
-    @SerializedName("Image_Allow")
-    @Expose
-    private Boolean imageAllow;
 
     public Integer getQuestionId() {
         return questionId;
@@ -76,11 +73,7 @@ public class AuditQuestion {
         this.questionCategory = questionCategory;
     }
 
-    public Boolean getImageAllow() {
-        return imageAllow;
-    }
 
-    public void setImageAllow(Boolean imageAllow) {
 
     public String getCurrectanswerCd() {
         return currectanswerCd;

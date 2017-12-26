@@ -163,6 +163,22 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
             linearlay.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+///for enable checkout
+            for (int i = 0; i < storelist.size(); i++) {
+                if (!storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_C)||
+                        !storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_P)||
+                        !storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_D)
+                        ||!storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_U)) {
+                    if (chekDataforCheckout(storelist.get(i).getStoreId().toString(), storelist.get(i).getRegionId(),
+                            storelist.get(i).getClassificationId(), storelist.get(i).getStoreTypeId())) {
+                        database.updateJaurneyPlanStatus(storelist.get(i).getStoreId().toString(),
+                                storelist.get(i).getVisitDate(), CommonString.KEY_VALID);
+                        break;
+                    }
+
+                }
+            }
+
         }
     }
 
@@ -276,7 +292,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                         boolean entry_flag = true;
                         boolean showdialog = true;
                         for (int j = 0; j < storelist.size(); j++) {
-                            if (storelist.get(j).getUploadStatus().equalsIgnoreCase(CommonString.KEY_CHECK_IN)) {
+                            if (storelist.get(j).getUploadStatus().equalsIgnoreCase(CommonString.KEY_CHECK_IN) ||
+                                    storelist.get(j).getUploadStatus().equalsIgnoreCase(CommonString.KEY_VALID)) {
                                 showdialog = false;
                                 if (store_id != storelist.get(j).getStoreId()) {
                                     entry_flag = false;
@@ -305,7 +322,10 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     if (CheckNetAvailability()) {
-                                        //  new checkoutData(current).execute();
+                                        Intent intent = new Intent(StoreListActivity.this, CheckoutActivty.class);
+                                        intent.putExtra(CommonString.KEY_STORE_CD, current.getStoreId().toString());
+                                        startActivity(intent);
+
                                     } else {
                                         Snackbar.make(recyclerView, R.string.nonetwork, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                                     }
@@ -382,9 +402,9 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                     editor.putString(CommonString.KEY_STORE_CD, current.getStoreId().toString());
                     editor.commit();
                     dialog.cancel();
-                    ArrayList<CoverageBean>specdata;
-                    specdata =database.getSpecificCoverageData(current.getVisitDate(),current.getStoreId().toString());
-                    if (specdata.size()==0 && !isVisitLater) {
+                    ArrayList<CoverageBean> specdata;
+                    specdata = database.getSpecificCoverageData(current.getVisitDate(), current.getStoreId().toString());
+                    if (specdata.size() == 0 && !isVisitLater) {
                         Intent in = new Intent(StoreListActivity.this, StoreimageActivity.class);
                         startActivity(in);
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
@@ -411,9 +431,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                                                 UpdateData(current.getStoreId().toString(), current.getVisitDate());
                                                 SharedPreferences.Editor editor = preferences.edit();
                                                 editor.putString(CommonString.KEY_STORE_CD, current.getStoreId().toString());
-                                                editor.putString(CommonString.KEY_STOREVISITED_STATUS, "");
                                                 editor.commit();
-                                                Intent in = new Intent(StoreListActivity.this, NonWorkingReason.class);
+                                                Intent in = new Intent(StoreListActivity.this, NonWorkingReasonActivity.class);
                                                 startActivity(in);
                                             }
                                         })
@@ -430,9 +449,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                         UpdateData(current.getStoreId().toString(), current.getVisitDate());
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putString(CommonString.KEY_STORE_CD, current.getStoreId().toString());
-                        editor.putString(CommonString.KEY_STOREVISITED_STATUS, "");
                         editor.commit();
-                        Intent in = new Intent(StoreListActivity.this, NonWorkingReason.class);
+                        Intent in = new Intent(StoreListActivity.this, NonWorkingReasonActivity.class);
                         startActivity(in);
                     }
                 }
@@ -444,8 +462,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
 
     public void UpdateData(String storeCd, String visit_date) {
         database.open();
-     /*   database.deleteSpecificStoreData(storeCd);
-        database.updateStoreStatusOnCheckout(storeCd, visit_date, "N");*/
+        database.deleteSpecificStoreData(storeCd);
+        database.updateJaurneyPlanSpecificStoreStatus(storeCd, visit_date, "N");
     }
 
 
@@ -589,10 +607,50 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
         //client.disconnect();
     }
 
-   /* @Override
-    protected void onPause() {
-        super.onPause();
-        stopLocationUpdates();
-    }*/
+    private boolean chekDataforCheckout(String store_cd, int region_id, int classification_id, int storeType_id) {
+        boolean status = false;
+        //store_audit data
+        database.open();
+        if (database.getStoreAuditHeaderData().size() > 0) {
+            if (database.isStoreAuditFilled(store_cd)) {
+                status = true;
+            }
+        } else {
+            status = true;
+        }
+        //visibility filled data
+        if (database.getSofMerchPosmHeaderData(region_id, classification_id, storeType_id).size() > 0) {
+            if (status && database.isVisibilitySoftMerchFilled(store_cd) && database.isVisibilitySPMerchFilled(store_cd)) {
+                status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = true;
+        }
+        //for shoper mkt tool
+        if (database.getSkuMasterData().size() > 0) {
+            if (status && database.isRXTFilled(store_cd) && database.isIPOSFilled(store_cd)) {
+                status = true;
+
+            } else {
+                status = false;
+            }
+        }
+
+        //for market info
+        if (database.getbranddataformarketinfo().size() > 0) {
+            if (status && database.isMarketInfoFilled(store_cd)) {
+                status = true;
+            } else {
+                status = false;
+            }
+        } else {
+            status = true;
+        }
+
+        return status;
+    }
+
 }
 

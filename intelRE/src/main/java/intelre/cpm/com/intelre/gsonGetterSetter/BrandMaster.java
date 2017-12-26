@@ -19,6 +19,16 @@ public class BrandMaster {
     @Expose
     private Integer brandSequence;
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    private String category;
+
     public Integer getBrandId() {
         return brandId;
     }

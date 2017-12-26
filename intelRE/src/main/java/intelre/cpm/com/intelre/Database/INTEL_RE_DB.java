@@ -19,14 +19,30 @@ import intelre.cpm.com.intelre.delegates.CoverageBean;
 import intelre.cpm.com.intelre.gettersetter.StoreProfileGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.AuditQuestion;
 import intelre.cpm.com.intelre.gsonGetterSetter.AuditQuestionGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.BrandMaster;
+import intelre.cpm.com.intelre.gsonGetterSetter.BrandMasterGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.CategoryMaster;
+import intelre.cpm.com.intelre.gsonGetterSetter.CategoryMasterGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.InfoTypeMaster;
+import intelre.cpm.com.intelre.gsonGetterSetter.InfoTypeMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.JCPGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.JourneyPlan;
+import intelre.cpm.com.intelre.gsonGetterSetter.MappingPermanentPosm;
+import intelre.cpm.com.intelre.gsonGetterSetter.MappingPermanentPosmGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.MappingSoftPosm;
+import intelre.cpm.com.intelre.gsonGetterSetter.MappingSoftPosmGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.NonWorkingReason;
 import intelre.cpm.com.intelre.gsonGetterSetter.NonWorkingReasonGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.PosmMaster;
 import intelre.cpm.com.intelre.gsonGetterSetter.PosmMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.RspDetailGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.SkuMaster;
+import intelre.cpm.com.intelre.gsonGetterSetter.SkuMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.StoreCategoryMaster;
+import intelre.cpm.com.intelre.gsonGetterSetter.TrainingTopicGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.TrainingTypeGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.WindowChecklist;
+import intelre.cpm.com.intelre.gsonGetterSetter.WindowMaster;
 
 /**
  * Created by upendrak on 15-12-2017.
@@ -60,12 +76,49 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
             db.execSQL(CommonString.CREATE_TABLE_STORE_PROFILE_DATA);
             db.execSQL(CommonString.CREATE_TABLE_AUDIT_OPENINGHEADER_DATA);
             db.execSQL(CommonString.CREATE_TABLE_STORE_AUDIT_DATA);
-
+            db.execSQL(CommonString.CREATE_TABLE_VISIBILITY_SOFTMERCH_HEADER_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_VISIBILITYSOFT_MERCH_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_VISIBILITY_SEMIPERMAN_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_VISIBILITYSEMI_PERMANENT_MERCH_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_MARKETINFO_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_IPOS_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_RXT_DATA);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
+
+    public void deleteSpecificStoreData(String storeid) {
+        db.delete(CommonString.TABLE_COVERAGE_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_STORE_PROFILE_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_INSERT_AUDIT_OPENINGHEADER_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_STORE_AUDIT_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_INSERT_VISIBILITY_SOFTMERCH_HEADER_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_VISIBILITYSOFT_MERCH_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_INSERT_VISIBILITY_SEMIPERMAN_HEADER_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_VISIBILITYSEMI_PERMANENT_MERCH_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_MARKETINFO_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_IPOS_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_RXT_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+
+    }
+
+
+    public void deleteAllTables() {
+        db.delete(CommonString.TABLE_COVERAGE_DATA, null, null);
+        db.delete(CommonString.TABLE_STORE_PROFILE_DATA, null, null);
+        db.delete(CommonString.TABLE_INSERT_AUDIT_OPENINGHEADER_DATA, null, null);
+        db.delete(CommonString.TABLE_STORE_AUDIT_DATA, null, null);
+        db.delete(CommonString.TABLE_INSERT_VISIBILITY_SOFTMERCH_HEADER_DATA, null, null);
+        db.delete(CommonString.TABLE_VISIBILITYSOFT_MERCH_DATA, null, null);
+        db.delete(CommonString.TABLE_INSERT_VISIBILITY_SEMIPERMAN_HEADER_DATA, null, null);
+        db.delete(CommonString.TABLE_VISIBILITYSEMI_PERMANENT_MERCH_DATA, null, null);
+        db.delete(CommonString.TABLE_MARKETINFO_DATA, null, null);
+        db.delete(CommonString.TABLE_IPOS_DATA, null, null);
+        db.delete(CommonString.CREATE_TABLE_RXT_DATA, null, null);
+    }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -260,6 +313,234 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertTrainingTypeData(TrainingTypeGetterSetter trainingType) {
+        db.delete("Training_Type", null, null);
+        ContentValues values = new ContentValues();
+        List<WindowMaster> data = trainingType.getWindowMaster();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("Training_Type", data.get(i).getTrainingType());
+                values.put("Training_Type_Id", data.get(i).getTrainingTypeId());
+
+
+                long id = db.insert("Training_Type", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public boolean insertTrainingTopicData(TrainingTopicGetterSetter TrainingTopic) {
+        db.delete("Training_Topic", null, null);
+        ContentValues values = new ContentValues();
+        List<WindowChecklist> data = TrainingTopic.getWindowChecklist();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("Topic", data.get(i).getTopic());
+                values.put("Topic_Id", data.get(i).getTrainingTypeId());
+                values.put("Training_Type_Id", data.get(i).getTrainingTypeId());
+
+
+                long id = db.insert("Training_Topic", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public boolean insertMappingSoftPosmData(MappingSoftPosmGetterSetter MappingSoft) {
+        db.delete("Mapping_Soft_Posm", null, null);
+        ContentValues values = new ContentValues();
+        List<MappingSoftPosm> data = MappingSoft.getMappingSoftPosm();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("Classification_Id", data.get(i).getClassificationId());
+                values.put("Posm_Id", data.get(i).getPosmId());
+                values.put("Region_Id", data.get(i).getRegionId());
+                values.put("Store_Type_Id", data.get(i).getStoreTypeId());
+
+
+                long id = db.insert("Mapping_Soft_Posm", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public boolean insertMappingPermanentPosmData(MappingPermanentPosmGetterSetter MappingPermanent) {
+        db.delete("Mapping_Permanent_Posm", null, null);
+        ContentValues values = new ContentValues();
+        List<MappingPermanentPosm> data = MappingPermanent.getMappingPermanentPosm();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("Posm_Id", data.get(i).getPosmId());
+                values.put("Store_Id", data.get(i).getStoreId());
+                values.put("Prev_Qty", data.get(i).getPrev_Qty());
+
+                long id = db.insert("Mapping_Permanent_Posm", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public boolean insertCategoryMasterData(CategoryMasterGetterSetter CategoryMaster) {
+        db.delete("Category_Master", null, null);
+        ContentValues values = new ContentValues();
+        List<intelre.cpm.com.intelre.gsonGetterSetter.CategoryMaster> data = CategoryMaster.getCategoryMaster();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("Category", data.get(i).getCategory());
+                values.put("Category_Id", data.get(i).getCategoryId());
+                values.put("Category_Sequence", data.get(i).getCategorySequence());
+
+
+                long id = db.insert("Category_Master", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public boolean insertBrandMasterData(BrandMasterGetterSetter BrandMaster) {
+        db.delete("Brand_Master", null, null);
+        ContentValues values = new ContentValues();
+        List<intelre.cpm.com.intelre.gsonGetterSetter.BrandMaster> data = BrandMaster.getBrandMaster();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("Brand", data.get(i).getBrand());
+                values.put("Brand_Id", data.get(i).getBrandId());
+                values.put("Brand_Sequence", data.get(i).getBrandSequence());
+                values.put("Category_Id", data.get(i).getCategoryId());
+
+
+                long id = db.insert("Brand_Master", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public boolean insertSkuMasterData(SkuMasterGetterSetter BrandMaster) {
+        db.delete("Sku_Master", null, null);
+        ContentValues values = new ContentValues();
+        List<SkuMaster> data = BrandMaster.getSkuMaster();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+
+                values.put("Brand_Id", data.get(i).getBrandId());
+                values.put("Sku", data.get(i).getSku());
+                values.put("Sku_Id", data.get(i).getSkuId());
+                values.put("Sku_Sequence", data.get(i).getSkuSequence());
+
+                long id = db.insert("Sku_Master", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+
+    public boolean insertInfoTypeData(InfoTypeMasterGetterSetter infotype) {
+        db.delete("Info_Type_Master", null, null);
+        ContentValues values = new ContentValues();
+        List<InfoTypeMaster> data = infotype.getInfoTypeMaster();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("Info_Type_Id", data.get(i).getInfoTypeId());
+                values.put("Info_Type", data.get(i).getInfoType());
+                long id = db.insert("Info_Type_Master", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
 
     public ArrayList<JourneyPlan> getStoreData(String date) {
         ArrayList<JourneyPlan> list = new ArrayList<JourneyPlan>();
@@ -361,6 +642,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
             values.put(CommonString.KEY_COVERAGE_REMARK, data.getRemark());
             values.put(CommonString.KEY_REASON_ID, data.getReasonid());
             values.put(CommonString.KEY_REASON, data.getReason());
+            values.put(CommonString.KEY_CHECKOUT_IMAGE, data.getCkeckout_image());
             l = db.insert(CommonString.TABLE_COVERAGE_DATA, null, values);
         } catch (Exception ex) {
             Log.d("Database Exception while Insert Closes Data ", ex.toString());
@@ -392,6 +674,8 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
                     sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON)));
                     sb.setReasonid(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON_ID)));
                     sb.setMID(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID))));
+                    sb.setCkeckout_image(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_COVERAGE_REMARK)));
+
                     sb.setRemark(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_COVERAGE_REMARK)));
                     list.add(sb);
                     dbcursor.moveToNext();
@@ -434,8 +718,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
                     JourneyPlan sb = new JourneyPlan();
-
-                    sb.setStoreId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Id"))));
+                    sb.setStoreId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Id"))));
                     sb.setVisitDate((dbcursor.getString(dbcursor.getColumnIndexOrThrow("Visit_Date"))));
                     sb.setStoreName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Name")));
                     sb.setAddress1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Address1")));
@@ -448,23 +731,21 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
                     sb.setStoreType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Type")));
                     sb.setStoreCategory(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Category")));
                     sb.setClassification(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Classification")));
-                    sb.setStoreId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Type_Id"))));
-                    sb.setClassificationId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Classification_Id"))));
-                    sb.setStoreCategoryId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Category_Id"))));
-                    sb.setReasonId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason_Id"))));
+                    sb.setRegionId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Region_Id"))));
+                    sb.setStoreTypeId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Type_Id"))));
+                    sb.setClassificationId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Classification_Id"))));
+                    sb.setStoreCategoryId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Category_Id"))));
+                    sb.setReasonId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason_Id"))));
                     sb.setUploadStatus(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Upload_Status")));
                     sb.setGeoTag(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Geo_Tag")));
-                    sb.setDistributorId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Distributor_Id"))));
-                    sb.setCityId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("City_Id"))));
-                    sb.setVisibilityLocation1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Visibility_Location1")));
+                    sb.setDistributorId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Distributor_Id"))));
+                    sb.setCityId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("City_Id"))));
                     sb.setVisibilityLocation1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Visibility_Location1")));
                     sb.setVisibilityLocation2(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Visibility_Location2")));
                     sb.setVisibilityLocation3(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Visibility_Location3")));
                     sb.setDimension1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Dimension1")));
                     sb.setDimension2(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Dimension2")));
                     sb.setDimension3(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Dimension3")));
-                    sb.setDimension1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Dimension1")));
-                    //  sb.setRegionId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Region_id"))));
 
                     list.add(sb);
                     dbcursor.moveToNext();
@@ -747,6 +1028,907 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         }
 
         Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    public ArrayList<PosmMaster> getSofMerchPosmHeaderData(int region_cd, int classification_cd, int store_type_cd) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<PosmMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT DISTINCT PM.Posm_Type_Id ,PM.Posm_Type FROM Mapping_Soft_Posm MP INNER JOIN Posm_Master PM ON " +
+                    "MP.Posm_Id=PM.Posm_Id WHERE MP.Region_Id=" + region_cd +
+                    " AND MP.Classification_Id=" + classification_cd + " AND MP.Store_Type_Id=" + store_type_cd + " ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    PosmMaster sb = new PosmMaster();
+                    sb.setPosmTypeId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Posm_Type_Id"))));
+                    sb.setPosmType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Posm_Type")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    public ArrayList<PosmMaster> getVisibilitySoftMerchChildData(int posm_type_cd) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<PosmMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery(
+                    "SELECT DISTINCT Posm_Id,Posm FROM Posm_Master WHERE Posm_Type_Id =" + posm_type_cd + " ", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    PosmMaster sb = new PosmMaster();
+                    sb.setPosm(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Posm")));
+                    sb.setPosmId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Posm_Id"))));
+                    sb.setDeployment_Value("");
+                    sb.setSoft_merchIMG("");
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+
+    public void insertVisibilitySoftMerchData(String storeid,
+                                              HashMap<PosmMaster,
+                                                      List<PosmMaster>> data, List<PosmMaster> save_listDataHeader) {
+        db.delete(CommonString.TABLE_INSERT_VISIBILITY_SOFTMERCH_HEADER_DATA, " STORE_CD='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_VISIBILITYSOFT_MERCH_DATA, " STORE_CD='" + storeid + "'", null);
+
+        ContentValues values = new ContentValues();
+        ContentValues values1 = new ContentValues();
+
+        try {
+            db.beginTransaction();
+            for (int i = 0; i < save_listDataHeader.size(); i++) {
+                values.put("STORE_CD", storeid);
+                values.put("POSM_TYPE_CD", save_listDataHeader.get(i).getPosmTypeId());
+                values.put("POSM_TYPE", save_listDataHeader.get(i).getPosmType());
+                long l = db.insert(CommonString.TABLE_INSERT_VISIBILITY_SOFTMERCH_HEADER_DATA, null, values);
+                for (int j = 0; j < data.get(save_listDataHeader.get(i)).size(); j++) {
+
+                    values1.put("Common_Id", (int) l);
+                    values1.put("STORE_CD", storeid);
+                    values1.put("POSM_TYPE_CD", save_listDataHeader.get(i).getPosmTypeId());
+                    values1.put("POSM_TYPE", save_listDataHeader.get(i).getPosmType());
+                    values1.put("VISIBILITY_POSM_CD", data.get(save_listDataHeader.get(i)).get(j).getPosmId());
+                    values1.put("VISIBILITY_POSM", data.get(save_listDataHeader.get(i)).get(j).getPosm());
+                    values1.put("VISIBILITY_NEWDEPLOYMENT", data.get(save_listDataHeader.get(i)).get(j).getDeployment_Value());
+                    values1.put("VISIBILITY_SOFTIMG", data.get(save_listDataHeader.get(i)).get(j).getSoft_merchIMG());
+                    db.insert("VISIBILITYSOFT_MERCH_DATA", null, values1);
+                }
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+            Log.d("Database Exception", " while Insert Posm Master Data " + ex.toString());
+        }
+    }
+
+
+    public ArrayList<PosmMaster> getVisibilitySoftMerchInsertedData(String store_cd, int posm_type_cd) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<PosmMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM VISIBILITYSOFT_MERCH_DATA" +
+                    " WHERE STORE_CD ='" + store_cd + "' AND POSM_TYPE_CD ='" + posm_type_cd + "' ", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    PosmMaster sb = new PosmMaster();
+                    sb.setPosmId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VISIBILITY_POSM_CD"))));
+                    sb.setPosm(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VISIBILITY_POSM")));
+                    sb.setDeployment_Value(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VISIBILITY_NEWDEPLOYMENT")));
+                    sb.setSoft_merchIMG(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VISIBILITY_SOFTIMG")));
+
+                    //  sb.setPosmTypeId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("POSM_TYPE_CD"))));
+                    //   sb.setPosmType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("POSM_TYPE")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    public ArrayList<MappingPermanentPosm> getPemanentMerchPosmHeaderData(int store_cd) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<MappingPermanentPosm> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("select DISTINCT  PM.Posm_Type_Id ,PM.Posm_Type FROM " +
+                    "Mapping_Permanent_Posm MP INNER JOIN Posm_Master PM ON " +
+                    "MP.Posm_Id=PM.Posm_Id WHERE MP.Store_Id=" + store_cd + " ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    MappingPermanentPosm sb = new MappingPermanentPosm();
+                    sb.setPosmTypeId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Posm_Type_Id"))));
+                    sb.setPosmType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Posm_Type")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    public ArrayList<MappingPermanentPosm> getVisibilitySemiPermanetMerchChildData(int posm_type_cd) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<MappingPermanentPosm> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT DISTINCT PM.Posm_Id,PM.Posm,MP.Prev_Qty " +
+                    "FROM Posm_Master PM INNER JOIN Mapping_Permanent_Posm MP " +
+                    "ON PM.Posm_Id=MP.Posm_Id" +
+                    " WHERE PM.Posm_Type_Id =" + posm_type_cd + " ", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    MappingPermanentPosm sb = new MappingPermanentPosm();
+                    sb.setPosm(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Posm")));
+                    sb.setPosmId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Posm_Id"))));
+                    sb.setPrev_Qty(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Prev_Qty"))));
+                    sb.setPreV_dValue("");
+                    sb.setNewDeploymnt_Value("");
+                    sb.setsPermanetIMG_1("");
+                    sb.setsPermanetIMG_2("");
+                    sb.setsPermanetIMG_3("");
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+
+    public void insertVisibilitySemiParmanetMerchData(String storeid,
+                                                      HashMap<MappingPermanentPosm,
+                                                              List<MappingPermanentPosm>> data, List<MappingPermanentPosm> save_listDataHeader) {
+        db.delete(CommonString.TABLE_INSERT_VISIBILITY_SEMIPERMAN_HEADER_DATA, " STORE_CD='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_VISIBILITYSEMI_PERMANENT_MERCH_DATA, " STORE_CD='" + storeid + "'", null);
+
+        ContentValues values = new ContentValues();
+        ContentValues values1 = new ContentValues();
+
+        try {
+            db.beginTransaction();
+            for (int i = 0; i < save_listDataHeader.size(); i++) {
+                values.put("STORE_CD", storeid);
+                values.put("SP_POSM_TYPE_CD", save_listDataHeader.get(i).getPosmTypeId());
+                values.put("SP_POSM_TYPE", save_listDataHeader.get(i).getPosmType());
+                long l = db.insert(CommonString.TABLE_INSERT_VISIBILITY_SEMIPERMAN_HEADER_DATA, null, values);
+                for (int j = 0; j < data.get(save_listDataHeader.get(i)).size(); j++) {
+
+                    values1.put("Common_Id", (int) l);
+                    values1.put("STORE_CD", storeid);
+                    values1.put("SP_POSM_TYPE_CD", save_listDataHeader.get(i).getPosmTypeId());
+                    values1.put("SP_POSM_TYPE", save_listDataHeader.get(i).getPosmType());
+                    values1.put("SP_VISIBILITY_POSM_CD", data.get(save_listDataHeader.get(i)).get(j).getPosmId());
+                    values1.put("SP_VISIBILITY_POSM", data.get(save_listDataHeader.get(i)).get(j).getPosm());
+
+
+                    values1.put("SP_PREVIOUS", data.get(save_listDataHeader.get(i)).get(j).getPrev_Qty());
+                    values1.put("SP_PREVIOUS_EDT", data.get(save_listDataHeader.get(i)).get(j).getPreV_dValue());
+
+                    values1.put("SP_VISIBILITY_NEWDEPLOYMENT", data.get(save_listDataHeader.get(i)).get(j).getNewDeploymnt_Value());
+                    values1.put("SP_IMG_1", data.get(save_listDataHeader.get(i)).get(j).getsPermanetIMG_1());
+
+                    values1.put("SP_IMG_2", data.get(save_listDataHeader.get(i)).get(j).getsPermanetIMG_2());
+                    values1.put("SP_IMG_3", data.get(save_listDataHeader.get(i)).get(j).getsPermanetIMG_3());
+
+                    db.insert(CommonString.TABLE_VISIBILITYSEMI_PERMANENT_MERCH_DATA, null, values1);
+
+                }
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+            Log.d("Database Exception", " while Insert Posm Master Data " + ex.toString());
+        }
+    }
+
+    public ArrayList<MappingPermanentPosm> getVisibilitySemiPermanetMerchInsertedData(String store_cd, int posm_cd) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<MappingPermanentPosm> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM VISIBILITYSEMI_PERMANENT_MERCH_DATA" +
+                    " WHERE STORE_CD ='" + store_cd + "' AND SP_POSM_TYPE_CD =" + posm_cd + " ", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    MappingPermanentPosm sb = new MappingPermanentPosm();
+                    sb.setPosmId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SP_VISIBILITY_POSM_CD"))));
+                    sb.setPosm(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SP_VISIBILITY_POSM")));
+
+                    sb.setPrev_Qty(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SP_PREVIOUS"))));
+                    sb.setPreV_dValue(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SP_PREVIOUS_EDT")));
+
+                    sb.setNewDeploymnt_Value(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SP_VISIBILITY_NEWDEPLOYMENT")));
+                    sb.setsPermanetIMG_1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SP_IMG_1")));
+
+                    sb.setsPermanetIMG_2(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SP_IMG_2")));
+                    sb.setsPermanetIMG_3(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SP_IMG_3")));
+
+                    //  sb.setDeployment_Value(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VISIBILITY_NEWDEPLOYMENT")));
+                    // sb.setSoft_merchIMG(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VISIBILITY_SOFTIMG")));
+
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    public ArrayList<BrandMaster> getbranddataformarketinfo() {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<BrandMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT br.Brand_Id, br.Brand, ca.Category,ca.Category_Id FROM Brand_Master br INNER JOIN Category_Master ca on br.Category_Id = ca.Category_id\n" +
+                    "where br.Brand_Id <> 1", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BrandMaster sb = new BrandMaster();
+                    sb.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand")));
+                    sb.setBrandId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand_Id"))));
+                    sb.setCategory(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Category")));
+                    sb.setCategoryId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Category_Id"))));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+
+    public ArrayList<InfoTypeMaster> getInfoTypeData() {
+        ArrayList<InfoTypeMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT  * FROM Info_Type_Master", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    InfoTypeMaster sb = new InfoTypeMaster();
+                    sb.setInfoTypeId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Info_Type_Id"))));
+                    sb.setInfoType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Info_Type")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+
+            return list;
+        }
+
+
+        return list;
+    }
+
+    @SuppressLint("LongLogTag")
+    public long insertMarketinfoData(
+            String storeid, String visit_date, ArrayList<InfoTypeMaster> secCompleteMarketDATA) {
+        db.delete(CommonString.TABLE_MARKETINFO_DATA, "STORE_CD" + "='" + storeid + "'", null);
+        ContentValues values = new ContentValues();
+        long l = 0;
+
+        try {
+            for (int i = 0; i < secCompleteMarketDATA.size(); i++) {
+                values.put("STORE_CD", storeid);
+                values.put("VISIT_DATE", visit_date);
+
+                values.put("BRAND", secCompleteMarketDATA.get(i).getBrand());
+                values.put("BRAND_CD", secCompleteMarketDATA.get(i).getBrand_cd());
+                values.put("TYPE", secCompleteMarketDATA.get(i).getType());
+                values.put("TYPE_CD", secCompleteMarketDATA.get(i).getType_cd());
+                values.put("INFO_TYPE", secCompleteMarketDATA.get(i).getInfoType());
+                values.put("INFO_TYPE_CD", secCompleteMarketDATA.get(i).getInfoTypeId());
+
+                values.put("REMARK", secCompleteMarketDATA.get(i).getRemark());
+                values.put("MARKET_INFO_IMG", secCompleteMarketDATA.get(i).getMarketinfo_img());
+
+                db.insert(CommonString.TABLE_MARKETINFO_DATA, null, values);
+
+            }
+
+        } catch (Exception ex) {
+            Log.d("Database Exception while Insert Facing Competition Data ",
+                    ex.toString());
+        }
+
+        return l;
+    }
+
+    public ArrayList<InfoTypeMaster> getinfotypeinsetedDATA(String store_cd) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<InfoTypeMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM MARKETINFO_DATA" +
+                    " WHERE STORE_CD ='" + store_cd + " '", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    InfoTypeMaster sb = new InfoTypeMaster();
+                    sb.setBrand_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("BRAND_CD")));
+                    sb.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow("BRAND")));
+
+                    sb.setType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("TYPE")));
+                    sb.setType_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("TYPE_CD")));
+
+                    sb.setInfoType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("INFO_TYPE")));
+                    sb.setInfoTypeId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("INFO_TYPE_CD"))));
+
+                    sb.setRemark(dbcursor.getString(dbcursor.getColumnIndexOrThrow("REMARK")));
+                    sb.setMarketinfo_img(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MARKET_INFO_IMG")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    public void remove(String user_id) {
+        // String string =String.valueOf(user_id);
+        db.execSQL("DELETE FROM MARKETINFO_DATA WHERE KEY_ID = '" + user_id + "'");
+    }
+
+
+    public ArrayList<SkuMaster> getSkuMasterData() {
+        ArrayList<SkuMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT  * FROM Sku_Master", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    SkuMaster sb = new SkuMaster();
+                    sb.setSkuId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Sku_Id"))));
+                    sb.setSku(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Sku")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+
+            return list;
+        }
+
+
+        return list;
+    }
+
+    @SuppressLint("LongLogTag")
+    public long insertIPOSData(
+            String storeid, String visit_date, ArrayList<SkuMaster> secCompleteMarketDATA) {
+        db.delete(CommonString.TABLE_IPOS_DATA, "STORE_CD" + "='" + storeid + "'", null);
+        ContentValues values = new ContentValues();
+        long l = 0;
+
+        try {
+            for (int i = 0; i < secCompleteMarketDATA.size(); i++) {
+                values.put("STORE_CD", storeid);
+                values.put("VISIT_DATE", visit_date);
+                values.put("SKU", secCompleteMarketDATA.get(i).getSku());
+                values.put("SKU_CD", secCompleteMarketDATA.get(i).getSkuId());
+                values.put("NUMBER", secCompleteMarketDATA.get(i).getNumber());
+                values.put("MACHINE_ON", secCompleteMarketDATA.get(i).getMachine_on());
+                values.put("IPOS", secCompleteMarketDATA.get(i).getIpos());
+                values.put("IPOS_IMG", secCompleteMarketDATA.get(i).getIpos_img());
+
+                db.insert(CommonString.TABLE_IPOS_DATA, null, values);
+
+            }
+
+        } catch (Exception ex) {
+            Log.d("Database Exception while Insert Facing Competition Data ",
+                    ex.toString());
+        }
+
+        return l;
+    }
+
+    public void remove_ipos(String user_id) {
+        // String string =String.valueOf(user_id);
+        db.execSQL("DELETE FROM IPOS_DATA WHERE KEY_ID = '" + user_id + "'");
+    }
+
+    public ArrayList<SkuMaster> getiposinseteddata(String store_cd) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<SkuMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM IPOS_DATA" + " WHERE STORE_CD ='" + store_cd + " '", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    SkuMaster sb = new SkuMaster();
+                    sb.setSku(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU")));
+                    sb.setSkuId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU_CD"))));
+
+                    sb.setNumber(dbcursor.getString(dbcursor.getColumnIndexOrThrow("NUMBER")));
+                    sb.setMachine_on(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MACHINE_ON")));
+
+                    sb.setIpos(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IPOS")));
+                    sb.setIpos_img(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IPOS_IMG")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    @SuppressLint("LongLogTag")
+    public long insertRXTData(
+            String storeid, String visit_date, ArrayList<SkuMaster> secCompleteMarketDATA) {
+        db.delete(CommonString.TABLE_RXT_DATA, "STORE_CD" + "='" + storeid + "'", null);
+        ContentValues values = new ContentValues();
+        long l = 0;
+
+        try {
+            for (int i = 0; i < secCompleteMarketDATA.size(); i++) {
+                values.put("STORE_CD", storeid);
+                values.put("VISIT_DATE", visit_date);
+
+                values.put("RXT_SKU", secCompleteMarketDATA.get(i).getSku());
+                values.put("RXT_SKU_CD", secCompleteMarketDATA.get(i).getSkuId());
+                values.put("RXT_NUMBER", secCompleteMarketDATA.get(i).getNumber());
+                values.put("RXT_MACHINE_ON", secCompleteMarketDATA.get(i).getMachine_on());
+                values.put("RXT", secCompleteMarketDATA.get(i).getRxt());
+                values.put("ENGEGMENT", secCompleteMarketDATA.get(i).getEngegment());
+
+                values.put("RXT_IMG", secCompleteMarketDATA.get(i).getRxt_img());
+
+                db.insert(CommonString.TABLE_RXT_DATA, null, values);
+
+            }
+
+        } catch (Exception ex) {
+            Log.d("Database Exception while Insert Facing Competition Data ",
+                    ex.toString());
+        }
+
+        return l;
+    }
+
+    public void remove_rxt(String user_id) {
+        // String string =String.valueOf(user_id);
+        db.execSQL("DELETE FROM RXT_DATA WHERE KEY_ID = '" + user_id + "'");
+    }
+
+    public boolean isRXTFilled(String storeId) {
+        boolean filled = false;
+
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT RXT_SKU_CD FROM RXT_DATA WHERE STORE_CD= '" + storeId + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_SKU_CD")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching Records!!!!!!!!!!!!!!!!!!!!!",
+                    e.toString());
+            return filled;
+        }
+
+        return filled;
+
+
+    }
+
+
+    public ArrayList<SkuMaster> getRXTInseteddata(String store_cd) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<SkuMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM RXT_DATA" + " WHERE STORE_CD ='" + store_cd + " '", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    SkuMaster sb = new SkuMaster();
+                    sb.setSku(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_SKU")));
+                    sb.setSkuId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_SKU_CD"))));
+
+                    sb.setNumber(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_NUMBER")));
+                    sb.setMachine_on(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_MACHINE_ON")));
+
+                    sb.setRxt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT")));
+
+                    sb.setEngegment(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ENGEGMENT")));
+                    sb.setRxt_img(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_IMG")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    @SuppressLint("LongLogTag")
+    // isIPOSFilled
+    public boolean isIPOSFilled(String storeId) {
+        boolean filled = false;
+
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT SKU_CD FROM IPOS_DATA WHERE STORE_CD= '" + storeId + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU_CD")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching Records!!!!!!!!!!!!!!!!!!!!!",
+                    e.toString());
+            return filled;
+        }
+
+        return filled;
+
+
+    }
+
+    @SuppressLint("LongLogTag")
+    public boolean isMarketInfoFilled(String storeId) {
+        boolean filled = false;
+
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT BRAND_CD FROM MARKETINFO_DATA WHERE STORE_CD= '" + storeId + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("BRAND_CD")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching Records!!!!!!!!!!!!!!!!!!!!!",
+                    e.toString());
+            return filled;
+        }
+
+        return filled;
+
+
+    }
+
+    @SuppressLint("LongLogTag")
+    public boolean isVisibilitySoftMerchFilled(String storeId) {
+        boolean filled = false;
+
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT VISIBILITY_POSM_CD FROM VISIBILITYSOFT_MERCH_DATA WHERE STORE_CD= '" + storeId + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("VISIBILITY_POSM_CD")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching Records!!!!!!!!!!!!!!!!!!!!!",
+                    e.toString());
+            return filled;
+        }
+
+        return filled;
+
+
+    }
+
+    @SuppressLint("LongLogTag")
+    public boolean isVisibilitySPMerchFilled(String storeId) {
+        boolean filled = false;
+
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT SP_VISIBILITY_POSM_CD FROM VISIBILITYSEMI_PERMANENT_MERCH_DATA WHERE STORE_CD= '" + storeId + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("SP_VISIBILITY_POSM_CD")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching Records!!!!!!!!!!!!!!!!!!!!!",
+                    e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+    @SuppressLint("LongLogTag")
+    public boolean isStoreAuditFilled(String storeId) {
+        boolean filled = false;
+
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT QUESTION_CD FROM STORE_AUDIT_DATA WHERE STORE_CD= '" + storeId + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("QUESTION_CD")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching Records!!!!!!!!!!!!!!!!!!!!!",
+                    e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+    public long updateJaurneyPlanStatus(String storeid, String visit_date, String status) {
+        long l = 0;
+        try {
+            ContentValues values = new ContentValues();
+            values.put("Upload_Status", status);
+            l = db.update("Journey_Plan", values, " Store_Id ='" + storeid + "' AND Visit_Date ='" + visit_date + "'", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return l;
+    }
+
+    public long updateCoverageCheckoutIMG(String storeid, String visit_date, String checkout_img) {
+        long l = 0;
+        try {
+            ContentValues values = new ContentValues();
+            values.put(CommonString.KEY_CHECKOUT_IMAGE, checkout_img);
+            l = db.update("COVERAGE_DATA", values, " STORE_ID ='" + storeid + "' AND VISIT_DATE ='" + visit_date + "'", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return l;
+    }
+
+    @SuppressLint("LongLogTag")
+    public ArrayList<NonWorkingReason> getNonWorkingDataByFlag(boolean flag) {
+        Log.d("FetchingAssetdata--------------->Start<------------",
+                "------------------");
+        ArrayList<NonWorkingReason> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM Non_Working_Reason", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (flag) {
+                        NonWorkingReason sb = new NonWorkingReason();
+                            sb.setReasonId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason_Id"))));
+                            sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason")));
+                            String entry_allow = dbcursor.getString(dbcursor.getColumnIndexOrThrow("Entry_Allow"));
+                            if (entry_allow.equals("1")) {
+                                sb.setEntryAllow(true);
+                            } else {
+                                sb.setEntryAllow(false);
+                            }
+                            String image_allow = dbcursor.getString(dbcursor.getColumnIndexOrThrow("Image_Allow"));
+                            if (image_allow.equals("1")) {
+                                sb.setImageAllow(true);
+                            } else {
+                                sb.setImageAllow(false);
+                            }
+                            String gps_mendtry = dbcursor.getString(dbcursor.getColumnIndexOrThrow("GPS_Mandatory"));
+                            if (gps_mendtry.equals("1")) {
+                                sb.setGPSMandatory(true);
+                            } else {
+                                sb.setGPSMandatory(false);
+                            }
+                            list.add(sb);
+
+                    } else {
+                        NonWorkingReason sb = new NonWorkingReason();
+                        sb.setReasonId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason_Id"))));
+                        sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason")));
+                        String entry_allow = dbcursor.getString(dbcursor.getColumnIndexOrThrow("Entry_Allow"));
+                        if (entry_allow.equals("1")) {
+                            sb.setEntryAllow(true);
+                        } else {
+                            sb.setEntryAllow(false);
+                        }
+                        String image_allow = dbcursor.getString(dbcursor.getColumnIndexOrThrow("Image_Allow"));
+                        if (image_allow.equals("1")) {
+                            sb.setImageAllow(true);
+                        } else {
+                            sb.setImageAllow(false);
+                        }
+                        String gps_mendtry = dbcursor.getString(dbcursor.getColumnIndexOrThrow("GPS_Mandatory"));
+                        if (gps_mendtry.equals("1")) {
+                            sb.setGPSMandatory(true);
+                        } else {
+                            sb.setGPSMandatory(false);
+                        }
+
+                        list.add(sb);
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching Non working!!!!!!!!!!!",
+                    e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working data---------------------->Stop<-----------",
+                "-------------------");
         return list;
     }
 

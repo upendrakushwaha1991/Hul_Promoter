@@ -3,6 +3,7 @@ package intelre.cpm.com.intelre.gettersetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.AuditQuestionGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.BrandMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.CategoryMasterGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.InfoTypeMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.JCPGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.MappingPermanentPosmGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.MappingSoftPosmGetterSetter;
@@ -32,6 +33,7 @@ public class ReferenceVariablesForDownloadActivity {
     protected CategoryMasterGetterSetter categoryMasterObject;
     protected BrandMasterGetterSetter brandMasterObject;
     protected SkuMasterGetterSetter skuMasterObject;
+    protected InfoTypeMasterGetterSetter infotypeObject;
 
 
 

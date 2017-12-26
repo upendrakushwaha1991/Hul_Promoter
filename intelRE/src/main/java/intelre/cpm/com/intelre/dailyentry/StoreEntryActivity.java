@@ -107,7 +107,8 @@ public class StoreEntryActivity extends AppCompatActivity {
             viewHolder.icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (current.getIconImg() == R.drawable.store_audit || current.getIconImg() == R.drawable.store_audit) {
+
+                    if (current.getIconImg() == R.drawable.store_audit || current.getIconImg() == R.drawable.store_audit_done) {
                         if (db.getStoreAuditHeaderData().size() > 0) {
                             Intent in7 = new Intent(StoreEntryActivity.this, StoreAuditActivity.class);
                             startActivity(in7);
@@ -117,30 +118,25 @@ public class StoreEntryActivity extends AppCompatActivity {
                         }
 
                     }
-
-                   /* if (db.isNoSaleSEntryFilled(store_cd) && current.getIconImg() == R.drawable.sales_entry_done) {
-                        Snackbar.make(recyclerView, "You have already click no sale for today. You are not allowed enter more sale today.", Snackbar.LENGTH_LONG).show();
-                    } else {
-                        if (current.getIconImg() == R.drawable.sales_entry || current.getIconImg() == R.drawable.sales_entry_done) {
-                            Intent in7 = new Intent(getApplicationContext(), SaleEntryActivity.class);
-                            startActivity(in7);
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }
-                    }
-
-                    if (db.isStockEntryFilled(store_cd) && current.getIconImg() == R.drawable.stock_entry || current.getIconImg() == R.drawable.stock_entry_done) {
-                        Snackbar.make(recyclerView, "Stock entry data already uploaded", Snackbar.LENGTH_LONG).show();
-                    } else if (db.isStockEntryWithFilled(store_cd) && current.getIconImg() == R.drawable.stock_entry || current.getIconImg() == R.drawable.stock_entry_done) {
-                        startActivity(new Intent(getApplicationContext(), StockEntryActivity.class));
+                    if (current.getIconImg() == R.drawable.visibility || current.getIconImg() == R.drawable.visibility_done) {
+                        startActivity(new Intent(StoreEntryActivity.this, IntelVisibilityMenu.class));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
-                    } else {
-                        if (current.getIconImg() == R.drawable.stock_entry || current.getIconImg() == R.drawable.stock_entry_done) {
-                            startActivity(new Intent(getApplicationContext(), StockEntryActivity.class));
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }
                     }
-*/
+
+                    if (current.getIconImg() == R.drawable.market_info || current.getIconImg() == R.drawable.market_info_done) {
+                        startActivity(new Intent(StoreEntryActivity.this, MarketInfoActivity.class));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                    }
+
+                    if (current.getIconImg() == R.drawable.shopper_mktg_tool || current.getIconImg() == R.drawable.shopper_mktg_tool_done) {
+                        startActivity(new Intent(StoreEntryActivity.this, ShoperMToolMenu.class));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                    }
+
+
                 }
             });
         }
@@ -165,7 +161,7 @@ public class StoreEntryActivity extends AppCompatActivity {
 
     public List<NavMenuItemGetterSetter> getdata() {
         List<NavMenuItemGetterSetter> data = new ArrayList<>();
-        int rspDetail = 0, storeAudit, training, visibility/*,shoperMKTTool,marketInfo*/;
+        int rspDetail = 0, storeAudit=0, training, visibility, shoperMKTTool, marketInfo;
 
         // if (db.getRspDetailData(store_cd).size() > 0) {
         // if (db.isSRSPDetailFilled(store_cd)) {
@@ -176,11 +172,14 @@ public class StoreEntryActivity extends AppCompatActivity {
         //  }
 
 
-        // if (db.isAuditEntryFilled(store_cd)) {
-        //   storeAudit = R.drawable.store_audit_done;
-        // } else {
-        storeAudit = R.drawable.store_audit;
-        //  }
+        if (db.getStoreAuditHeaderData().size() > 0) {
+            if (db.isStoreAuditFilled(store_cd)) {
+                storeAudit = R.drawable.store_audit_done;
+            } else {
+                storeAudit = R.drawable.store_audit;
+            }
+        }
+
 
         // if (db.isMiddayDataFilled(store_cd)) {
         // training = R.drawable.training_done;
@@ -188,24 +187,34 @@ public class StoreEntryActivity extends AppCompatActivity {
         training = R.drawable.training;
         //  }
 
+        if (db.isVisibilitySoftMerchFilled(store_cd) && db.isVisibilitySPMerchFilled(store_cd)) {
+            visibility = R.drawable.visibility_done;
+        } else {
+            visibility = R.drawable.visibility;
+        }
 
-        // if (db.isMiddayDataFilled(store_cd)) {
-        //   visibility = R.drawable.visibility_done;
-        //  } else {
-        visibility = R.drawable.visibility;
-        //  }
 
-        // if (user_type.equalsIgnoreCase("ISD")) {
-        int img[] = {rspDetail, storeAudit, training, visibility/*,shoperMKTTool,marketInfo*/};
-        //   ,Shoper MKT Tool,Market Info
-        String name[] = {"RSP Detail", "Store Audit", "Training", "Visibility"};
+        if (db.isRXTFilled(store_cd) && db.isIPOSFilled(store_cd)) {
+            shoperMKTTool = R.drawable.shopper_mktg_tool_done;
+        } else {
+            shoperMKTTool = R.drawable.shopper_mktg_tool;
+        }
+
+        if (db.isMarketInfoFilled(store_cd)) {
+            marketInfo = R.drawable.market_info_done;
+        } else {
+            marketInfo = R.drawable.market_info;
+        }
+
+
+        int img[] = {rspDetail, storeAudit, training, visibility, shoperMKTTool, marketInfo};
+        String name[] = {"RSP Detail", "Store Audit", "Training", "Visibility", "Shoper MKT Tool", "Market Info"};
         for (int i = 0; i < img.length; i++) {
             NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
             recData.setIconImg(img[i]);
             recData.setIconName(name[i]);
             data.add(recData);
         }
-        // }
 
         return data;
     }

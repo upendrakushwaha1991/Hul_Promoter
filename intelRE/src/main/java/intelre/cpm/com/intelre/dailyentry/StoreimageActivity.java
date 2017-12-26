@@ -89,6 +89,7 @@ public class StoreimageActivity extends AppCompatActivity implements
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
         username = preferences.getString(CommonString.KEY_USERNAME, null);
         app_ver = preferences.getString(CommonString.KEY_VERSION, "");
+        getSupportActionBar().setTitle("Store image -" + visit_date);
         str = CommonString.FILE_PATH;
         database = new INTEL_RE_DB(this);
         database.open();
@@ -206,8 +207,10 @@ public class StoreimageActivity extends AppCompatActivity implements
                                                     cdata.setLongitude(String.valueOf(lon));
                                                     cdata.setImage(img_str);
                                                     cdata.setRemark("");
+                                                    cdata.setCkeckout_image("");
                                                     //region Coverage Data
                                                     JSONObject jsonObject = new JSONObject();
+
                                                     jsonObject.put("StoreId", cdata.getStoreId());
                                                     jsonObject.put("VisitDate", cdata.getVisitDate());
                                                     jsonObject.put("Latitude", cdata.getLatitude());
@@ -218,6 +221,7 @@ public class StoreimageActivity extends AppCompatActivity implements
                                                     jsonObject.put("ImageName", cdata.getImage());
                                                     jsonObject.put("AppVersion", app_ver);
                                                     jsonObject.put("UploadStatus", CommonString.KEY_CHECK_IN);
+                                                    jsonObject.put("Checkout_Image", cdata.getCkeckout_image());
                                                     jsonObject.put("UserId", username);
 
                                                     uploadCoverageIntimeDATA(jsonObject.toString());

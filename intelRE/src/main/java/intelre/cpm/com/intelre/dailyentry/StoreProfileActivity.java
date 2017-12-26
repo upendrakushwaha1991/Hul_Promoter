@@ -33,7 +33,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
     EditText storeProfile_address_1, storeProfile_ownerN,
             storeProfile_contctN, storeProfile_visibtLo, storeProfile_visibtLo2, storeProfile_visibtLo3,
             storeProfile_dimention, storeProfile_dimention2, storeProfile_dimention3;
-    TextView storeProfile_dob, storeProfile_doa, storeProfile_City,storeProfile_userN;
+    TextView storeProfile_dob, storeProfile_doa, storeProfile_City, storeProfile_userN;
     FloatingActionButton btn_save, btn_next;
     ImageView img_dob, img_doa;
     SharedPreferences preferences;
@@ -44,7 +44,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
     DatePickerDialog dpd;
     Calendar c;
     INTEL_RE_DB db;
-    boolean update_flag = false;
+    boolean update_flag = false, clicksave_flag = false, flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
         db = new INTEL_RE_DB(this);
         db.open();
         declaration();
+        validate();
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,8 +64,65 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (update_flag && checkCondition()) {
-                    if (uienble()){
+                btn_next.setVisibility(View.GONE);
+                if (!flag) {
+                    uienble();
+                    clicksave_flag = true;
+                    btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.save_icon));
+                    flag = true;
+                } else if (flag && update_flag && checkCondition()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(StoreProfileActivity.this);
+                    builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
+                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            db.open();
+                            storePGT = new StoreProfileGetterSetter();
+                            storePGT.setProfileStoreName(storeProfile_userN.
+                                    getText().toString());
+                            storePGT.setProfileAddress1(storeProfile_address_1
+                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                            storePGT.setProfileCity(storeProfile_City.getText().toString());
+                            storePGT.setProfileOwner(storeProfile_ownerN.
+                                    getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                            storePGT.setProfileContact(storeProfile_contctN.getText().toString());
+                            storePGT.setProfileDOB(storeProfile_dob.getText().toString());
+                            storePGT.setProfileDOA(storeProfile_doa.getText().toString());
+                            storePGT.setProfileVisibilityLocation1(storeProfile_visibtLo
+                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                            storePGT.setProfileDimension1(storeProfile_dimention.getText().toString());
+
+                            storePGT.setProfileVisibilityLocation2(storeProfile_visibtLo2
+                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                            storePGT.setProfileDimension2(storeProfile_dimention2.getText().toString());
+
+                            storePGT.setProfileVisibilityLocation3(storeProfile_visibtLo3
+                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                            storePGT.setProfileDimension3(storeProfile_dimention3.getText().toString());
+
+                            db.insertStoreProfileData(userId, store_cd, visit_date, storePGT);
+                            btn_next.setVisibility(View.VISIBLE);
+                            btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
+                            uidisableEnable(true);
+                            dialogInterface.dismiss();
+                            clicksave_flag=false;
+                        }
+                    });
+                    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.cancel();
+                        }
+                    });
+                    builder.show();
+
+                } else if (uienble() && !update_flag) {
+                    if (!flag) {
+                        btn_next.setVisibility(View.GONE);
+                        btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.save_icon));
+                        uienble();
+                        flag = true;
+                    } else if (flag && checkCondition()) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(StoreProfileActivity.this);
                         builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
                         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -96,8 +154,13 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
 
 
                                 db.insertStoreProfileData(userId, store_cd, visit_date, storePGT);
-                                startActivity(new Intent(StoreProfileActivity.this, StoreEntryActivity.class));
-                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                                btn_next.setVisibility(View.VISIBLE);
+                                btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
+                                uidisableEnable(true);
+                                dialogInterface.dismiss();
+                                clicksave_flag=false;
+                                //  startActivity(new Intent(StoreProfileActivity.this, StoreEntryActivity.class));
+                                // overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                             }
                         });
                         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -108,57 +171,14 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
                         });
                         builder.show();
                     }
-                } else if (checkCondition()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(StoreProfileActivity.this);
-                    builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
-                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            db.open();
-                            storePGT = new StoreProfileGetterSetter();
-                            storePGT.setProfileStoreName(storeProfile_userN.
-                                    getText().toString());
-                            storePGT.setProfileAddress1(storeProfile_address_1
-                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileCity(storeProfile_City.getText().toString());
-                            storePGT.setProfileOwner(storeProfile_ownerN.
-                                    getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileContact(storeProfile_contctN.getText().toString());
-                            storePGT.setProfileDOB(storeProfile_dob.getText().toString());
-                            storePGT.setProfileDOA(storeProfile_doa.getText().toString());
-                            storePGT.setProfileVisibilityLocation1(storeProfile_visibtLo
-                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileDimension1(storeProfile_dimention.getText().toString());
 
-                            storePGT.setProfileVisibilityLocation2(storeProfile_visibtLo2
-                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileDimension2(storeProfile_dimention2.getText().toString());
-
-                            storePGT.setProfileVisibilityLocation3(storeProfile_visibtLo3
-                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileDimension3(storeProfile_dimention3.getText().toString());
-
-
-                            db.insertStoreProfileData(userId, store_cd, visit_date, storePGT);
-                            startActivity(new Intent(StoreProfileActivity.this, StoreEntryActivity.class));
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }
-                    });
-                    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
-                    builder.show();
                 }
             }
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+
+    private void validate() {
         db.open();
         storePGT = db.getStoreProfileData(store_cd, visit_date);
         if (storePGT != null && storePGT.getProfileStoreName() != null) {
@@ -180,7 +200,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
             storeProfile_dimention2.setText(storePGT.getProfileDimension2());
             storeProfile_dimention3.setText(storePGT.getProfileDimension3());
         } else {
-            uidisableEnable(update_flag);
+            uidisableEnable(true);
             specifDATA = db.getSpecificStoreData(store_cd);
             storeProfile_userN.setText(specifDATA.get(0).getStoreName());
             storeProfile_address_1.setText(specifDATA.get(0).getAddress1());
@@ -354,7 +374,8 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
         }
 
     }
-    private boolean uienble(){
+
+    private boolean uienble() {
         storeProfile_address_1.setEnabled(true);
         storeProfile_ownerN.setEnabled(true);
         storeProfile_contctN.setEnabled(true);
@@ -373,36 +394,20 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(StoreProfileActivity.this);
-        builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
+        if (!clicksave_flag) {
+            finish();
+            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+        } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(StoreProfileActivity.this);
             builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            finish();
+                            // finish();
+                            btn_next.setVisibility(View.VISIBLE);
+                            btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
+                            uidisableEnable(true);
+                            dialog.dismiss();
                             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                         }
                     })
@@ -413,6 +418,39 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
                     });
             AlertDialog alert = builder.create();
             alert.show();
+        }
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            if (!clicksave_flag) {
+                finish();
+                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(StoreProfileActivity.this);
+                builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                btn_next.setVisibility(View.VISIBLE);
+                                btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
+                                uidisableEnable(true);
+                                dialog.dismiss();
+                                // finish();
+                                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

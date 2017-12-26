@@ -20,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -136,7 +137,7 @@ public class StoreAuditActivity extends AppCompatActivity {
             for (int i = 0; i < listDataHeader.size(); i++) {
                 questionList = db.getStoreAuditInsertedData(store_cd, listDataHeader.get(i).getQuestionCategoryId());
                 if (questionList.size() > 0) {
-                    // storeAudit_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
+                    storeAudit_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
                 } else {
                     questionList = db.getStoreAuditChildData(listDataHeader.get(i).getQuestionCategoryId());
                 }
@@ -246,6 +247,20 @@ public class StoreAuditActivity extends AppCompatActivity {
                 public void onNothingSelected(AdapterView<?> parent) {
                 }
             });
+
+            if (!checkflag) {
+                boolean tempflag = false;
+                if (childText.getCurrectanswerCd().equals("0") && childText.getAudit_cam().equals("")) {
+                    tempflag = true;
+                }
+                if (tempflag) {
+                    holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.red));
+                } else {
+                    holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
+                }
+            } else {
+                holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
+            }
 
             return convertView;
         }
@@ -409,7 +424,7 @@ public class StoreAuditActivity extends AppCompatActivity {
                     if (_pathforcheck != null && !_pathforcheck.equals("")) {
                         if (new File(CommonString.FILE_PATH + _pathforcheck).exists()) {
                             img1 = _pathforcheck;
-                            lvExp_audit.invalidateViews();
+                            // lvExp_audit.invalidateViews();
                             _pathforcheck = "";
                         }
                     }
@@ -435,5 +450,49 @@ public class StoreAuditActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(StoreAuditActivity.this);
+        builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(StoreAuditActivity.this);
+            builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

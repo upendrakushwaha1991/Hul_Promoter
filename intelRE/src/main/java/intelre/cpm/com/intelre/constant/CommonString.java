@@ -7,6 +7,7 @@ import android.os.Environment;
  */
 
 public class CommonString {
+    public static final String KEY_CHECKOUT_IMAGE = "CHECKOUT_IMAGE";
     //preference
     public static final String KEY_USERNAME = "USERNAME";
     public static final String KEY_PASSWORD = "PASSWORD";
@@ -55,10 +56,10 @@ public class CommonString {
     public static final int COVERAGEStatusDetail = 6;
     public static final int CHECKOUTDetail = 7;
     public static final int DELETE_COVERAGE = 8;
-    public static final int COVERAGE_NONWORKING= 9;
+    public static final int COVERAGE_NONWORKING = 9;
     //File Path
 
-      public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/INTEL_RE_backup/";
+    public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/INTEL_RE_backup/";
 
     ////for insert data key
     public static final String KEY_STORE_CD = "STORE_CD";
@@ -71,7 +72,6 @@ public class CommonString {
     //jeevan
     public static final String DATA_DELETE_ALERT_MESSAGE = "Saved data will be lost - Do you want to continue?";
     public static final String KEY_STORE_NAME = "STORE_NAME";
-    public static final String KEY_ID = "_id";
     public static final String KEY_STORE_ID = "STORE_ID";
     public static final String KEY_VISIT_DATE = "VISIT_DATE";
     public static final String KEY_LATITUDE = "LATITUDE";
@@ -81,6 +81,7 @@ public class CommonString {
     public static final String KEY_IMAGE = "STORE_IMAGE";
     public static final String KEY_COVERAGE_REMARK = "REMARK";
     public static final String KEY_USER_ID = "USER_ID";
+    public static final String KEY_ID = "Id";
     //key for user profile
     public static final String KEY_STORE_PROFILE_STORE_NAME = "PROFILE_STORE_NAME";
     public static final String KEY_STORE_PROFILE_STORE_ADDRESS1 = "PROFILE_STORE_ADDRESS_1";
@@ -104,7 +105,8 @@ public class CommonString {
             + " INTEGER,USER_ID VARCHAR, "
             + KEY_VISIT_DATE + " VARCHAR,"
             + KEY_LATITUDE + " VARCHAR," + KEY_LONGITUDE + " VARCHAR,"
-           + KEY_IMAGE + " VARCHAR,"
+            + KEY_IMAGE + " VARCHAR,"
+            + KEY_CHECKOUT_IMAGE + " VARCHAR,"
             + KEY_REASON_ID + " INTEGER," + KEY_COVERAGE_REMARK
             + " VARCHAR," + KEY_REASON + " VARCHAR)";
 
@@ -179,13 +181,11 @@ public class CommonString {
 
 
     //upendra19dec
-    public static final String KEY_ID = "Id";
     public static final String COMMON_ID = "COMMON_ID";
     public static final String KEY_EMAILID = "Email";
     public static final String KEY_PHONENO = "Mobile";
     public static final String KEY_BRAND = "Brand_Id";
     public static final String KEY_IREP_REGISTERED = "IREP_Status";
-    public static final String KEY_STORE_ID = "Store_Id";
     public static final String KEY_VISITDATE = "VISIT_DATE";
     public static final String KEY_RSPID = "Rsp_Id";
     public static final String KEY_FLAG = "Flag";
@@ -193,7 +193,7 @@ public class CommonString {
     public static final String KEY_RSPNAME = "Rsp_Name";
     public static final String KEY_MODE = "MODE";
 
-    public static final String KEY_FROM_ADD_STORE= "FROM_ADD_STORE";
+    public static final String KEY_FROM_ADD_STORE = "FROM_ADD_STORE";
     public static final String TABLE_INSERT_RSPDETAILS = "DR_RSPDETAILS";
     public static final String CREATE_TABLE_RSPDETAILS = "CREATE TABLE IF NOT EXISTS "
             + TABLE_INSERT_RSPDETAILS
@@ -206,10 +206,129 @@ public class CommonString {
             + KEY_VISITDATE + " VARCHAR,"
             + KEY_RSPNAME + " VARCHAR,"
             + KEY_EMAILID + " VARCHAR,"
-            + KEY_PHONENO+ " INTEGER,"
+            + KEY_PHONENO + " INTEGER,"
             + KEY_BRAND + " VARCHAR,"
             + KEY_IREP_REGISTERED + " VARCHAR"
             + ")";
+
+    public static final String KEY_FOR_DEPLOYMENT = "Please enter new deployment value";
+
+
+    public static final String TABLE_INSERT_VISIBILITY_SOFTMERCH_HEADER_DATA = "VISIBILITY_SOFTMERCH_HEADER_DATA";
+
+    public static final String CREATE_TABLE_VISIBILITY_SOFTMERCH_HEADER_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_INSERT_VISIBILITY_SOFTMERCH_HEADER_DATA + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_STORE_CD
+            + " INTEGER, "
+            + "POSM_TYPE_CD" + " INTEGER,"
+            + " POSM_TYPE" + " VARCHAR)";
+
+
+    public static final String TABLE_VISIBILITYSOFT_MERCH_DATA = "VISIBILITYSOFT_MERCH_DATA";
+
+    public static final String CREATE_TABLE_VISIBILITYSOFT_MERCH_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_VISIBILITYSOFT_MERCH_DATA + " (" + "Common_Id"
+            + " INTEGER, " + KEY_STORE_CD
+            + " INTEGER,"
+            + " VISIBILITY_POSM_CD" + " INTEGER,"
+            + " VISIBILITY_POSM" + " VARCHAR,"
+            + " VISIBILITY_NEWDEPLOYMENT" + " INTEGER,"
+            + " POSM_TYPE_CD" + " INTEGER,"
+            + " POSM_TYPE" + " VARCHAR,"
+            + " VISIBILITY_SOFTIMG" + " VARCHAR" +")";
+
+
+    public static final String KEY_FOR_OLD_DEPLOYMENT = "Please enter new deployment value";
+
+    //for semi permanent
+    public static final String TABLE_INSERT_VISIBILITY_SEMIPERMAN_HEADER_DATA = "VISIBILITY_SEMIPERMAN_HEADER_DATA";
+
+    public static final String CREATE_TABLE_VISIBILITY_SEMIPERMAN_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_INSERT_VISIBILITY_SEMIPERMAN_HEADER_DATA + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_STORE_CD
+            + " INTEGER, "
+            + "SP_POSM_TYPE_CD" + " INTEGER,"
+            + " SP_POSM_TYPE" + " VARCHAR)";
+
+    public static final String TABLE_VISIBILITYSEMI_PERMANENT_MERCH_DATA = "VISIBILITYSEMI_PERMANENT_MERCH_DATA";
+
+    public static final String CREATE_TABLE_VISIBILITYSEMI_PERMANENT_MERCH_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_VISIBILITYSEMI_PERMANENT_MERCH_DATA + " (" + "Common_Id"
+            + " INTEGER, " + KEY_STORE_CD
+            + " INTEGER,"
+            + " SP_POSM_TYPE_CD" + " INTEGER,"
+            + " SP_POSM_TYPE" + " VARCHAR,"
+            + " SP_VISIBILITY_POSM_CD" + " INTEGER,"
+            + " SP_VISIBILITY_POSM" + " VARCHAR,"
+
+            + " SP_PREVIOUS" + " INTEGER,"
+            + " SP_PREVIOUS_EDT" + " INTEGER,"
+            + " SP_VISIBILITY_NEWDEPLOYMENT" + " INTEGER,"
+
+            + " SP_IMG_1" + " VARCHAR,"
+            + " SP_IMG_2" + " VARCHAR,"
+
+            + " SP_IMG_3" + " VARCHAR" +")";
+
+    public static final String KEY_FOR_CAMERA_C_ALL = "Please click all camera";
+
+    public static final String TABLE_MARKETINFO_DATA = "MARKETINFO_DATA";
+
+
+    public static final String CREATE_TABLE_MARKETINFO_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_MARKETINFO_DATA + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_STORE_CD
+            + " INTEGER,"
+            + " VISIT_DATE" + " VARCHAR,"
+            + " BRAND" + " VARCHAR,"
+            + " BRAND_CD" + " INTEGER,"
+
+            + " TYPE" + " VARCHAR,"
+            + " TYPE_CD" + " INTEGER,"
+
+            + " INFO_TYPE" + " VARCHAR,"
+            + " INFO_TYPE_CD" + " INTEGER,"
+
+            + " REMARK" + " VARCHAR,"
+
+            + " MARKET_INFO_IMG" + " VARCHAR" +")";
+
+    public static final String TABLE_IPOS_DATA = "IPOS_DATA";
+
+    public static final String CREATE_TABLE_IPOS_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_IPOS_DATA + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_STORE_CD
+            + " INTEGER,"
+            + " VISIT_DATE" + " VARCHAR,"
+            + " SKU" + " VARCHAR,"
+            + " SKU_CD" + " INTEGER,"
+
+            + " NUMBER" + " INTEGER,"
+            + " MACHINE_ON" + " INTEGER,"
+
+            + " IPOS" + " INTEGER,"
+
+
+            + " IPOS_IMG" + " VARCHAR" +")";
+
+    public static final String TABLE_RXT_DATA = "RXT_DATA";
+    public static final String CREATE_TABLE_RXT_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_RXT_DATA + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_STORE_CD
+            + " INTEGER,"
+            + " VISIT_DATE" + " VARCHAR,"
+            + " RXT_SKU" + " VARCHAR,"
+            + " RXT_SKU_CD" + " INTEGER,"
+
+            + " RXT_NUMBER" + " INTEGER,"
+            + " RXT_MACHINE_ON" + " INTEGER,"
+
+            + " RXT" + " INTEGER,"
+            + " ENGEGMENT" + " INTEGER,"
+
+
+            + " RXT_IMG" + " VARCHAR" +")";
+
 
 
 }

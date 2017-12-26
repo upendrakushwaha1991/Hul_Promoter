@@ -31,6 +31,7 @@ import intelre.cpm.com.intelre.gettersetter.ReferenceVariablesForDownloadActivit
 import intelre.cpm.com.intelre.gsonGetterSetter.AuditQuestionGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.BrandMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.CategoryMasterGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.InfoTypeMasterGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.JCPGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.MappingPermanentPosmGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.MappingSoftPosmGetterSetter;
@@ -233,12 +234,12 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                             break;
 
 
-                                        case "Documents_Data":
-                                            //documentsDataGetterSetter =  new Gson().fromJson(data, DocumentsDataGetterSetter.class);
-                                            //if (documentsDataGetterSetter != null && !db.insertDocumentData(documentsDataGetterSetter)) {
-                                            //pd.dismiss();
-                                            //    AlertandMessages.showSnackbarMsg(context, "Document Data not saved");
-                                            //}
+                                        case "Info_Type_Master":
+                                            infotypeObject = new Gson().fromJson(data, InfoTypeMasterGetterSetter.class);
+                                            if (infotypeObject != null && !db.insertInfoTypeData(infotypeObject)) {
+                                                pd.dismiss();
+                                                AlertandMessages.showSnackbarMsg(context, "Mapping Permanent Posm not saved");
+                                            }
                                             break;
                                     }
                                 }

@@ -43,7 +43,7 @@
             android:layout_marginBottom="6dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="17dp"
-            android:src="@drawable/save_icon" />
+            android:src="@drawable/edit_txt" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/btn_next"

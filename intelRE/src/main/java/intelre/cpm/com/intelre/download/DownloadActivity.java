@@ -132,6 +132,7 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.add("Category_Master");
             keysList.add("Brand_Master");
             keysList.add("Sku_Master");
+            keysList.add("Info_Type_Master");
 
 
            /* keysList.add("non_working_sub_reason");
