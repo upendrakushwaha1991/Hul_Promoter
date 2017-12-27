@@ -34,8 +34,6 @@ public class StoreCategoryMaster implements Serializable {
         return rspId;
     }
 
-
-
     public void setRspId(Integer rspId) {
         this.rspId = rspId;
     }
@@ -107,59 +105,5 @@ public class StoreCategoryMaster implements Serializable {
     public void setFlag(String flag) {
         this.flag = flag;
     }
-/* private String rspname;
-    private String emailid;
-    private String phoneno;
-    private String brand;
-    private String irepregistered;
-    private String rsp_id;
-
-    public String getRsp_id() {
-        return rsp_id;
-    }
-
-    public void setRsp_id(String rsp_id) {
-        this.rsp_id = rsp_id;
-    }
-
-    public String getRspname() {
-        return rspname;
-    }
-
-    public void setRspname(String rspname) {
-        this.rspname = rspname;
-    }
-
-    public String getEmailid() {
-        return emailid;
-    }
-
-    public void setEmailid(String emailid) {
-        this.emailid = emailid;
-    }
-
-    public String getPhoneno() {
-        return phoneno;
-    }
-
-    public void setPhoneno(String phoneno) {
-        this.phoneno = phoneno;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getIrepregistered() {
-        return irepregistered;
-    }
-
-    public void setIrepregistered(String irepregistered) {
-        this.irepregistered = irepregistered;
-    }*/
 
 }

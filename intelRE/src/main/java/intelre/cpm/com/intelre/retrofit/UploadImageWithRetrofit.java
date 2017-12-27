@@ -4,27 +4,26 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.preference.PreferenceManager;
+import com.google.gson.Gson;
 
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Environment;
 
-import android.preference.PreferenceManager;
-
-import com.google.gson.Gson;
 import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import java.io.File;
+
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
+
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.gettersetter.ReferenceVariablesForDownloadActivity;
@@ -250,7 +249,8 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             if (finalJsonIndex[0] != KeyNames.size()) {
                                 editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, finalJsonIndex[0]);
                                 editor.apply();
-                                downloadDataUniversalWithoutWait(jsonStringList, KeyNames, finalJsonIndex[0], CommonString.DOWNLOAD_ALL_SERVICE);
+                                downloadDataUniversalWithoutWait(jsonStringList, KeyNames, finalJsonIndex[0],
+                                        CommonString.DOWNLOAD_ALL_SERVICE);
                             } else {
                                 editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
                                 editor.apply();

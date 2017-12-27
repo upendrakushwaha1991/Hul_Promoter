@@ -76,6 +76,20 @@
     <string name="storefront">Click Store Front Image</string>
     <string name="title_store_list_checkout_current">Please checkout from current store</string>
     <string name="alertsaveData"> Are you sure you want to save data</string>
+    <string name="title_activity_training">Training </string>
+
+    //upendra21dec
+    <string name="rsp">RSP</string>
+    <string name="training_type">Training Type</string>
+    <string name="topic">Topic</string>
+    <string name="camera">Camera</string>
+    <string name="name">Name</string>
+    <string name="delete">Delete</string>
+
 
     <string name="checkout">Continue to store checkout</string>
+    <string name="no_data_for_upload">No Data For Upload</string>
+    <string name="title_store_list_download_data">Please Download Data First</string>
+    <string name="for_checkout">Please Checkout Current Store</string>
+    <string name="want_upload_data">Do you want to Upload Data?</string>
 </resources>

@@ -56,10 +56,10 @@ public class CommonString {
     public static final int COVERAGEStatusDetail = 6;
     public static final int CHECKOUTDetail = 7;
     public static final int DELETE_COVERAGE = 8;
-    public static final int COVERAGE_NONWORKING = 9;
+    public static final int COVERAGE_NONWORKING= 9;
     //File Path
 
-    public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/INTEL_RE_backup/";
+      public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/INTEL_RE_backup/";
 
     ////for insert data key
     public static final String KEY_STORE_CD = "STORE_CD";
@@ -81,7 +81,7 @@ public class CommonString {
     public static final String KEY_IMAGE = "STORE_IMAGE";
     public static final String KEY_COVERAGE_REMARK = "REMARK";
     public static final String KEY_USER_ID = "USER_ID";
-    public static final String KEY_ID = "Id";
+    public static final String KEY_ID = "ID";
     //key for user profile
     public static final String KEY_STORE_PROFILE_STORE_NAME = "PROFILE_STORE_NAME";
     public static final String KEY_STORE_PROFILE_STORE_ADDRESS1 = "PROFILE_STORE_ADDRESS_1";
@@ -181,11 +181,13 @@ public class CommonString {
 
 
     //upendra19dec
+  //  public static final String KEY_ID = "Id";
     public static final String COMMON_ID = "COMMON_ID";
     public static final String KEY_EMAILID = "Email";
     public static final String KEY_PHONENO = "Mobile";
     public static final String KEY_BRAND = "Brand_Id";
     public static final String KEY_IREP_REGISTERED = "IREP_Status";
+
     public static final String KEY_VISITDATE = "VISIT_DATE";
     public static final String KEY_RSPID = "Rsp_Id";
     public static final String KEY_FLAG = "Flag";
@@ -193,6 +195,7 @@ public class CommonString {
     public static final String KEY_RSPNAME = "Rsp_Name";
     public static final String KEY_MODE = "MODE";
 
+    public static final String KEY_FROM_LIST= "FROM_LIST";
     public static final String KEY_FROM_ADD_STORE = "FROM_ADD_STORE";
     public static final String TABLE_INSERT_RSPDETAILS = "DR_RSPDETAILS";
     public static final String CREATE_TABLE_RSPDETAILS = "CREATE TABLE IF NOT EXISTS "
@@ -206,7 +209,7 @@ public class CommonString {
             + KEY_VISITDATE + " VARCHAR,"
             + KEY_RSPNAME + " VARCHAR,"
             + KEY_EMAILID + " VARCHAR,"
-            + KEY_PHONENO + " INTEGER,"
+            + KEY_PHONENO+ " INTEGER,"
             + KEY_BRAND + " VARCHAR,"
             + KEY_IREP_REGISTERED + " VARCHAR"
             + ")";
@@ -328,6 +331,37 @@ public class CommonString {
 
 
             + " RXT_IMG" + " VARCHAR" +")";
+
+    public static final String KEY_ADD = "A";
+    public static final String KEY_EDIT = "E";
+    public static final String KEY_DELETE = "D";
+
+    //UPENDRA_21DEC
+    public static final String TABLE_INSERT_TRAINING_DATA = "DR_TRAINING";
+    public static final String KEY_RSP_CD = "RSP_CD";
+    public static final String KEY_TRAINING_TYPE_CD = "TRAINING_TYPE_CD";
+    public static final String KEY_TOPIC_CD = "TOPIC_CD";
+    public static final String KEY_PHOTO = "PHOTO";
+    public static final String KEY_RSP = "RSP";
+    public static final String KEY_TRAINING_TYPE = "TRAINING_TYPE";
+    public static final String KEY_TRAINING_TOPIC = "TRAINING_TOPIC";
+
+    public static final String CREATE_TABLE_TRAINING = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_INSERT_TRAINING_DATA
+            + "("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,"
+            + KEY_RSP_CD + " INTEGER,"
+            + KEY_TRAINING_TYPE_CD + " INTEGER,"
+            + KEY_TOPIC_CD + " INTEGER,"
+            + KEY_RSP + " VARCHAR,"
+            + KEY_TRAINING_TYPE + " VARCHAR,"
+            + KEY_TRAINING_TOPIC + " VARCHAR,"
+            + KEY_PHOTO + " VARCHAR,"
+            + KEY_USERNAME + " VARCHAR,"
+            + KEY_VISITDATE +" VARCHAR"
+            + ")";
+
 
 
 

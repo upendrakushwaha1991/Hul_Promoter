@@ -157,6 +157,24 @@
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".dailyentry.TrainingActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".upload.UploadDataActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
+
+
+        <activity android:name=".upload.PreviousDataUploadActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"></activity>
     </application>
 

@@ -210,7 +210,6 @@ public class StoreimageActivity extends AppCompatActivity implements
                                                     cdata.setCkeckout_image("");
                                                     //region Coverage Data
                                                     JSONObject jsonObject = new JSONObject();
-
                                                     jsonObject.put("StoreId", cdata.getStoreId());
                                                     jsonObject.put("VisitDate", cdata.getVisitDate());
                                                     jsonObject.put("Latitude", cdata.getLatitude());

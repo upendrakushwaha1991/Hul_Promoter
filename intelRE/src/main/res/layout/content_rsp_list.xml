@@ -15,12 +15,18 @@
             android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
-                android:text="Store:"
+                android:text="Store: "
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/store_name"
                 android:layout_width="wrap_content"
-                android:text="abc information"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
                 android:layout_height="wrap_content" />
 
 

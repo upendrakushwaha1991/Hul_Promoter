@@ -603,7 +603,8 @@ public class IntelLoginActivty extends AppCompatActivity {
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         loading.dismiss();
                         if (t instanceof SocketTimeoutException || t instanceof IOException || t instanceof Exception) {
-                            AlertandMessages.showAlertlogin(IntelLoginActivty.this, t.getLocalizedMessage().toString());
+                            AlertandMessages.showAlertlogin(IntelLoginActivty.this,
+                                    CommonString.MESSAGE_INTERNET_NOT_AVALABLE);
                         } else {
                             AlertandMessages.showAlertlogin(IntelLoginActivty.this, t.getLocalizedMessage().toString());
 
@@ -640,7 +641,7 @@ public class IntelLoginActivty extends AppCompatActivity {
     public void getDeviceName() {
         manufacturer = Build.MANUFACTURER;
         model = Build.MODEL;
-        os_version = android.os.Build.VERSION.RELEASE;
+        os_version = Build.VERSION.RELEASE;
     }
 
     @Override

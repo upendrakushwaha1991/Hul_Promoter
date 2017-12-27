@@ -216,6 +216,8 @@ public class ServiceActivityFragment extends Fragment {
         alert1.show();
     }
 
+
+
     public String getCurrentTime() {
 
         Calendar m_cal = Calendar.getInstance();

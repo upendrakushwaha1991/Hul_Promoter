@@ -79,8 +79,10 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
     private LocationRequest mLocationRequest;
     LocationEnableCommon locationEnableCommon;
     private static final String TAG = StoreimageActivity.class.getSimpleName();
+    int downloadIndex;
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.storelistfablayout);
@@ -156,7 +158,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
         super.onResume();
         database.open();
         storelist = database.getStoreData(date);
-        if (storelist.size() > 0) {
+        downloadIndex = preferences.getInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
+        if (storelist.size() > 0&& downloadIndex==0) {
             adapter = new ValueAdapter(StoreListActivity.this, storelist);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -165,10 +168,10 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
             recyclerView.setVisibility(View.VISIBLE);
 ///for enable checkout
             for (int i = 0; i < storelist.size(); i++) {
-                if (!storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_C)||
-                        !storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_P)||
+                if (!storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_C) /*||
+                        !storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_P) ||
                         !storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_D)
-                        ||!storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_U)) {
+                        || !storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_U)*/) {
                     if (chekDataforCheckout(storelist.get(i).getStoreId().toString(), storelist.get(i).getRegionId(),
                             storelist.get(i).getClassificationId(), storelist.get(i).getStoreTypeId())) {
                         database.updateJaurneyPlanStatus(storelist.get(i).getStoreId().toString(),

@@ -1,5 +1,6 @@
 package intelre.cpm.com.intelre;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -25,29 +27,56 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.RequestBody;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.net.UnknownHostException;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import intelre.cpm.com.intelre.dailyentry.RspDetailActivity;
-import intelre.cpm.com.intelre.dailyentry.RspListActivity;
+import java.util.Calendar;
+
+import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
+import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.dailyentry.ServiceActivity;
 import intelre.cpm.com.intelre.dailyentry.StoreListActivity;
-import intelre.cpm.com.intelre.dailyentry.ServiceActivity;
+import intelre.cpm.com.intelre.delegates.CoverageBean;
 import intelre.cpm.com.intelre.download.DownloadActivity;
+import intelre.cpm.com.intelre.gsonGetterSetter.JourneyPlan;
+import intelre.cpm.com.intelre.retrofit.PostApiForFile;
+
+import intelre.cpm.com.intelre.retrofit.StringConverterFactory;
+import intelre.cpm.com.intelre.upload.PreviousDataUploadActivity;
+import intelre.cpm.com.intelre.upload.UploadDataActivity;
+import retrofit.Call;
+import retrofit.Callback;
+//import retrofit.Response;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class MainMenuActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private WebView webView;
     private ImageView imageView;
-    private String date;
     private View headerView;
     private String error_msg;
     private Toolbar toolbar;
     private Context context;
     private int downloadIndex;
     private SharedPreferences preferences;
-
+    INTEL_RE_DB db;
     String visit_date, user_type, user_name;
+    private ArrayList<JourneyPlan> storelist = new ArrayList<>();
+    private ArrayList<CoverageBean> coverageList;
+    boolean isvalid = false;
+    String result = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +110,7 @@ public class MainMenuActivity extends AppCompatActivity
         tv_usertype.setText(user_type);
         navigationView.addHeaderView(headerView);
         navigationView.setNavigationItemSelectedListener(this);
+        db=new INTEL_RE_DB(this);
 
     }
 
@@ -98,22 +128,13 @@ public class MainMenuActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_route_plan) {
             startActivity(new Intent(this, StoreListActivity.class));
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
         } else if (id == R.id.nav_download) {
             if (checkNetIsAvailable()) {
-                boolean isDownloadValid = true;
-/*
-                if (db.isCoveragePreviousDataFilled(date)) {
-                    if (isPreviousDataValid()) {
-                        isDownloadValid = false;
-                    }
-                }
-*/
-                if (isDownloadValid) {
+                if (db.isCoverageDataFilled(visit_date)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
                     builder.setTitle("Parinaam");
                     builder.setMessage(getResources().getString(R.string.want_download_data)).setCancelable(false)
@@ -138,9 +159,8 @@ public class MainMenuActivity extends AppCompatActivity
                     builder.setMessage(getResources().getString(R.string.previous_data_upload)).setCancelable(false)
                             .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-
-                                  /*  Intent in = new Intent(getApplicationContext(), PreviousDataUploadActivity.class);
-                                    startActivity(in);*/
+                                    Intent in = new Intent(getApplicationContext(), PreviousDataUploadActivity.class);
+                                    startActivity(in);
                                 }
                             });
                     AlertDialog alert = builder.create();
@@ -153,24 +173,72 @@ public class MainMenuActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.nav_upload) {
-            Intent startservice = new Intent(this, RspListActivity.class);
-            startActivity(startservice);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+            db.open();
+            if (checkNetIsAvailable()) {
+                storelist = db.getStoreData(visit_date);
+                boolean checkout_flag = true;
+                if (db.getSkuMasterData().size() > 0 && downloadIndex == 0) {
+                    if (coverageList.size() == 0) {
+                        Snackbar.make(webView, R.string.no_data_for_upload, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                    } else {
+                        if (storelist.size() > 0) {
+                            for (int i = 0; i < storelist.size(); i++) {
+                                if (storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_CHECK_IN)
+                                        || storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_VALID)) {
+                                    checkout_flag = false;
+                                    break;
+                                }
+                            }
+                            if (checkout_flag) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
+                                builder.setTitle("Parinaam");
+                                builder.setMessage(getResources().getString(R.string.want_upload_data)).setCancelable(false)
+                                        .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                Intent i = new Intent(getBaseContext(), UploadDataActivity.class);
+                                                startActivity(i);
+                                            }
+                                        })
+                                        .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        });
+
+                                AlertDialog alert = builder.create();
+                                alert.show();
+                            } else {
+                                Snackbar.make(webView, R.string.for_checkout, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+
+                            }
+                        }
+                    }
+                } else {
+                    Snackbar.make(webView, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                }
+            }else {
+                Snackbar.make(webView, getResources().getString(R.string.nonetwork), Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+            }
 
         } else if (id == R.id.nav_geotag) {
+            if (db.getSkuMasterData().size() > 0 && downloadIndex == 0) {
+
+            }
+
 
         } else if (id == R.id.nav_exit) {
-
             ActivityCompat.finishAffinity(this);
             Intent intent = new Intent(getApplicationContext(), IntelLoginActivty.class);
             startActivity(intent);
             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
             finish();
         } else if (id == R.id.nav_services) {
-
-            Intent startservice = new Intent(this, ServiceActivity.class);
+            showExportDialog();
+            /*Intent startservice = new Intent(this, ServiceActivity.class);
             startActivity(startservice);
-            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);*/
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -194,8 +262,13 @@ public class MainMenuActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        db.open();
+        downloadIndex = preferences.getInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
+        coverageList = db.getCoverageData(visit_date);
+
+
     }
-   
+
 
     private boolean checkNetIsAvailable() {
         ConnectivityManager cm =
@@ -221,6 +294,7 @@ public class MainMenuActivity extends AppCompatActivity
             view.clearCache(true);
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -230,45 +304,160 @@ public class MainMenuActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-/*
-    private boolean isPreviousDataValid() {
 
-        boolean flag_isvalid = false;
 
-        JourneyPlan jcp;
-        //ArrayList<CoverageBean> coverage_list = db.getCoverageData(date);
-        ArrayList<CoverageBean> coverage_list = db.getCoverageDataPrevious(date);
-        for (int i = 0; i < coverage_list.size(); i++) {
+    private String uploadBackup(final Context context, String file_name, String folder_name) {
+        RequestBody body1;
+        // result = "";
+        isvalid = false;
+        final File originalFile = new File(CommonString.BACKUP_FILE_PATH + file_name);
+        RequestBody photo = RequestBody.create(MediaType.parse("application/octet-stream"), originalFile);
+        body1 = new MultipartBuilder().type(MultipartBuilder.FORM)
+                .addFormDataPart("file", originalFile.getName(), photo)
+                .addFormDataPart("Foldername", folder_name)
+                .build();
+        Retrofit adapter = new Retrofit.Builder()
+                .baseUrl(CommonString.URL)
+                .addConverterFactory(new StringConverterFactory())
+                .build();
+        PostApiForFile api = adapter.create(PostApiForFile.class);
+        Call<String> call = api.getUploadImage(body1);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Response<String> response) {
 
-            if (coverage_list.get(i).getFrom().equals(CommonString.TAG_FROM_JCP)) {
-                jcp = db.getSpecificStoreDataPrevious(date, coverage_list.get(i).getStoreId());
-            } else {
-                jcp = db.getSpecificStoreDataDeviationPrevious(date, coverage_list.get(i).getStoreId());
+                String responseBody = response.body();
+
+                if (responseBody != null && response.isSuccess()) {
+
+                    // if (response.toString() != null) {
+                    if (response.body().contains(CommonString.KEY_SUCCESS)) {
+                        isvalid = true;
+                        result = CommonString.KEY_SUCCESS;
+                        originalFile.delete();
+                    } else {
+                        result = "Servererror!";
+                    }
+                } else {
+                    result = "Servererror!";
+                }
             }
 
-            if (jcp.getUploadStatus().equalsIgnoreCase(CommonString.KEY_CHECK_IN)) {
-                if (isValid(jcp.getStoreId()) || isValidForSelf(jcp)) {
-                    flag_isvalid = true;
-                    break;
-                }*/
-/* else {
-                    db.deleteTableWithStoreID(String.valueOf(jcp.getStoreId()));
-                }*//*
+            @Override
+            public void onFailure(Throwable t) {
 
-            } else if (jcp.getUploadStatus().equalsIgnoreCase(CommonString.KEY_C)
-                    || jcp.getUploadStatus().equalsIgnoreCase(CommonString.KEY_P)
-                    || jcp.getUploadStatus().equalsIgnoreCase(CommonString.KEY_D)
-                    || jcp.getUploadStatus().equalsIgnoreCase(CommonString.STORE_STATUS_LEAVE)
-                    ) {
-                flag_isvalid = true;
-                break;
+                isvalid = true;
+                if (t instanceof UnknownHostException) {
+                    result = AlertandMessages.MESSAGE_SOCKETEXCEPTION;
+                } else {
+                    result = AlertandMessages.MESSAGE_SOCKETEXCEPTION;
+                }
+                Toast.makeText(context, originalFile.getName() + " not uploaded", Toast.LENGTH_SHORT).show();
             }
-
-        }
-
-        return flag_isvalid;
+        });
+        return result;
     }
-*/
+
+    public void showExportDialog() {
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainMenuActivity.this);
+        builder1.setMessage(R.string.Areyou_sure_take_backup)
+                .setCancelable(false)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @SuppressWarnings("resource")
+                    public void onClick(DialogInterface dialog, int id) {
+                        try {
+                            File file = new File(Environment.getExternalStorageDirectory(), "INTEL_RE_backup");
+                            if (!file.isDirectory()) {
+                                file.mkdir();
+                            }
+
+                            File sd = Environment.getExternalStorageDirectory();
+                            File data = Environment.getDataDirectory();
+
+                            if (sd.canWrite()) {
+                                long date = System.currentTimeMillis();
+
+                                SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yy");
+                                String dateString = sdf.format(date);
+
+                                String currentDBPath = "//data//cpm.com.intelre//databases//" + INTEL_RE_DB.DATABASE_NAME;
+                                String backupDBPath = "INTEL_RE_backup" + user_name + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
+
+                                String path = Environment.getExternalStorageDirectory().getPath() + "/INTEL_RE_backup";
+
+                                File currentDB = new File(data, currentDBPath);
+                                File backupDB = new File(path, backupDBPath);
+                                //Snackbar.make(rec_store_data, "Database Exported Successfully", Snackbar.LENGTH_SHORT).show();
+
+                                if (currentDB.exists()) {
+                                    @SuppressWarnings("resource")
+                                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                                    dst.transferFrom(src, 0, src.size());
+                                    src.close();
+                                    dst.close();
+
+                                }
+
+                                   /* File originalFile = new File(path + "/" + backupDBPath).exists()));
+                                   *//* RetrofitMethod uploadRetro = new RetrofitMethod(context, "Uploading Backup");
+                                    uploadRetro.uploadedFiles = 0;
+                                    uploadRetro.UploadBackup(backupDBPath, "DBBackup", path + "/");*//*
+                                    Object result = uploadBackup(MainMenuActivity.this, originalFile.getName(), "DBBackup");
+                                    if (result.toString().equalsIgnoreCase(CommonString.KEY_SUCCESS)) {
+
+                                    }
+                                }*/
+                                //usk
+                                File dir = new File(CommonString.BACKUP_FILE_PATH);
+                                ArrayList<String> list = new ArrayList();
+                                list = getFileNames(dir.listFiles());
+                                if (list.size() > 0) {
+                                    for (int i1 = 0; i1 < list.size(); i1++) {
+                                        if (list.get(i1).contains("INTEL_RE_backup")) {
+                                            File originalFile = new File(CommonString.BACKUP_FILE_PATH + list.get(i1));
+                                            Object result = uploadBackup(MainMenuActivity.this, originalFile.getName(), "DBBackup");
+                                            if (result.toString().equalsIgnoreCase(CommonString.KEY_SUCCESS)) {
+
+                                            }
+                                        }
+                                    }
+                                }
+                                Snackbar.make(imageView, "Database Exported And Uploaded Successfully", Snackbar.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            AlertandMessages.showAlert((Activity) context, context.getString(R.string.errordatabase_not_exporting), true);
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert1 = builder1.create();
+        alert1.show();
+    }
+
+    public String getCurrentTime() {
+
+        Calendar m_cal = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss:mmm");
+        String cdate = formatter.format(m_cal.getTime());
+        return cdate;
+
+    }
+
+    public ArrayList<String> getFileNames(File[] file) {
+        ArrayList<String> arrayFiles = new ArrayList<String>();
+        if (file.length > 0) {
+            for (int i = 0; i < file.length; i++)
+                arrayFiles.add(file[i].getName());
+        }
+        return arrayFiles;
+    }
 
 
 }

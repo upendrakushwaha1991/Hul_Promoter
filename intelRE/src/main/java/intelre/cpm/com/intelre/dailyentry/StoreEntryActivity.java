@@ -25,6 +25,8 @@ import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.delegates.NavMenuItemGetterSetter;
+import intelre.cpm.com.intelre.gettersetter.TrainingGetterSetter;
+import intelre.cpm.com.intelre.gsonGetterSetter.StoreCategoryMaster;
 
 public class StoreEntryActivity extends AppCompatActivity {
     INTEL_RE_DB db;
@@ -33,6 +35,8 @@ public class StoreEntryActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
     String store_cd, visit_date, user_type, username;
+    ArrayList<StoreCategoryMaster> added_list = new ArrayList<>();
+    ArrayList<TrainingGetterSetter> inserteslistData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +139,20 @@ public class StoreEntryActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
                     }
+                    if (current.getIconImg() == R.drawable.rsp_detail || current.getIconImg() == R.drawable.rsp_detail_done) {
+                        Intent in7 = new Intent(StoreEntryActivity.this, RspListActivity.class);
+                        startActivity(in7);
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
+                    }
+
+
+                    if (current.getIconImg() == R.drawable.training || current.getIconImg() == R.drawable.training_done) {
+                        Intent in7 = new Intent(StoreEntryActivity.this, TrainingActivity.class);
+                        startActivity(in7);
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                    }
 
                 }
             });
@@ -163,14 +180,6 @@ public class StoreEntryActivity extends AppCompatActivity {
         List<NavMenuItemGetterSetter> data = new ArrayList<>();
         int rspDetail = 0, storeAudit=0, training, visibility, shoperMKTTool, marketInfo;
 
-        // if (db.getRspDetailData(store_cd).size() > 0) {
-        // if (db.isSRSPDetailFilled(store_cd)) {
-        //   rspDetail = R.drawable.rsp_detail_done;
-        //   } else {
-        rspDetail = R.drawable.rsp_detail;
-        //  }
-        //  }
-
 
         if (db.getStoreAuditHeaderData().size() > 0) {
             if (db.isStoreAuditFilled(store_cd)) {
@@ -181,11 +190,6 @@ public class StoreEntryActivity extends AppCompatActivity {
         }
 
 
-        // if (db.isMiddayDataFilled(store_cd)) {
-        // training = R.drawable.training_done;
-        //  } else {
-        training = R.drawable.training;
-        //  }
 
         if (db.isVisibilitySoftMerchFilled(store_cd) && db.isVisibilitySPMerchFilled(store_cd)) {
             visibility = R.drawable.visibility_done;
@@ -206,7 +210,17 @@ public class StoreEntryActivity extends AppCompatActivity {
             marketInfo = R.drawable.market_info;
         }
 
+        if (db.getinsertedTrainingData(store_cd, visit_date).size()> 0) {
+            training = R.drawable.training_done;
+        } else {
+            training = R.drawable.training;
+        }
 
+        if (db.getRspDetailinsertData(store_cd).size() > 0) {
+            rspDetail = R.drawable.rsp_detail_done;
+        } else {
+            rspDetail = R.drawable.rsp_detail;
+        }
         int img[] = {rspDetail, storeAudit, training, visibility, shoperMKTTool, marketInfo};
         String name[] = {"RSP Detail", "Store Audit", "Training", "Visibility", "Shoper MKT Tool", "Market Info"};
         for (int i = 0; i < img.length; i++) {
