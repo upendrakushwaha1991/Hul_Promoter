@@ -131,6 +131,38 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
     }
 
 
+    @SuppressLint("LongLogTag")
+    public void deletePreviousUploadedData(String visit_date) {
+        Cursor dbcursor = null;
+        Cursor dbcursor1 = null;
+        try {
+            dbcursor = db.rawQuery("SELECT  * from COVERAGE_DATA where VISIT_DATE < '" + visit_date + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                int icount = dbcursor.getCount();
+                dbcursor.close();
+                if (icount > 0) {
+                    db.delete(CommonString.TABLE_COVERAGE_DATA, null, null);
+                    db.delete(CommonString.TABLE_STORE_PROFILE_DATA, null, null);
+                    db.delete(CommonString.TABLE_INSERT_AUDIT_OPENINGHEADER_DATA, null, null);
+                    db.delete(CommonString.TABLE_STORE_AUDIT_DATA, null, null);
+                    db.delete(CommonString.TABLE_INSERT_VISIBILITY_SOFTMERCH_HEADER_DATA, null, null);
+                    db.delete(CommonString.TABLE_VISIBILITYSOFT_MERCH_DATA, null, null);
+                    db.delete(CommonString.TABLE_INSERT_VISIBILITY_SEMIPERMAN_HEADER_DATA, null, null);
+                    db.delete(CommonString.TABLE_VISIBILITYSEMI_PERMANENT_MERCH_DATA, null, null);
+                    db.delete(CommonString.TABLE_MARKETINFO_DATA, null, null);
+                    db.delete(CommonString.TABLE_IPOS_DATA, null, null);
+                    db.delete(CommonString.CREATE_TABLE_RXT_DATA, null, null);
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching Coverage Data!!!!!!!!!!!!!!!!!!!!!", e.toString());
+
+        }
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // db.execSQL("DROP TABLE IF EXISTS " + TableBean.getJourneyPlan());
@@ -1535,6 +1567,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
                     sb.setRemark(dbcursor.getString(dbcursor.getColumnIndexOrThrow("REMARK")));
                     sb.setMarketinfo_img(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MARKET_INFO_IMG")));
+                    sb.setKey_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID)));
 
                     list.add(sb);
                     dbcursor.moveToNext();
@@ -1553,7 +1586,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
     public void remove(String user_id) {
         // String string =String.valueOf(user_id);
-        db.execSQL("DELETE FROM MARKETINFO_DATA WHERE KEY_ID = '" + user_id + "'");
+        db.execSQL("DELETE FROM MARKETINFO_DATA WHERE " + CommonString.KEY_ID+ " = '" + user_id + "'");
     }
 
 
@@ -1616,7 +1649,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
     public void remove_ipos(String user_id) {
         // String string =String.valueOf(user_id);
-        db.execSQL("DELETE FROM IPOS_DATA WHERE KEY_ID = '" + user_id + "'");
+        db.execSQL("DELETE FROM IPOS_DATA WHERE "+CommonString.KEY_ID  +" = '" + user_id + "'");
     }
 
     public ArrayList<SkuMaster> getiposinseteddata(String store_cd) {
@@ -1632,12 +1665,11 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
                     SkuMaster sb = new SkuMaster();
                     sb.setSku(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU")));
                     sb.setSkuId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU_CD"))));
-
                     sb.setNumber(dbcursor.getString(dbcursor.getColumnIndexOrThrow("NUMBER")));
                     sb.setMachine_on(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MACHINE_ON")));
-
                     sb.setIpos(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IPOS")));
                     sb.setIpos_img(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IPOS_IMG")));
+                    sb.setKey_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID)));
                     list.add(sb);
                     dbcursor.moveToNext();
                 }
@@ -1688,7 +1720,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
     public void remove_rxt(String user_id) {
         // String string =String.valueOf(user_id);
-        db.execSQL("DELETE FROM RXT_DATA WHERE KEY_ID = '" + user_id + "'");
+        db.execSQL("DELETE FROM RXT_DATA WHERE " +CommonString.KEY_ID + " = '" + user_id + "'");
     }
 
     @SuppressLint("LongLogTag")
@@ -1744,9 +1776,9 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
                     sb.setMachine_on(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_MACHINE_ON")));
 
                     sb.setRxt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT")));
-
                     sb.setEngegment(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ENGEGMENT")));
                     sb.setRxt_img(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_IMG")));
+                    sb.setKey_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID)));
                     list.add(sb);
                     dbcursor.moveToNext();
                 }
@@ -1964,27 +1996,32 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
                 while (!dbcursor.isAfterLast()) {
                     if (flag) {
                         NonWorkingReason sb = new NonWorkingReason();
-                        sb.setReasonId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason_Id"))));
-                        sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason")));
-                        String entry_allow = dbcursor.getString(dbcursor.getColumnIndexOrThrow("Entry_Allow"));
-                        if (entry_allow.equals("1")) {
-                            sb.setEntryAllow(true);
-                        } else {
-                            sb.setEntryAllow(false);
+                        String entry_allow_fortest = dbcursor.getString(dbcursor.getColumnIndexOrThrow("Entry_Allow"));
+                        if (entry_allow_fortest.equals("1")){
+                            sb.setReasonId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason_Id"))));
+                            sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason")));
+                            String entry_allow = dbcursor.getString(dbcursor.getColumnIndexOrThrow("Entry_Allow"));
+                            if (entry_allow.equals("1")) {
+                                sb.setEntryAllow(true);
+                            } else {
+                                sb.setEntryAllow(false);
+                            }
+                            String image_allow = dbcursor.getString(dbcursor.getColumnIndexOrThrow("Image_Allow"));
+                            if (image_allow.equals("1")) {
+                                sb.setImageAllow(true);
+                            } else {
+                                sb.setImageAllow(false);
+                            }
+                            String gps_mendtry = dbcursor.getString(dbcursor.getColumnIndexOrThrow("GPS_Mandatory"));
+                            if (gps_mendtry.equals("1")) {
+                                sb.setGPSMandatory(true);
+                            } else {
+                                sb.setGPSMandatory(false);
+                            }
+
+                            list.add(sb);
                         }
-                        String image_allow = dbcursor.getString(dbcursor.getColumnIndexOrThrow("Image_Allow"));
-                        if (image_allow.equals("1")) {
-                            sb.setImageAllow(true);
-                        } else {
-                            sb.setImageAllow(false);
-                        }
-                        String gps_mendtry = dbcursor.getString(dbcursor.getColumnIndexOrThrow("GPS_Mandatory"));
-                        if (gps_mendtry.equals("1")) {
-                            sb.setGPSMandatory(true);
-                        } else {
-                            sb.setGPSMandatory(false);
-                        }
-                        list.add(sb);
+
 
                     } else {
                         NonWorkingReason sb = new NonWorkingReason();
@@ -2345,7 +2382,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
         try {
             dbcursor = db.rawQuery("SELECT * FROM VISIBILITYSEMI_PERMANENT_MERCH_DATA" +
-                    " WHERE STORE_CD ='" + store_cd +"'", null);
+                    " WHERE STORE_CD ='" + store_cd + "'", null);
             if (dbcursor != null) {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
@@ -2381,7 +2418,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<JourneyPlan> getSpecificStoreDatawithdate(String visit_date,String store_cd) {
+    public ArrayList<JourneyPlan> getSpecificStoreDatawithdate(String visit_date, String store_cd) {
         ArrayList<JourneyPlan> list = new ArrayList<JourneyPlan>();
         Cursor dbcursor = null;
         try {
@@ -2435,5 +2472,103 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
         return list;
     }
+
+
+    @SuppressLint("LongLogTag")
+    public ArrayList<CoverageBean> getcoverageDataPrevious(String visitdate) {
+        ArrayList<CoverageBean> list = new ArrayList<CoverageBean>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT  * from " +
+                    CommonString.TABLE_COVERAGE_DATA + " where " + CommonString.KEY_VISIT_DATE + "<>'" + visitdate + "'", null);
+
+
+            if (dbcursor != null) {
+
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    CoverageBean sb = new CoverageBean();
+                    sb.setStoreId(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));
+                    sb.setUserId(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_USER_ID)));
+                    sb.setVisitDate(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_VISIT_DATE)));
+                    sb.setLatitude(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LATITUDE)));
+                    sb.setLongitude(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGITUDE)));
+                    sb.setImage(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE)));
+                    sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON)));
+                    sb.setReasonid(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON_ID)));
+                    sb.setMID(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID))));
+                    sb.setCkeckout_image(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_COVERAGE_REMARK)));
+
+                    sb.setRemark(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_COVERAGE_REMARK)));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception when fetching Coverage Data!!!!!!!!!!!!!!!!!!!!!",
+                    e.toString());
+
+        }
+
+        return list;
+
+    }
+
+    public JourneyPlan getSpecificStoreDataPrevious(String date, String store_id) {
+        JourneyPlan sb = new JourneyPlan();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery("SELECT * from Journey_Plan  " +
+                    "where Visit_Date <> '" + date + "' AND Store_Id='" + store_id + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    sb.setStoreId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Id"))));
+                    sb.setVisitDate((dbcursor.getString(dbcursor.getColumnIndexOrThrow("Visit_Date"))));
+                    sb.setStoreName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Name")));
+                    sb.setAddress1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Address1")));
+                    sb.setAddress2((dbcursor.getString(dbcursor.getColumnIndexOrThrow("Address2"))));
+                    sb.setLandmark(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Landmark")));
+                    sb.setPincode(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Pincode")));
+                    sb.setContactPerson(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Contact_Person")));
+                    sb.setContactNo(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Contact_No")));
+                    sb.setCity(dbcursor.getString(dbcursor.getColumnIndexOrThrow("City")));
+                    sb.setStoreType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Type")));
+                    sb.setStoreCategory(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Category")));
+                    sb.setClassification(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Classification")));
+                    sb.setRegionId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Region_Id"))));
+                    sb.setStoreTypeId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Type_Id"))));
+                    sb.setClassificationId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Classification_Id"))));
+                    sb.setStoreCategoryId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Category_Id"))));
+                    sb.setReasonId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason_Id"))));
+                    sb.setUploadStatus(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Upload_Status")));
+                    sb.setGeoTag(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Geo_Tag")));
+                    sb.setDistributorId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Distributor_Id"))));
+                    sb.setCityId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("City_Id"))));
+                    sb.setVisibilityLocation1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Visibility_Location1")));
+                    sb.setVisibilityLocation2(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Visibility_Location2")));
+                    sb.setVisibilityLocation3(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Visibility_Location3")));
+                    sb.setDimension1(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Dimension1")));
+                    sb.setDimension2(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Dimension2")));
+                    sb.setDimension3(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Dimension3")));
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return sb;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception get JCP!", e.toString());
+            return sb;
+        }
+
+        return sb;
+    }
+
 
 }

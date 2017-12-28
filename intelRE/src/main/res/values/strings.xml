@@ -92,4 +92,6 @@
     <string name="title_store_list_download_data">Please Download Data First</string>
     <string name="for_checkout">Please Checkout Current Store</string>
     <string name="want_upload_data">Do you want to Upload Data?</string>
+
+    <string name="title_store_list_geo_tag">Please Store GeoTag First</string>
 </resources>

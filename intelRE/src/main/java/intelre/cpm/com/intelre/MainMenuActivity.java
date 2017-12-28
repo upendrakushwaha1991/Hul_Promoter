@@ -110,7 +110,7 @@ public class MainMenuActivity extends AppCompatActivity
         tv_usertype.setText(user_type);
         navigationView.addHeaderView(headerView);
         navigationView.setNavigationItemSelectedListener(this);
-        db=new INTEL_RE_DB(this);
+        db = new INTEL_RE_DB(this);
 
     }
 
@@ -140,8 +140,16 @@ public class MainMenuActivity extends AppCompatActivity
                     builder.setMessage(getResources().getString(R.string.want_download_data)).setCancelable(false)
                             .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    try {
+                                        db.open();
+                                        db.deletePreviousUploadedData(visit_date);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                     Intent in = new Intent(getApplicationContext(), DownloadActivity.class);
                                     startActivity(in);
+                                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+
                                 }
                             })
                             .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -161,6 +169,8 @@ public class MainMenuActivity extends AppCompatActivity
                                 public void onClick(DialogInterface dialog, int id) {
                                     Intent in = new Intent(getApplicationContext(), PreviousDataUploadActivity.class);
                                     startActivity(in);
+                                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+
                                 }
                             });
                     AlertDialog alert = builder.create();
@@ -176,7 +186,7 @@ public class MainMenuActivity extends AppCompatActivity
             db.open();
             if (checkNetIsAvailable()) {
                 storelist = db.getStoreData(visit_date);
-                if (storelist.size()>0 && downloadIndex == 0) {
+                if (storelist.size() > 0 && downloadIndex == 0) {
                     if (coverageList.size() == 0) {
                         Snackbar.make(webView, R.string.no_data_for_upload, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                     } else {
@@ -189,6 +199,7 @@ public class MainMenuActivity extends AppCompatActivity
                                             public void onClick(DialogInterface dialog, int id) {
                                                 Intent i = new Intent(getBaseContext(), UploadDataActivity.class);
                                                 startActivity(i);
+                                                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                                             }
                                         })
                                         .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -210,7 +221,7 @@ public class MainMenuActivity extends AppCompatActivity
                 } else {
                     Snackbar.make(webView, R.string.title_store_list_download_data, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                 }
-            }else {
+            } else {
                 Snackbar.make(webView, getResources().getString(R.string.nonetwork), Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
             }
@@ -257,7 +268,7 @@ public class MainMenuActivity extends AppCompatActivity
 
     private boolean isValid() {
         boolean flag = false;
-        String storestatus="";
+        String storestatus = "";
         for (int i = 0; i < coverageList.size(); i++) {
             storestatus = db.getSpecificStoreDatawithdate(visit_date, coverageList.get(i).getStoreId()).get(0).getUploadStatus();
             if (!storestatus.equalsIgnoreCase(CommonString.KEY_U)) {
@@ -298,8 +309,6 @@ public class MainMenuActivity extends AppCompatActivity
         db.open();
         downloadIndex = preferences.getInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
         coverageList = db.getCoverageData(visit_date);
-
-
     }
 
 

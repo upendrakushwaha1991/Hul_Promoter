@@ -1,8 +1,10 @@
 package intelre.cpm.com.intelre.dailyentry;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,17 +44,30 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
+import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.delegates.CoverageBean;
 import intelre.cpm.com.intelre.download.DownloadActivity;
 import intelre.cpm.com.intelre.gpsenable.LocationEnableCommon;
 import intelre.cpm.com.intelre.gsonGetterSetter.JourneyPlan;
+import intelre.cpm.com.intelre.gsonGetterSetter.NonWorkingReason;
+import intelre.cpm.com.intelre.retrofit.PostApi;
+import intelre.cpm.com.intelre.upload.PreviousDataUploadActivity;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class StoreListActivity extends AppCompatActivity implements View.OnClickListener,
@@ -79,6 +94,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
     LocationEnableCommon locationEnableCommon;
     private static final String TAG = StoreimageActivity.class.getSimpleName();
     int downloadIndex;
+    ProgressDialog loading;
 
     @Override
 
@@ -117,9 +133,9 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                                 .setCancelable(false)
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        /*Intent startUpload = new Intent(StoreListActivity.this, CheckoutNUpload.class);
-                                        startActivity(startUpload);
-                                        finish();*/
+                                        Intent intent = new Intent(StoreListActivity.this, PreviousDataUploadActivity.class);
+                                        startActivity(intent);
+                                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                                     }
                                 });
                         AlertDialog alert = builder.create();
@@ -127,12 +143,13 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                     } else {
                         try {
                             database.open();
-                            //   database.deletePreviousUploadedData(visit_date);
+                            database.deletePreviousUploadedData(date);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                         Intent startDownload = new Intent(StoreListActivity.this, DownloadActivity.class);
                         startActivity(startDownload);
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                         finish();
                     }
                 } else {
@@ -266,6 +283,9 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                 @Override
                 public void onClick(View v) {
                     int store_id = current.getStoreId();
+                    /*if (!current.getGeoTag().equalsIgnoreCase(CommonString.KEY_Y)) {
+                        Snackbar.make(v, R.string.title_store_list_geo_tag, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    } else*/
                     if (current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_U)) {
                         Snackbar.make(v, R.string.title_store_list_activity_store_already_done, Snackbar.LENGTH_LONG).setAction("Action", null).show();
                     } else if (current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_D)) {
@@ -313,6 +333,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                                         Intent intent = new Intent(StoreListActivity.this, CheckoutActivty.class);
                                         intent.putExtra(CommonString.KEY_STORE_CD, current.getStoreId().toString());
                                         startActivity(intent);
+                                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
 
                                     } else {
                                         Snackbar.make(recyclerView, R.string.nonetwork, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
@@ -416,12 +437,12 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog,
                                                                 int id) {
-                                                UpdateData(current.getStoreId().toString(), current.getVisitDate());
-                                                SharedPreferences.Editor editor = preferences.edit();
-                                                editor.putString(CommonString.KEY_STORE_CD, current.getStoreId().toString());
-                                                editor.commit();
-                                                Intent in = new Intent(StoreListActivity.this, NonWorkingReasonActivity.class);
-                                                startActivity(in);
+                                                try {
+                                                    deletecoverageData(StoreListActivity.this, current);
+
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         })
                                 .setNegativeButton("No",
@@ -440,6 +461,9 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                         editor.commit();
                         Intent in = new Intent(StoreListActivity.this, NonWorkingReasonActivity.class);
                         startActivity(in);
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+
+
                     }
                 }
             }
@@ -639,6 +663,70 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
 
         return status;
     }
+
+    private void deletecoverageData(final Context context, final JourneyPlan current) {
+        try {
+            loading = ProgressDialog.show(StoreListActivity.this, "Processing", "Please wait...",
+                    false, false);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("StoreId", current.getStoreId().toString());
+            jsonObject.put("VisitDate", current.getVisitDate());
+            jsonObject.put("UserId", userId);
+            String jsonString2 = jsonObject.toString();
+            RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString2.toString());
+            Retrofit adapter = new Retrofit.Builder().baseUrl(CommonString.URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            PostApi api = adapter.create(PostApi.class);
+            retrofit2.Call<ResponseBody> call = api.deleteCoverageData(jsonData);
+            call.enqueue(new retrofit2.Callback<ResponseBody>() {
+                @Override
+                public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    ResponseBody responseBody = response.body();
+                    String data = null;
+                    if (responseBody != null && response.isSuccessful()) {
+                        try {
+                            data = response.body().string();
+                            if (data.contains(CommonString.KEY_SUCCESS)) {
+                                UpdateData(current.getStoreId().toString(), current.getVisitDate());
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putString(CommonString.KEY_STORE_CD, current.getStoreId().toString());
+                                editor.commit();
+                                Intent intent = new Intent((Activity)context, NonWorkingReasonActivity.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                                loading.dismiss();
+                            } else {
+                                loading.dismiss();
+                                AlertandMessages.showAlertlogin((Activity) context, data.toString());
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            loading.dismiss();
+                            AlertandMessages.showAlertlogin((Activity) context, e.toString());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
+                    loading.dismiss();
+                    if (t instanceof SocketTimeoutException || t instanceof IOException || t instanceof Exception) {
+                        AlertandMessages.showAlertlogin((Activity) context, getResources().getString(R.string.nonetwork));
+                    } else {
+                        AlertandMessages.showAlertlogin((Activity) context, getResources().getString(R.string.nonetwork));
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            loading.dismiss();
+            AlertandMessages.showAlertlogin((Activity) context, getResources().getString(R.string.nonetwork));
+        }
+
+    }
+
 
 }
 

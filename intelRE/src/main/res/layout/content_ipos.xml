@@ -290,8 +290,6 @@
             android:textColor="#ffffff" />
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
         android:id="@+id/recycle_ipos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

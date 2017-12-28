@@ -27,9 +27,9 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="30dp"
-        android:layout_marginRight="16dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
         android:src="@drawable/save_icon" />
 
 </android.support.design.widget.CoordinatorLayout>

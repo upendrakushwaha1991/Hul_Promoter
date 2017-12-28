@@ -373,7 +373,7 @@ public class IntelLoginActivty extends AppCompatActivity {
                                                                                                             } catch (Exception e) {
                                                                                                                 loading.dismiss();
                                                                                                                 AlertandMessages.showAlertlogin(IntelLoginActivty.this,
-                                                                                                                        e.getLocalizedMessage().toString());
+                                                                                                                        CommonString.MESSAGE_SOCKETEXCEPTION);
                                                                                                             }
                                                                                                         } else {
                                                                                                             loading.dismiss();
@@ -387,11 +387,7 @@ public class IntelLoginActivty extends AppCompatActivity {
 
                                                                                                         if (t instanceof SocketTimeoutException) {
                                                                                                             AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                                                                                                        } else if (t instanceof IOException) {
-                                                                                                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                                                                                                        } else if (t instanceof SocketException) {
-                                                                                                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                                                                                                        } else {
+                                                                                                        }  else {
                                                                                                             AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
                                                                                                         }
 
@@ -515,7 +511,7 @@ public class IntelLoginActivty extends AppCompatActivity {
                                                                                                             } catch (Exception e) {
                                                                                                                 loading.dismiss();
                                                                                                                 AlertandMessages.showAlertlogin(IntelLoginActivty.this,
-                                                                                                                        e.getLocalizedMessage().toString());
+                                                                                                                        CommonString.MESSAGE_NO_RESPONSE_SERVER);
                                                                                                             }
                                                                                                         } /*else {
                                                                                                             loading.dismiss();
@@ -572,7 +568,7 @@ public class IntelLoginActivty extends AppCompatActivity {
                                                     }
                                                 } catch (Exception e) {
                                                     loading.dismiss();
-                                                    AlertandMessages.showAlertlogin(IntelLoginActivty.this, e.getLocalizedMessage().toString());
+                                                    AlertandMessages.showAlertlogin(IntelLoginActivty.this, CommonString.MESSAGE_NO_RESPONSE_SERVER);
                                                 }
                                             }
                                         }
@@ -581,9 +577,9 @@ public class IntelLoginActivty extends AppCompatActivity {
                                         public void onFailure(Call<ResponseBody> call, Throwable t) {
                                             loading.dismiss();
                                             if (t instanceof SocketTimeoutException || t instanceof IOException || t instanceof Exception) {
-                                                AlertandMessages.showAlertlogin(IntelLoginActivty.this, t.getLocalizedMessage().toString());
+                                                AlertandMessages.showAlertlogin(IntelLoginActivty.this,CommonString.MESSAGE_NO_RESPONSE_SERVER);
                                             }else {
-                                                AlertandMessages.showAlertlogin(IntelLoginActivty.this, t.getLocalizedMessage().toString());
+                                                AlertandMessages.showAlertlogin(IntelLoginActivty.this,CommonString.MESSAGE_SOCKETEXCEPTION);
 
                                             }
                                         }
@@ -593,7 +589,7 @@ public class IntelLoginActivty extends AppCompatActivity {
                             } catch (Exception e) {
                                 loading.dismiss();
                                 e.printStackTrace();
-                                AlertandMessages.showAlertlogin(IntelLoginActivty.this, e.getLocalizedMessage().toString());
+                                AlertandMessages.showAlertlogin(IntelLoginActivty.this, CommonString.MESSAGE_SOCKETEXCEPTION);
 
                             }
                         }
@@ -606,7 +602,7 @@ public class IntelLoginActivty extends AppCompatActivity {
                             AlertandMessages.showAlertlogin(IntelLoginActivty.this,
                                     CommonString.MESSAGE_INTERNET_NOT_AVALABLE);
                         } else {
-                            AlertandMessages.showAlertlogin(IntelLoginActivty.this, t.getLocalizedMessage().toString());
+                            AlertandMessages.showAlertlogin(IntelLoginActivty.this, CommonString.MESSAGE_SOCKETEXCEPTION);
 
                         }
                     }
@@ -615,16 +611,16 @@ public class IntelLoginActivty extends AppCompatActivity {
             } catch (Exception e) {
                 loading.dismiss();
                 e.printStackTrace();
-                AlertandMessages.showAlertlogin(IntelLoginActivty.this, e.getLocalizedMessage().toString());
+                AlertandMessages.showAlertlogin(IntelLoginActivty.this, CommonString.MESSAGE_SOCKETEXCEPTION);
             }
 
         } catch (PackageManager.NameNotFoundException e) {
             loading.dismiss();
-            AlertandMessages.showAlertlogin(IntelLoginActivty.this, e.getLocalizedMessage().toString());
+            AlertandMessages.showAlertlogin(IntelLoginActivty.this, CommonString.MESSAGE_SOCKETEXCEPTION);
 
         } catch (JSONException e) {
             loading.dismiss();
-            AlertandMessages.showAlertlogin(IntelLoginActivty.this, e.getLocalizedMessage().toString());
+            AlertandMessages.showAlertlogin(IntelLoginActivty.this, CommonString.MESSAGE_SOCKETEXCEPTION);
         }
     }
 

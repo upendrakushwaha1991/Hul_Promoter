@@ -35,8 +35,6 @@ public class StoreEntryActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
     String store_cd, visit_date, user_type, username;
-    ArrayList<StoreCategoryMaster> added_list = new ArrayList<>();
-    ArrayList<TrainingGetterSetter> inserteslistData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,9 +141,7 @@ public class StoreEntryActivity extends AppCompatActivity {
                         Intent in7 = new Intent(StoreEntryActivity.this, RspListActivity.class);
                         startActivity(in7);
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-
                     }
-
 
                     if (current.getIconImg() == R.drawable.training || current.getIconImg() == R.drawable.training_done) {
                         Intent in7 = new Intent(StoreEntryActivity.this, TrainingActivity.class);
@@ -178,7 +174,7 @@ public class StoreEntryActivity extends AppCompatActivity {
 
     public List<NavMenuItemGetterSetter> getdata() {
         List<NavMenuItemGetterSetter> data = new ArrayList<>();
-        int rspDetail = 0, storeAudit=0, training, visibility, shoperMKTTool, marketInfo;
+        int rspDetail = 0, storeAudit = 0, training, visibility, shoperMKTTool, marketInfo;
 
 
         if (db.getStoreAuditHeaderData().size() > 0) {
@@ -188,7 +184,6 @@ public class StoreEntryActivity extends AppCompatActivity {
                 storeAudit = R.drawable.store_audit;
             }
         }
-
 
 
         if (db.isVisibilitySoftMerchFilled(store_cd) && db.isVisibilitySPMerchFilled(store_cd)) {
@@ -210,7 +205,7 @@ public class StoreEntryActivity extends AppCompatActivity {
             marketInfo = R.drawable.market_info;
         }
 
-        if (db.getinsertedTrainingData(store_cd, visit_date).size()> 0) {
+        if (db.getinsertedTrainingData(store_cd, visit_date).size() > 0) {
             training = R.drawable.training_done;
         } else {
             training = R.drawable.training;

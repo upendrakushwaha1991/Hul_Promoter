@@ -366,6 +366,7 @@ public class StoreimageActivity extends AppCompatActivity implements
                                 database.updateJaurneyPlanSpecificStoreStatus(cdata.getStoreId(), cdata.getVisitDate(), CommonString.KEY_CHECK_IN);
                                 Intent intent = new Intent(StoreimageActivity.this, StoreProfileActivity.class);
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                                 StoreimageActivity.this.finish();
                                 loading.dismiss();
                             }
@@ -383,7 +384,8 @@ public class StoreimageActivity extends AppCompatActivity implements
                     loading.dismiss();
                     if (t instanceof SocketTimeoutException || t instanceof IOException || t instanceof Exception) {
                         AlertandMessages.showAlertlogin(StoreimageActivity.this, t.getLocalizedMessage().toString());
-
+                    }else {
+                        AlertandMessages.showAlertlogin(StoreimageActivity.this,"Please check internet connection");
                     }
                 }
             });

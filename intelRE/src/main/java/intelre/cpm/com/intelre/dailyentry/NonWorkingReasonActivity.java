@@ -56,7 +56,6 @@ public class NonWorkingReasonActivity extends AppCompatActivity
     RelativeLayout rel_cam;
     ArrayList<JourneyPlan> jcp;
     boolean update_flag = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
