@@ -18,15 +18,8 @@ public interface PostApi {
     @retrofit2.http.POST(CommonString.KEY_LOGIN_DETAILS)
     retrofit2.Call<ResponseBody> getLogindetail(@retrofit2.http.Body okhttp3.RequestBody request);
 
-
-    @retrofit2.http.POST("Uploadimages")
-    retrofit2.Call<String> getUploadImage(@retrofit2.http.Body okhttp3.RequestBody request);
-
-   /* @retrofit2.http.POST("DownloadAll")
-    retrofit2.Call<ResponseBody> getDownloadAll(@retrofit2.http.Body okhttp3.RequestBody request);*/
-/*   @retrofit2.http.POST("DownloadAll")
-   Call<ResponseBody> getDownloadAll(@Body RequestBody request);*/
-
+ @POST("Uploadimages")
+ retrofit.Call<String> getUploadImage(@retrofit.http.Body com.squareup.okhttp.RequestBody reqesBody);
 
     @retrofit2.http.POST("DownloadAll")
     Call<String> getDownloadAll(@Body RequestBody request);

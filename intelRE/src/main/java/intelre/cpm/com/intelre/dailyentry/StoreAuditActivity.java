@@ -199,6 +199,7 @@ public class StoreAuditActivity extends AppCompatActivity {
             holder.audit_came.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    lvExp_audit.clearFocus();
                     grp_position = groupPosition;
                     _pathforcheck = store_cd + "_" +
                             childText.getQuestionId() + "_AUDITIMG_" + visit_date.replace("/", "") + "_"
@@ -211,7 +212,7 @@ public class StoreAuditActivity extends AppCompatActivity {
 
             if (!img1.equalsIgnoreCase("")) {
                 if (groupPosition == grp_position) {
-                    childText.setAudit_cam(img1);
+                    _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setAudit_cam(img1);
                     img1 = "";
                 }
             }
@@ -228,7 +229,8 @@ public class StoreAuditActivity extends AppCompatActivity {
             holder.audit_spin.setAdapter(new ReasonSpinnerAdapter(_context, R.layout.spinner_text_view, reason_list));
 
             for (int i = 0; i < reason_list.size(); i++) {
-                if (reason_list.get(i).getAnswerId().toString().equals(childText.getCurrectanswerCd().toString())) {
+                if (reason_list.get(i).getAnswerId().toString().equals( _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition)
+                        .getCurrectanswerCd().toString())) {
                     holder.audit_spin.setSelection(i);
                     break;
                 }
@@ -238,8 +240,11 @@ public class StoreAuditActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     if (pos != 0) {
                         AuditQuestion ans = reason_list.get(pos);
-                        childText.setCurrectanswerCd(ans.getAnswerId().toString());
-                        childText.setCurrectanswer(ans.getAnswer().toString());
+                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setCurrectanswerCd(ans.getAnswerId().toString());
+                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setCurrectanswer(ans.getAnswer().toString());
+
+                        // childText.setCurrectanswerCd(ans.getAnswerId().toString());
+                        //childText.setCurrectanswer(ans.getAnswer().toString());
                     }
                 }
 
@@ -250,7 +255,9 @@ public class StoreAuditActivity extends AppCompatActivity {
 
             if (!checkflag) {
                 boolean tempflag = false;
-                if (childText.getCurrectanswerCd().equals("0") && childText.getAudit_cam().equals("")) {
+                if ( _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getAudit_cam().equals("")){
+                    tempflag = true;
+                }else if ( _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getCurrectanswerCd().equals("0")){
                     tempflag = true;
                 }
                 if (tempflag) {
@@ -424,7 +431,7 @@ public class StoreAuditActivity extends AppCompatActivity {
                     if (_pathforcheck != null && !_pathforcheck.equals("")) {
                         if (new File(CommonString.FILE_PATH + _pathforcheck).exists()) {
                             img1 = _pathforcheck;
-                            // lvExp_audit.invalidateViews();
+                           lvExp_audit.invalidateViews();
                             _pathforcheck = "";
                         }
                     }

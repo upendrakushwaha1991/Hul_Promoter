@@ -53,7 +53,6 @@ import intelre.cpm.com.intelre.delegates.CoverageBean;
 import intelre.cpm.com.intelre.download.DownloadActivity;
 import intelre.cpm.com.intelre.gpsenable.LocationEnableCommon;
 import intelre.cpm.com.intelre.gsonGetterSetter.JourneyPlan;
-import intelre.cpm.com.intelre.gsonGetterSetter.NonWorkingReason;
 
 
 public class StoreListActivity extends AppCompatActivity implements View.OnClickListener,
@@ -142,8 +141,6 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
             }
 
         });
-
-
     }
 
     public boolean checkNetIsAvailable() {
@@ -159,29 +156,13 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
         database.open();
         storelist = database.getStoreData(date);
         downloadIndex = preferences.getInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
-        if (storelist.size() > 0&& downloadIndex==0) {
+        if (storelist.size() > 0 && downloadIndex == 0) {
             adapter = new ValueAdapter(StoreListActivity.this, storelist);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             linearlay.setVisibility(View.GONE);
             fab.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-///for enable checkout
-            for (int i = 0; i < storelist.size(); i++) {
-                if (!storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_C) /*||
-                        !storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_P) ||
-                        !storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_D)
-                        || !storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_U)*/) {
-                    if (chekDataforCheckout(storelist.get(i).getStoreId().toString(), storelist.get(i).getRegionId(),
-                            storelist.get(i).getClassificationId(), storelist.get(i).getStoreTypeId())) {
-                        database.updateJaurneyPlanStatus(storelist.get(i).getStoreId().toString(),
-                                storelist.get(i).getVisitDate(), CommonString.KEY_VALID);
-                        break;
-                    }
-
-                }
-            }
-
         }
     }
 
@@ -241,10 +222,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
             viewHolder.chkbtn.setBackgroundResource(R.mipmap.checkout);
             viewHolder.txt.setText(current.getStoreName() + " - " + current.getClassification());
             viewHolder.address.setText(current.getAddress1());
-            if (current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_VALID)) {
-                viewHolder.chkbtn.setVisibility(View.VISIBLE);
-                viewHolder.imageview.setVisibility(View.INVISIBLE);
-            } else if (current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_U)) {
+            if (current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_U)) {
                 viewHolder.imageview.setVisibility(View.VISIBLE);
                 viewHolder.imageview.setBackgroundResource(R.drawable.tick_u);
                 viewHolder.chkbtn.setVisibility(View.INVISIBLE);
@@ -265,9 +243,16 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                 viewHolder.chkbtn.setVisibility(View.INVISIBLE);
                 viewHolder.Cardbtn.setCardBackgroundColor(getResources().getColor(R.color.colorOrange));
             } else if (current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_CHECK_IN)) {
-                viewHolder.imageview.setVisibility(View.INVISIBLE);
-                viewHolder.chkbtn.setVisibility(View.INVISIBLE);
-                viewHolder.Cardbtn.setCardBackgroundColor(getResources().getColor(R.color.green));
+                if (chekDataforCheckout(current.getStoreId().toString(), current.getRegionId(),
+                        current.getClassificationId(), current.getStoreTypeId())) {
+                    viewHolder.chkbtn.setVisibility(View.VISIBLE);
+                    viewHolder.imageview.setVisibility(View.INVISIBLE);
+                    //database.updateJaurneyPlanStatus(current.getStoreId().toString(), current.getVisitDate(), CommonString.KEY_VALID);
+                } else {
+                    viewHolder.imageview.setVisibility(View.INVISIBLE);
+                    viewHolder.chkbtn.setVisibility(View.INVISIBLE);
+                    viewHolder.Cardbtn.setCardBackgroundColor(getResources().getColor(R.color.green));
+                }
             } else if (current.getUploadStatus().equalsIgnoreCase(CommonString.STORE_STATUS_LEAVE)) {
                 viewHolder.imageview.setVisibility(View.VISIBLE);
                 viewHolder.imageview.setBackgroundResource(R.drawable.leave_tick);

@@ -134,7 +134,7 @@ public class MainMenuActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_download) {
             if (checkNetIsAvailable()) {
-                if (db.isCoverageDataFilled(visit_date)) {
+                if (!db.isCoverageDataFilled(visit_date)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
                     builder.setTitle("Parinaam");
                     builder.setMessage(getResources().getString(R.string.want_download_data)).setCancelable(false)
@@ -176,20 +176,12 @@ public class MainMenuActivity extends AppCompatActivity
             db.open();
             if (checkNetIsAvailable()) {
                 storelist = db.getStoreData(visit_date);
-                boolean checkout_flag = true;
-                if (db.getSkuMasterData().size() > 0 && downloadIndex == 0) {
+                if (storelist.size()>0 && downloadIndex == 0) {
                     if (coverageList.size() == 0) {
                         Snackbar.make(webView, R.string.no_data_for_upload, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                     } else {
-                        if (storelist.size() > 0) {
-                            for (int i = 0; i < storelist.size(); i++) {
-                                if (storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_CHECK_IN)
-                                        || storelist.get(i).getUploadStatus().equalsIgnoreCase(CommonString.KEY_VALID)) {
-                                    checkout_flag = false;
-                                    break;
-                                }
-                            }
-                            if (checkout_flag) {
+                        if (isStoreCheckedIn()) {
+                            if (isValid()) {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
                                 builder.setTitle("Parinaam");
                                 builder.setMessage(getResources().getString(R.string.want_upload_data)).setCancelable(false)
@@ -209,9 +201,10 @@ public class MainMenuActivity extends AppCompatActivity
                                 AlertDialog alert = builder.create();
                                 alert.show();
                             } else {
-                                Snackbar.make(webView, R.string.for_checkout, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-
+                                AlertandMessages.showSnackbarMsg(context, "No data for Upload");
                             }
+                        } else {
+                            Snackbar.make(webView, error_msg, Snackbar.LENGTH_SHORT).setAction("Action", null).show();
                         }
                     }
                 } else {
@@ -245,6 +238,46 @@ public class MainMenuActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private boolean isStoreCheckedIn() {
+
+        boolean result_flag = true;
+        for (int i = 0; i < coverageList.size(); i++) {
+
+            String status = db.getSpecificStoreDatawithdate(visit_date, coverageList.get(i).getStoreId()).get(0).getUploadStatus();
+            if (status != null && (status.equals(CommonString.KEY_CHECK_IN) || status.equals(CommonString.KEY_VALID))) {
+                result_flag = false;
+                error_msg = getResources().getString(R.string.title_store_list_checkout_current);
+                break;
+            }
+        }
+
+        return result_flag;
+    }
+
+    private boolean isValid() {
+        boolean flag = false;
+        String storestatus="";
+        for (int i = 0; i < coverageList.size(); i++) {
+            storestatus = db.getSpecificStoreDatawithdate(visit_date, coverageList.get(i).getStoreId()).get(0).getUploadStatus();
+            if (!storestatus.equalsIgnoreCase(CommonString.KEY_U)) {
+                if ((storestatus.equalsIgnoreCase(CommonString.KEY_C) || storestatus.equalsIgnoreCase(CommonString.KEY_P) ||
+                        storestatus.equalsIgnoreCase(CommonString.STORE_STATUS_LEAVE) ||
+                        storestatus.equalsIgnoreCase(CommonString.KEY_D))) {
+
+                    flag = true;
+                    break;
+
+                }
+            }
+        }
+
+        if (!flag)
+            error_msg = getResources().getString(R.string.no_data_for_upload);
+
+        return flag;
+    }
+
 
     void declaration() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);

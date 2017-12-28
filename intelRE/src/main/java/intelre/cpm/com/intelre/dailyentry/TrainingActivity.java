@@ -220,7 +220,7 @@ public class TrainingActivity extends AppCompatActivity implements AdapterView.O
         int id = view.getId();
         switch (id) {
             case R.id.img_photoMar:
-                _pathforcheck = store_cd + "_MARKETIMG_" + visit_date.replace("/", "") + getCurrentTime().replace(":", "") + ".jpg";
+                _pathforcheck = store_cd +"_"+training_nameid+ "_TRAININGIMG_" + visit_date.replace("/", "") + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
                 intime = getCurrentTime();
                 startCameraActivity();

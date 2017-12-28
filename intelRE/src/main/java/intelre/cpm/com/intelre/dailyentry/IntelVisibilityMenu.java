@@ -33,7 +33,6 @@ public class IntelVisibilityMenu extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
     String store_cd, visit_date, user_type, username;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,7 +170,7 @@ public class IntelVisibilityMenu extends AppCompatActivity {
         }
 
         int img[] = {softMerch, semiparmanet_merch};
-        String name[] = {"Soft Merch", "Sami Parmanent Merch"};
+        String name[] = {"Soft Merch", "Semi Permanent Merch"};
         for (int i = 0; i < img.length; i++) {
             NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
             recData.setIconImg(img[i]);

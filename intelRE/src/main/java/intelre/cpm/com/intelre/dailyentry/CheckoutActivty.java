@@ -189,7 +189,12 @@ public class CheckoutActivty extends AppCompatActivity implements View.OnClickLi
                                                     alert.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
                                                     if (specificDATa.size() > 0) {
                                                         JSONObject jsonObject = new JSONObject();
+                                                        jsonObject.put("UserId", username);
                                                         jsonObject.put("StoreId", specificDATa.get(0).getStoreId());
+                                                        jsonObject.put("Latitude", specificDATa.get(0).getLatitude());
+                                                        jsonObject.put("Longitude", specificDATa.get(0).getLongitude());
+                                                        jsonObject.put("Checkout_Date", specificDATa.get(0).getVisitDate());
+                                                        /*jsonObject.put("StoreId", specificDATa.get(0).getStoreId());
                                                         jsonObject.put("VisitDate", specificDATa.get(0).getVisitDate());
                                                         jsonObject.put("Latitude", specificDATa.get(0).getLatitude());
                                                         jsonObject.put("Longitude", specificDATa.get(0).getLongitude());
@@ -200,7 +205,7 @@ public class CheckoutActivty extends AppCompatActivity implements View.OnClickLi
                                                         jsonObject.put("AppVersion", app_ver);
                                                         jsonObject.put("UploadStatus", CommonString.KEY_C);
                                                         jsonObject.put("Checkout_Image", img_str);
-                                                        jsonObject.put("UserId", username);
+                                                        jsonObject.put("UserId", username);*/
 
                                                         uploadCoverageIntimeDATA(jsonObject.toString());
                                                     }
@@ -295,7 +300,7 @@ public class CheckoutActivty extends AppCompatActivity implements View.OnClickLi
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
             PostApi api = adapter.create(PostApi.class);
-            retrofit2.Call<ResponseBody> call = api.getCoverageDetail(jsonData);
+            retrofit2.Call<ResponseBody> call = api.getCheckout(jsonData);
             call.enqueue(new retrofit2.Callback<ResponseBody>() {
                 @Override
                 public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
@@ -307,8 +312,7 @@ public class CheckoutActivty extends AppCompatActivity implements View.OnClickLi
                             if (!data.equals("0")) {
                                 database.open();
                                 database.updateCoverageCheckoutIMG(store_cd, visit_date, img_str);
-                                database.updateJaurneyPlanSpecificStoreStatus(store_cd,
-                                        visit_date, CommonString.KEY_C);
+                                database.updateJaurneyPlanSpecificStoreStatus(store_cd, visit_date, CommonString.KEY_C);
                                 CheckoutActivty.this.finish();
                                 loading.dismiss();
                             }

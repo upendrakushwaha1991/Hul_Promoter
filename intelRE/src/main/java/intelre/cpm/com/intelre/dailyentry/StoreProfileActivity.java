@@ -17,12 +17,9 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
 import intelre.cpm.com.intelre.constant.CommonString;
@@ -44,7 +41,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
     DatePickerDialog dpd;
     Calendar c;
     INTEL_RE_DB db;
-    boolean update_flag = false, clicksave_flag = false, flag = false;
+    boolean update_flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +50,6 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
         db = new INTEL_RE_DB(this);
         db.open();
         declaration();
-        validate();
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,58 +61,60 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onClick(View view) {
                 btn_next.setVisibility(View.GONE);
-                if (!flag) {
                     uienble();
-                    clicksave_flag = true;
                     btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.save_icon));
-                    flag = true;
-                } else if (flag && update_flag && checkCondition()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(StoreProfileActivity.this);
-                    builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
-                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            db.open();
-                            storePGT = new StoreProfileGetterSetter();
-                            storePGT.setProfileStoreName(storeProfile_userN.
-                                    getText().toString());
-                            storePGT.setProfileAddress1(storeProfile_address_1
-                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileCity(storeProfile_City.getText().toString());
-                            storePGT.setProfileOwner(storeProfile_ownerN.
-                                    getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileContact(storeProfile_contctN.getText().toString());
-                            storePGT.setProfileDOB(storeProfile_dob.getText().toString());
-                            storePGT.setProfileDOA(storeProfile_doa.getText().toString());
-                            storePGT.setProfileVisibilityLocation1(storeProfile_visibtLo
-                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileDimension1(storeProfile_dimention.getText().toString());
+                if (update_flag) {
+                    if (checkCondition()){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(StoreProfileActivity.this);
+                        builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
+                        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                db.open();
+                                storePGT = new StoreProfileGetterSetter();
+                                storePGT.setProfileStoreName(storeProfile_userN.
+                                        getText().toString());
+                                storePGT.setProfileAddress1(storeProfile_address_1
+                                        .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                                storePGT.setProfileCity(storeProfile_City.getText().toString());
+                                storePGT.setProfileOwner(storeProfile_ownerN.
+                                        getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                                storePGT.setProfileContact(storeProfile_contctN.getText().toString());
+                                storePGT.setProfileDOB(storeProfile_dob.getText().toString());
+                                storePGT.setProfileDOA(storeProfile_doa.getText().toString());
+                                storePGT.setProfileVisibilityLocation1(storeProfile_visibtLo
+                                        .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                                storePGT.setProfileDimension1(storeProfile_dimention.getText().toString());
 
-                            storePGT.setProfileVisibilityLocation2(storeProfile_visibtLo2
-                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileDimension2(storeProfile_dimention2.getText().toString());
+                                storePGT.setProfileVisibilityLocation2(storeProfile_visibtLo2
+                                        .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                                storePGT.setProfileDimension2(storeProfile_dimention2.getText().toString());
 
-                            storePGT.setProfileVisibilityLocation3(storeProfile_visibtLo3
-                                    .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                            storePGT.setProfileDimension3(storeProfile_dimention3.getText().toString());
+                                storePGT.setProfileVisibilityLocation3(storeProfile_visibtLo3
+                                        .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
+                                storePGT.setProfileDimension3(storeProfile_dimention3.getText().toString());
 
-                            db.insertStoreProfileData(userId, store_cd, visit_date, storePGT);
-                            btn_next.setVisibility(View.VISIBLE);
-                            btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
-                            uidisableEnable(true);
-                            dialogInterface.dismiss();
-                            clicksave_flag=false;
-                        }
-                    });
-                    builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
-                    builder.show();
+                                db.insertStoreProfileData(userId, store_cd, visit_date, storePGT);
+                                btn_next.setVisibility(View.VISIBLE);
+                                btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
+                                uidisableEnable(true);
+                                dialogInterface.dismiss();
+                                update_flag =false;
+                            }
+                        });
+                        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                        builder.show();
+                    }
 
-                } else if (uienble() && !update_flag) {
+
+                }
+                update_flag = true;
+                /*else if (uienble() && !update_flag) {
                     if (!flag) {
                         btn_next.setVisibility(View.GONE);
                         btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.save_icon));
@@ -158,7 +156,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
                                 btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
                                 uidisableEnable(true);
                                 dialogInterface.dismiss();
-                                clicksave_flag=false;
+                                update_flag=false;
                                 //  startActivity(new Intent(StoreProfileActivity.this, StoreEntryActivity.class));
                                 // overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                             }
@@ -170,20 +168,25 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
                             }
                         });
                         builder.show();
-                    }
+                    }*/
 
-                }
+                //}
             }
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        validate();
+    }
 
     private void validate() {
+        update_flag =false;
         db.open();
         storePGT = db.getStoreProfileData(store_cd, visit_date);
         if (storePGT != null && storePGT.getProfileStoreName() != null) {
-            update_flag = true;
-            uidisableEnable(update_flag);
+            uidisableEnable(true);
             btn_save.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
             storeProfile_userN.setText(storePGT.getProfileStoreName());
             storeProfile_address_1.setText(storePGT.getProfileAddress1());
@@ -394,7 +397,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onBackPressed() {
-        if (!clicksave_flag) {
+        if (!update_flag) {
             finish();
             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
         } else {
@@ -404,6 +407,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // finish();
+                            update_flag=false;
                             btn_next.setVisibility(View.VISIBLE);
                             btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
                             uidisableEnable(true);
@@ -426,7 +430,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            if (!clicksave_flag) {
+            if (!update_flag) {
                 finish();
                 overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
             } else {
@@ -435,6 +439,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                update_flag=false;
                                 btn_next.setVisibility(View.VISIBLE);
                                 btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
                                 uidisableEnable(true);

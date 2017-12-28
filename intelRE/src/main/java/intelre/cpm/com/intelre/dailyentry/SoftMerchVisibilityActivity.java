@@ -280,11 +280,12 @@ public class SoftMerchVisibilityActivity extends AppCompatActivity {
             });
 
 
-            holder.nDeploymentSoft_edt.setText(childText.getDeployment_Value());
+            holder.nDeploymentSoft_edt.setText(_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getDeployment_Value());
 
             holder.visibility_softame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    lvExp_softmerch.clearFocus();
                     grp_position = groupPosition;
                     child_position = childPosition;
                     _pathforcheck = store_cd + "_" +
@@ -310,23 +311,12 @@ public class SoftMerchVisibilityActivity extends AppCompatActivity {
                 holder.visibility_softame.setImageResource(R.mipmap.camera_orange);
             }
 
-            if (!checkflag) {
-                if (checkHeaderArray.contains(groupPosition)) {
-                    holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.red));
-                } else {
-                    holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
-                }
-            } else {
-                holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
-            }
 
-/*
             if (!checkflag) {
                 boolean tempflag = false;
-                if (holder.nDeploymentSoft_edt.getText().toString().equals("") && listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getSoft_merchIMG() != null &&
-                        !_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getSoft_merchIMG().equals("")
-                        ) {
-                    holder.nDeploymentSoft_edt.setHintTextColor(getResources().getColor(R.color.red));
+                if (_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getSoft_merchIMG().equals("")) {
+                    tempflag = true;
+                } else if (_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getDeployment_Value().equals("")) {
                     tempflag = true;
                 }
 
@@ -335,8 +325,9 @@ public class SoftMerchVisibilityActivity extends AppCompatActivity {
                 } else {
                     holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
                 }
+            } else {
+                holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
             }
-*/
 
             return convertView;
         }

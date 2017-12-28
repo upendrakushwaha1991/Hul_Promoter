@@ -267,23 +267,32 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
             holder.perm_previous_txt.setText(childText.getPrev_Qty().toString());
 
 
-            holder.previous_Dep_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    final EditText Caption = (EditText) v;
-                    String value1 = Caption.getText().toString().replaceFirst("^0+(?!$)", "");
-                    if (value1.equals("")) {
-                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue("");
-                    } else {
-                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue(value1);
+
+            if (!childText.getPrev_Qty().equals("0")){
+                holder.previous_Dep_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        final EditText Caption = (EditText) v;
+                        String value1 = Caption.getText().toString().replaceFirst("^0+(?!$)", "");
+                        if (value1.equals("")) {
+                            _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue("");
+                        } else {
+                            _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue(value1);
+                        }
                     }
-                }
 
-            });
+                });
+                holder.previous_Dep_edt.setText(_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getPreV_dValue());
+
+            }else {
+                holder.previous_Dep_edt.setEnabled(false);
+                _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue("0");
+                holder.previous_Dep_edt.setText(_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getPreV_dValue());
+
+            }
 
 
-            holder.previous_Dep_edt.setText(_listDataChild.get(listDataHeader.get(groupPosition))
-                    .get(childPosition).getPreV_dValue());
+
 
             holder.new_Dep_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -307,6 +316,7 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
             holder.permanent_img1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    lvExp_semi_p_merch.clearFocus();
                     grp_position = groupPosition;
                     child_position = childPosition;
                     _pathforcheck = store_cd + "_" +
@@ -320,6 +330,7 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
             holder.permanent_img2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    lvExp_semi_p_merch.clearFocus();
                     grp_position = groupPosition;
                     child_position = childPosition;
                     _pathforcheck = store_cd + "_" +
@@ -333,6 +344,7 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
             holder.permanent_img3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    lvExp_semi_p_merch.clearFocus();
                     grp_position = groupPosition;
                     child_position = childPosition;
                     _pathforcheck = store_cd + "_" +
@@ -387,6 +399,8 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
                 holder.permanent_img3.setImageResource(R.mipmap.camera_orange);
             }
 
+
+
             if (!checkflag) {
                 boolean tempflag = false;
                 if (holder.previous_Dep_edt.getText().toString().equals("") &&
@@ -399,7 +413,6 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
                     tempflag = true;
                 } else if (holder.new_Dep_edt.getText().toString().equals("")) {
                     holder.new_Dep_edt.setHintTextColor(getResources().getColor(R.color.red));
-                    // holder.new_Dep_edt.setHint("Empty");
                     tempflag = true;
                 } else if (childText.getsPermanetIMG_1().equals("") && childText.getsPermanetIMG_2().equals("")
                         && childText.getsPermanetIMG_3().equals("")) {

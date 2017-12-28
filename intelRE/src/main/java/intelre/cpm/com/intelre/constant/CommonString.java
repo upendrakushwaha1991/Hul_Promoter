@@ -20,6 +20,8 @@ public class CommonString {
     public static final String KEY_YYYYMMDD_DATE = "yyyymmddDate";
     public static final String KEY_STOREVISITED_STATUS = "STOREVISITED_STATUS";
     public static String URL = "http://intelre.parinaam.in/webservice/intelwebservice.svc/";
+    public static String URLGORIMAG = "http://intelre.parinaam.in/webservice/Imageupload.asmx/";
+
     public static final String KEY_PATH = "PATH";
     public static final String KEY_VERSION = "APP_VERSION";
     public static final String KEY_SUCCESS = "Success";

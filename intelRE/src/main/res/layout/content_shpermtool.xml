@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".dailyentry.ShoperMToolMenu"
+    android:background="@color/light_gray"
     tools:showIn="@layout/activity_shoper_mtool_menu"
-    android:weightSum="10"
     android:orientation="vertical">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/drawer_layout_recycle_shoper"

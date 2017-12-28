@@ -8,10 +8,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.google.gson.JsonSyntaxException;
@@ -22,13 +27,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
 import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
+import intelre.cpm.com.intelre.MainMenuActivity;
 import intelre.cpm.com.intelre.R;
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
@@ -57,21 +66,14 @@ public class UploadDataActivity extends AppCompatActivity {
     INTEL_RE_DB db;
     Toolbar toolbar;
     String mid = "0";
-    boolean isvalid;
     com.squareup.okhttp.RequestBody body1;
-    public static int uploadedFiles = 0;
     private Retrofit adapter;
-    public int listSize = 0;
     int status = 0;
     Context context;
     private SharedPreferences preferences;
-    String  userId, visit_date, app_version;
+    String userId, visit_date, app_version;
     private ProgressDialog pb;
     ArrayList<CoverageBean> coverageList = new ArrayList<>();
-    ArrayList<StoreCategoryMaster> rsp_detailsList = new ArrayList<>();
-    ArrayList<TrainingGetterSetter> trainingList = new ArrayList<>();
-    ArrayList<AuditQuestion> auditList = new ArrayList<>();
-    ArrayList<PosmMaster> softmerch_list = new ArrayList<>();
     ArrayList<JourneyPlan> specific_uploadStatus;
     StoreProfileGetterSetter storePGT;
 
@@ -117,7 +119,6 @@ public class UploadDataActivity extends AppCompatActivity {
                 keyList.add("SHOPER_MKT_IPOS");
                 keyList.add("SHOPER_MKT_RXT");
                 keyList.add("MARKET_INFO");
-
             }
 
             if (keyList.size() > 0) {
@@ -126,13 +127,17 @@ public class UploadDataActivity extends AppCompatActivity {
                 if (++coverageIndex != coverageList.size()) {
                     uploadDataUsingCoverageRecursive(coverageList, coverageIndex);
                 } else {
-                    String coverageDate = null;
-                    if (coverageList.size() > 0) {
-                        coverageDate = coverageList.get(0).getVisitDate();
+                    //  uploadimages();
+                    pb.setMessage("updoading images");
+                    File dir = new File(CommonString.FILE_PATH);
+                    ArrayList<String> list1 = new ArrayList();
+                    list1 = getFileNames(dir.listFiles());
+                    if (list1.size() > 0) {
+                        uploadImageRecursiveWithIndex(0, list1);
                     } else {
-                        coverageDate = visit_date;
+                        pb.setMessage("Updating status");
+                        updatestatusforu(coverageList, 0, visit_date, CommonString.KEY_U);
                     }
-                 //   uploadImage(coverageDate);
                 }
 
             }
@@ -151,7 +156,6 @@ public class UploadDataActivity extends AppCompatActivity {
                                       final int coverageIndex) {
         try {
             status = 0;
-            isvalid = false;
             final String[] data_global = {""};
             String jsonString = "";
             int type = 0;
@@ -169,7 +173,7 @@ public class UploadDataActivity extends AppCompatActivity {
                     jsonObject.put("Longitude", coverageList.get(coverageIndex).getLongitude());
                     jsonObject.put("ReasonId", coverageList.get(coverageIndex).getReasonid());
                     jsonObject.put("SubReasonId", "0");
-                    jsonObject.put("Remark", coverageList.get(coverageIndex).getRemark());
+                    jsonObject.put("Remark", "");
                     jsonObject.put("ImageName", coverageList.get(coverageIndex).getImage());
                     jsonObject.put("AppVersion", app_version);
                     jsonObject.put("UploadStatus", CommonString.KEY_P);
@@ -216,16 +220,27 @@ public class UploadDataActivity extends AppCompatActivity {
                 case "RSP_DETAILS_DATA":
                     //region primary bay data
                     db.open();
-                    rsp_detailsList = db.getRspDetailinsertData(coverageList.get(coverageIndex).getStoreId().toString());
+                    ArrayList<StoreCategoryMaster> rsp_detailsList = db.getRspDetailinsertData(coverageList.get(coverageIndex).getStoreId().toString());
                     if (rsp_detailsList.size() > 0) {
                         JSONArray rspArray = new JSONArray();
                         for (int j = 0; j < rsp_detailsList.size(); j++) {
+                            boolean irep_status = rsp_detailsList.get(j).getIREPStatus();
+                            String value = "";
+                            if (irep_status) {
+                                value = "1";
+                            } else {
+                                value = "0";
+                            }
                             JSONObject obj = new JSONObject();
                             obj.put("MID", coverageList.get(coverageIndex).getMID());
                             obj.put("UserId", userId);
+                            obj.put("RSP_NAME", rsp_detailsList.get(j).getRspName());
                             obj.put("RSP_ID", rsp_detailsList.get(j).getRspId().toString());
                             obj.put("EMAIL", rsp_detailsList.get(j).getEmail());
                             obj.put("MOBILE", rsp_detailsList.get(j).getMobile());
+                            obj.put("FLAG", rsp_detailsList.get(j).getFlag());
+                            obj.put("STORE_CD", rsp_detailsList.get(j).getStoreId().toString());
+                            obj.put("IREP_STATUS", value);
                             obj.put("BRAND_ID", rsp_detailsList.get(j).getBrandId().toString());
                             rspArray.put(obj);
                         }
@@ -242,7 +257,7 @@ public class UploadDataActivity extends AppCompatActivity {
                 case "TRAINING_DATA":
                     //region secondary display data
                     db.open();
-                    trainingList = db.getinsertedTrainingData(coverageList.get(coverageIndex).getStoreId().toString(),
+                    ArrayList<TrainingGetterSetter> trainingList = db.getinsertedTrainingData(coverageList.get(coverageIndex).getStoreId().toString(),
                             coverageList.get(coverageIndex).getVisitDate());
                     if (trainingList.size() > 0) {
                         JSONArray secArray = new JSONArray();
@@ -270,7 +285,7 @@ public class UploadDataActivity extends AppCompatActivity {
                 case "STORE_AUDIT_DATA":
                     //region Promotion data
                     db.open();
-                    auditList = db.getStoreAuditData(coverageList.get(coverageIndex).getStoreId());
+                    ArrayList<AuditQuestion> auditList = db.getStoreAuditData(coverageList.get(coverageIndex).getStoreId());
                     if (auditList.size() > 0) {
                         JSONArray promoArray = new JSONArray();
                         for (int j = 0; j < auditList.size(); j++) {
@@ -297,7 +312,7 @@ public class UploadDataActivity extends AppCompatActivity {
                 case "VISIBILITY_SOFT_MERCH_DATA":
                     //region Competition data
                     db.open();
-                    softmerch_list = db.getVisibilitySoftMerchData(coverageList.get(coverageIndex).getStoreId());
+                    ArrayList<PosmMaster> softmerch_list = db.getVisibilitySoftMerchData(coverageList.get(coverageIndex).getStoreId());
                     if (softmerch_list.size() > 0) {
                         JSONArray compArray = new JSONArray();
                         for (int j = 0; j < softmerch_list.size(); j++) {
@@ -338,7 +353,7 @@ public class UploadDataActivity extends AppCompatActivity {
                             obj.put("SP_VISIBILITY_NEWDEPLOYMENT", semipermanentMerchList.get(j).getNewDeploymnt_Value());
                             obj.put("SP_IMG_1", semipermanentMerchList.get(j).getsPermanetIMG_1());
                             obj.put("SP_IMG_2", semipermanentMerchList.get(j).getsPermanetIMG_2());
-                            obj.put("SP_IMG_1", semipermanentMerchList.get(j).getsPermanetIMG_3());
+                            obj.put("SP_IMG_3", semipermanentMerchList.get(j).getsPermanetIMG_3());
 
                             posmArray.put(obj);
 
@@ -477,19 +492,17 @@ public class UploadDataActivity extends AppCompatActivity {
             final int[] finalJsonIndex = {keyIndex};
             final String finalKeyName = keyList.get(keyIndex);
             if (jsonString != null && !jsonString.equalsIgnoreCase("")) {
-                pb.setMessage("Uploading (" + keyIndex + "/" + keyList.size() + ") \n" + keyList.get(keyIndex) + "\n Store uploading " + (coverageIndex + 1) + "/" + coverageList.size());
+                pb.setMessage("Uploading (" + keyIndex + "/" + keyList.size() + ") \n" + keyList.get(keyIndex) + "\n Store uploading " +
+                        (coverageIndex + 1) + "/" + coverageList.size());
                 RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
-                adapter = new Retrofit.Builder().baseUrl(CommonString.URL).addConverterFactory(GsonConverterFactory.create()).
-                        build();
+                adapter = new Retrofit.Builder().baseUrl(CommonString.URL).addConverterFactory(GsonConverterFactory.create()).build();
                 PostApi api = adapter.create(PostApi.class);
                 Call<ResponseBody> call = null;
-
                 if (type == CommonString.COVERAGE_DETAIL) {
                     call = api.getCoverageDetail(jsonData);
                 } else if (type == CommonString.UPLOADJsonDetail) {
                     call = api.getUploadJsonDetail(jsonData);
                 }
-
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -499,24 +512,33 @@ public class UploadDataActivity extends AppCompatActivity {
                             try {
                                 data = response.body().string();
                                 if (data.equalsIgnoreCase("")) {
+                                    pb.dismiss();
                                     data_global[0] = "";
-                                    AlertandMessages.showAlert((Activity) context,
-                                            "Invalid Data : problem occured at " + keyList.get(keyIndex), true);
+                                    AlertandMessages.showAlert((Activity) context, "Invalid Data :" +
+                                            " problem occured at " + keyList.get(keyIndex), true);
                                 } else {
                                     data = data.substring(1, data.length() - 1).replace("\\", "");
                                     data_global[0] = data;
-
                                     if (finalKeyName.equalsIgnoreCase("CoverageDetail_latest")) {
                                         try {
                                             coverageList.get(coverageIndex).setMID(Integer.parseInt(data_global[0]));
+                                            specific_uploadStatus.get(0).setUploadStatus(CommonString.KEY_P);
+                                            db.updateJaurneyPlanSpecificStoreStatus(coverageList.get(coverageIndex).getStoreId(),
+                                                    coverageList.get(coverageIndex).getVisitDate(),
+                                                    CommonString.KEY_P);
+
                                         } catch (NumberFormatException ex) {
+                                            pb.dismiss();
                                             AlertandMessages.showAlert((Activity) context, "Error in Uploading Data at " + finalKeyName, true);
                                         }
                                     } else if (data_global[0].contains(CommonString.KEY_SUCCESS)) {
-                                        //  if (finalKeyName.equalsIgnoreCase("GeoTag")) {
-                                        //  db.updateInsertedGeoTagStatus(coverageList.get(coverageIndex).getStoreId(), CommonString.KEY_Y);
-                                        // db.updateStatus(coverageList.get(coverageIndex).getStoreId(), CommonString.KEY_Y);
+                                        if (finalKeyName.equalsIgnoreCase("GeoTag")) {
+                                            // db.updateInsertedGeoTagStatus(coverageList.get(coverageIndex).getStoreId(), CommonString.KEY_Y);
+                                            // db.updateStatus(coverageList.get(coverageIndex).getStoreId(), CommonString.KEY_Y);
+                                            // db.updateGeoTagStatusForPjpDevaition(coverageList.get(coverageIndex).getStoreId(), CommonString.KEY_Y);
+                                        }
                                     } else {
+                                        pb.dismiss();
                                         AlertandMessages.showAlert((Activity) context, "Error in Uploading Data at " + finalKeyName + " : " + data_global[0], true);
                                     }
                                     finalJsonIndex[0]++;
@@ -525,6 +547,7 @@ public class UploadDataActivity extends AppCompatActivity {
                                     } else {
                                         pb.setMessage("updating status :" + coverageIndex);
                                         //uploading status D for current store from coverageList
+                                        specific_uploadStatus.get(0).setUploadStatus(CommonString.KEY_D);
                                         updateStatus(coverageList, coverageIndex, CommonString.KEY_D);
                                     }
                                 }
@@ -542,18 +565,8 @@ public class UploadDataActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        isvalid = true;
                         pb.dismiss();
-                        if (t instanceof SocketTimeoutException) {
-                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                        } else if (t instanceof IOException) {
-                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                        } else if (t instanceof SocketException) {
-                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                        } else {
-                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                        }
-
+                        AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
                     }
                 });
 
@@ -564,37 +577,31 @@ public class UploadDataActivity extends AppCompatActivity {
                 } else {
                     pb.setMessage("updating status :" + coverageIndex);
                     //uploading status D for current store from coverageList
+                    specific_uploadStatus.get(0).setUploadStatus(CommonString.KEY_D);
                     updateStatus(coverageList, coverageIndex, CommonString.KEY_D);
 
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            pb.dismiss();
+            AlertandMessages.showAlert((Activity) context, ex.toString(), true);
         }
     }
 
-    void updateStatus(final ArrayList<CoverageBean> coverageList, final int coverageIndex, final String status) {
+    void updateStatus(final ArrayList<CoverageBean> coverageList, final int coverageIndex,
+                      final String status) {
         if (coverageList.get(coverageIndex) != null) {
             try {
                 final int[] tempcoverageIndex = {coverageIndex};
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("StoreId", coverageList.get(coverageIndex).getStoreId());
                 jsonObject.put("VisitDate", coverageList.get(coverageIndex).getVisitDate());
-                jsonObject.put("Latitude", coverageList.get(coverageIndex).getLatitude());
-                jsonObject.put("Longitude", coverageList.get(coverageIndex).getLongitude());
-                jsonObject.put("ReasonId", coverageList.get(coverageIndex).getReasonid());
-                jsonObject.put("SubReasonId", "0");
-                jsonObject.put("Remark", coverageList.get(coverageIndex).getRemark());
-                jsonObject.put("ImageName", coverageList.get(coverageIndex).getImage());
-                jsonObject.put("AppVersion", app_version);
-                jsonObject.put("UploadStatus",status);
-                jsonObject.put("Checkout_Image", coverageList.get(coverageIndex).getCkeckout_image());
                 jsonObject.put("UserId", userId);
-
+                jsonObject.put("Status", status);
                 RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
                 adapter = new Retrofit.Builder().baseUrl(CommonString.URL).addConverterFactory(GsonConverterFactory.create()).build();
                 PostApi api = adapter.create(PostApi.class);
-                Call<ResponseBody>call = api.getCoverageDetail(jsonData);
+                Call<ResponseBody> call = api.getCoverageStatusDetail(jsonData);
                 pb.setMessage("Uploading store status " + (coverageIndex + 1) + "/" + coverageList.size());
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
@@ -609,32 +616,29 @@ public class UploadDataActivity extends AppCompatActivity {
                                     AlertandMessages.showAlert((Activity) context, "Error in Uploading status at coverage :" + coverageIndex, true);
                                 } else {
                                     data = data.substring(1, data.length() - 1).replace("\\", "");
-                                    if (!data.contains("0")) {
+                                    if (data.contains("1")) {
+                                        db.open();
+                                        db.updateJaurneyPlanSpecificStoreStatus(coverageList.get(coverageIndex).getStoreId(),
+                                                coverageList.get(coverageIndex).getVisitDate(), status);
+                                        specific_uploadStatus.get(0).setUploadStatus(status);
                                         tempcoverageIndex[0]++;
                                         if (tempcoverageIndex[0] != coverageList.size()) {
-                                            //updateStatus(coverageList, tempcoverageIndex[0], CommonString.KEY_D);
-                                            specific_uploadStatus.get(0).setUploadStatus(status);
                                             uploadDataUsingCoverageRecursive(coverageList, tempcoverageIndex[0]);
                                         } else {
-                                            pb.setMessage("updoading images");
-
                                             //  uploadimages();
+                                            pb.setMessage("uploading images");
                                             File dir = new File(CommonString.FILE_PATH);
                                             ArrayList<String> list1 = new ArrayList();
                                             list1 = getFileNames(dir.listFiles());
                                             if (list1.size() > 0) {
-                                             //   uploadImageRecursiveWithIndex(0, list1);
+                                                uploadImageRecursiveWithIndex(0, list1);
                                             } else {
-                                              //  dialog.dismiss();
-                                               // new updatestatusAsyntask(UploadDataActivity.this).execute();
+                                                db.open();
+                                                db.updateJaurneyPlanSpecificStoreStatus(coverageList.get(coverageIndex).getStoreId(),
+                                                        coverageList.get(coverageIndex).getVisitDate(), status);
+                                                updateStatus(coverageList, coverageIndex, status);
+
                                             }
-                                           /* String coverageDate = null;
-                                            if (coverageList.size() > 0) {
-                                                coverageDate = coverageList.get(0).getVisitDate();
-                                            } else {
-                                                coverageDate = visit_date;
-                                            }
-                                            uploadImage(coverageDate);*/
                                         }
                                     } else {
                                         pb.dismiss();
@@ -655,28 +659,21 @@ public class UploadDataActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        isvalid = true;
                         pb.dismiss();
-                        if (t instanceof SocketTimeoutException) {
-                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                        } else if (t instanceof IOException) {
-                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                        } else if (t instanceof SocketException) {
-                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                        } else {
-                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
-                        }
+                        AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
 
                     }
                 });
 
-
             } catch (JSONException ex) {
+                pb.dismiss();
+                AlertandMessages.showAlert((Activity) context, ex.toString(), true);
 
             }
         }
 
     }
+
     public ArrayList<String> getFileNames(File[] file) {
         ArrayList<String> arrayFiles = new ArrayList<String>();
         if (file.length > 0) {
@@ -686,31 +683,56 @@ public class UploadDataActivity extends AppCompatActivity {
         return arrayFiles;
     }
 
-/*
     public void uploadImageRecursiveWithIndex(final int index, final ArrayList<String> filelist) {
         final int[] indexlocal = {index};
         String file = null, foldername = null;
         file = filelist.get(indexlocal[0]);
-        //file path
+        //file path\\
+
         if (new File(CommonString.FILE_PATH + file).exists()) {
-            if (file.contains("StoreImage") || file.contains("NonWorking")) {
-                foldername = "StoreImages";
-            } else if (file.contains("WINDOWImage")) {
-                foldername = "WindowImages";
-            } else if (file.contains("front")) {
-                foldername = "GEOStoreImages";
+            if (file.contains("_STOREIMG_") || file.contains("_NONWORKING_") || file.contains("_STOREC_OUTIMG_")) {
+                foldername = "CoverageImages";
+            } else if (file.contains("_AUDITIMG_")) {
+                foldername = "AuditImages";
+            } else if (file.contains("_AUDITIMG_")) {
+                foldername = "AuditImages";
+            } else if (file.contains("_SOFTMERCHIMG_")) {
+                foldername = "SoftPosmImages";
+            } else if (file.contains("_SEMIPMERCHIMG_ONE_") || file.contains("_SEMIPMERCHIMG_TWO_") || file.contains("_SEMIPMERCHIMG_THREE_")) {
+                foldername = "PermanantPosmImages";
+            } else if (file.contains("_IPOSING_")) {
+                foldername = "IPOSImages";
+            } else if (file.contains("_RXTING_")) {
+                foldername = "RXTImages";
+            } else if (file.contains("_MARKETINFOING_")) {
+                foldername = "MarketInfoImages";
+            } else if (file.contains("_TRAININGIMG_")) {
+                foldername = "TrainingImages";
+            } else if (file.contains("_GeoTag-")) {
+                foldername = "GeoTagImages";
             }
         }
-      //  data.value = 100;
+        //  data.value = 100;
+        pb.setMessage("Uploading (" + foldername + "/" + coverageList.size() + ")");
         pb.setProgress((index * 100 / filelist.size()));
-      //  pb.setText(index + "/" + filelist.size());
         File originalFile = new File(CommonString.FILE_PATH + file);
         //bitmap
         final File finalFile = saveBitmapToFile(originalFile);
-        RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
-        adapter = new Retrofit.Builder().baseUrl(CommonString.URL).addConverterFactory(GsonConverterFactory.create()).build();
-        PostApi api = adapter.create(PostApi.class);
+        final com.squareup.okhttp.RequestBody photo = com.squareup.okhttp.RequestBody.create(
+                com.squareup.okhttp.MediaType.parse("application/octet-stream"), finalFile);
+        com.squareup.okhttp.RequestBody body1 = new MultipartBuilder()
+                .type(MultipartBuilder.FORM)
+                .addFormDataPart("file", finalFile.getName(), photo)
+                .addFormDataPart("FolderName", foldername)
+                .build();
+        retrofit.Retrofit adapter = new retrofit.Retrofit.Builder()
+                .baseUrl(CommonString.URLGORIMAG)
+                .addConverterFactory(new StringConverterFactory())
+                .build();
+
         //interface
+        PostApi api = adapter.create(PostApi.class);
+        retrofit.Call<String> call = api.getUploadImage(body1);
         call.enqueue(new retrofit.Callback<String>() {
             @Override
             public void onResponse(retrofit.Response<String> response) {
@@ -718,22 +740,22 @@ public class UploadDataActivity extends AppCompatActivity {
                     finalFile.delete();
                     indexlocal[0]++;
                     if (indexlocal[0] == filelist.size()) {
-                        //updateStatus();
-                      //  new updatestatusAsyntask(UploadDataActivity.this).execute();
-                        //status
+                        pb.setMessage("Updating Status");
+                        specific_uploadStatus.get(0).setUploadStatus(CommonString.KEY_U);
+                        updatestatusforu(coverageList, 0, visit_date, CommonString.KEY_U);
                     } else {
                         uploadImageRecursiveWithIndex(indexlocal[0], filelist);
                     }
                 } else {
-                  pb.dismiss();
+                    pb.dismiss();
                     AlertandMessages.showAlert(UploadDataActivity.this, finalFile.getName() + " Image Not Uploaded", true);
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
+                pb.dismiss();
                 if (t instanceof IOException || t instanceof SocketTimeoutException || t instanceof SocketException) {
-                    dialog.dismiss();
                     AlertDialog.Builder builder = new AlertDialog.Builder(UploadDataActivity.this);
                     builder.setTitle("Parinaam");
                     builder.setMessage("Network Error in uploading images")
@@ -751,9 +773,142 @@ public class UploadDataActivity extends AppCompatActivity {
             }
         });
     }
-*/
+
+    private void updatestatusforu(final ArrayList<CoverageBean> coverageList, int index, final String visit_date, final String status) {
+        try {
+            db.open();
+            final int[] indexlocal = {index};
+            final boolean[] status_u = {false};
+            final ArrayList<JourneyPlan> store_data = db.getSpecificStoreData(coverageList.get(index).getStoreId().toString());
+            if (store_data.size() > 0) {
+                if (store_data.get(indexlocal[0]).getUploadStatus().equalsIgnoreCase(CommonString.KEY_D)) {
+                    index++;
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("StoreId", store_data.get(indexlocal[0]).getStoreId());
+                    jsonObject.put("VisitDate", visit_date);
+                    jsonObject.put("UserId", userId);
+                    jsonObject.put("Status", status);
+                    RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
+                    adapter = new Retrofit.Builder().baseUrl(CommonString.URL).addConverterFactory(GsonConverterFactory.create()).build();
+                    PostApi api = adapter.create(PostApi.class);
+                    Call<ResponseBody> call = api.getCoverageStatusDetail(jsonData);
+                    pb.setMessage("Uploading store status " + (index) + "/" + coverageList.size());
+                    final int finalIndex = index;
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            ResponseBody responseBody = response.body();
+                            String data = null;
+                            if (responseBody != null && response.isSuccessful()) {
+                                try {
+                                    data = response.body().string();
+                                    if (data.equalsIgnoreCase("")) {
+                                        pb.dismiss();
+                                        status_u[0] = false;
+                                        AlertandMessages.showAlert((Activity) context, "Error in Uploading status at coverage :" + finalIndex, true);
+                                    } else {
+                                        data = data.substring(1, data.length() - 1).replace("\\", "");
+                                        if (data.contains("1")) {
+                                            status_u[0] = true;
+                                            db.open();
+                                            db.updateJaurneyPlanSpecificStoreStatus(store_data.get(indexlocal[0]).getStoreId().toString(),
+                                                    store_data.get(indexlocal[0]).getVisitDate(), status);
+                                            db.deleteSpecificStoreData(store_data.get(indexlocal[0]).getStoreId().toString());
+                                            indexlocal[0]++;
+                                            if (indexlocal[0] != coverageList.size()) {
+                                                updatestatusforu(coverageList, indexlocal[0], visit_date, CommonString.KEY_U);
+                                            } else {
+                                                if (status_u[0] == true) {
+                                                    pb.dismiss();
+                                                    AlertandMessages.showAlert((Activity) context, "All data and images upload Successfully.", true);
+                                                }
+                                            }
+                                        } else {
+                                            status_u[0] = false;
+                                            pb.dismiss();
+                                            AlertandMessages.showAlert((Activity) context, "Error in Uploading status at coverage :" + finalIndex, true);
+                                        }
+
+                                    }
+                                } catch (Exception e) {
+                                    status_u[0] = false;
+                                    pb.dismiss();
+                                    AlertandMessages.showAlert((Activity) context, "Error in Uploading status at coverage :" + finalIndex, true);
+                                }
+                            } else {
+                                status_u[0] = false;
+                                pb.dismiss();
+                                AlertandMessages.showAlert((Activity) context, "Error in Uploading status at coverage :" + finalIndex, true);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            status_u[0] = false;
+                            pb.dismiss();
+                            AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
 
 
+                        }
+                    });
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            pb.dismiss();
+            AlertandMessages.showAlert((Activity) context, e.getMessage().toString(), true);
+
+        }
+
+    }
+
+    public static File saveBitmapToFile(File file) {
+        File file2 = file;
+        try {
+            int inWidth = 0;
+            int inHeight = 0;
+            InputStream in = new FileInputStream(file2);
+            // decode image size (decode metadata only, not the whole image)
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(in, null, options);
+            in.close();
+            in = null;
+            // save width and height
+            inWidth = options.outWidth;
+            inHeight = options.outHeight;
+            // decode full image pre-resized
+            in = new FileInputStream(file2);
+            options = new BitmapFactory.Options();
+            // calc rought re-size (this is no exact resize)
+            options.inSampleSize = Math.max(inWidth / 800, inHeight / 500);
+            // decode full image
+            Bitmap roughBitmap = BitmapFactory.decodeStream(in, null, options);
+
+            // calc exact destination size
+            Matrix m = new Matrix();
+            RectF inRect = new RectF(0, 0, roughBitmap.getWidth(), roughBitmap.getHeight());
+            RectF outRect = new RectF(0, 0, 800, 500);
+            m.setRectToRect(inRect, outRect, Matrix.ScaleToFit.CENTER);
+            float[] values = new float[9];
+            m.getValues(values);
+
+            // resize bitmap
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(roughBitmap,
+                    (int) (roughBitmap.getWidth() * values[0]), (int) (roughBitmap.getHeight() * values[4]), true);
+            // save image
+            try {
+                FileOutputStream out = new FileOutputStream(file2);
+                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            } catch (Exception e) {
+                Log.e("Image", e.toString(), e);
+            }
+        } catch (IOException e) {
+            Log.e("Image", e.toString(), e);
+            return file2;
+        }
+        return file;
+    }
 
 
 }
