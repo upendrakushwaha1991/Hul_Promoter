@@ -81,14 +81,14 @@ public class RspListActivity extends AppCompatActivity {
         }
 
         @Override
-        public respListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int i) {
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int i) {
             View view = inflator.inflate(R.layout.rsplist, parent, false);
-            respListAdapter.MyViewHolder holder = new respListAdapter.MyViewHolder(view);
+            MyViewHolder holder = new MyViewHolder(view);
             return holder;
         }
 
         @Override
-        public void onBindViewHolder(final respListAdapter.MyViewHolder viewHolder, final int position) {
+        public void onBindViewHolder(final MyViewHolder viewHolder, final int position) {
 
             final StoreCategoryMaster current = data.get(position);
             viewHolder.rsplist.setText(String.valueOf(current.getRspName()));
@@ -170,8 +170,6 @@ public class RspListActivity extends AppCompatActivity {
 
        // storelist = db.getStoreData(date);
         storePGT = db.getStoreProfileData(store_cd, visit_date);
-      /*  list=db.getRspDetailData(storelist.get(0).getStoreId());*/
-
 
         list = db.getRspDetailData(store_cd);
         added_list = db.getRspDetailinsertData(store_cd);
@@ -213,12 +211,20 @@ public class RspListActivity extends AppCompatActivity {
         user_type = preferences.getString(CommonString.KEY_USER_TYPE, null);
         store_cd = preferences.getString(CommonString.KEY_STORE_CD, null);
 
+
         toolbar.setTitle(getString(R.string.main_menu_activity_name) + " - " + date);
         getSupportActionBar().setTitle(getString(R.string.title_activity_rsp_list) + " \n- " + date);
         db = new INTEL_RE_DB(RspListActivity.this);
         db.open();
         storelist = db.getStoreData(date);
-        store_name.setText(storelist.get(0).getStoreName());
+      //  storelist = db.getStoreData(date);
+        if (storelist.size()>0){
+            for (int i = 0; i < storelist.size(); i++) {
+                store_name.setText(storelist.get(i).getStoreName());
+            }
+        }
+
+        //  store_name.setText(storelist.get(0).getStoreName());
     }
 
     private int getrspPosition(int rsp_id ) {

@@ -134,7 +134,6 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         db.delete(CommonString.CREATE_TABLE_RXT_DATA, null, null);
     }
 
-
     @SuppressLint("LongLogTag")
     public void deletePreviousUploadedData(String visit_date) {
         Cursor dbcursor = null;
@@ -308,7 +307,6 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
             for (int i = 0; i < data.size(); i++) {
 
-
                 values.put("Question_Id", data.get(i).getQuestionId());
                 values.put("Question", data.get(i).getQuestion());
                 values.put("Answer", data.get(i).getAnswer());
@@ -361,7 +359,6 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
             return false;
         }
     }
-
 
     //upendra_18_12_2017 Training_Type
     public boolean insertTrainingTypeData(TrainingTypeGetterSetter trainingType) {
@@ -814,6 +811,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         return list;
     }
 
+
     //jeevan   nmjnmn,
     public long insertStoreProfileData(
             String user_id, String storeid, String visit_date, StoreProfileGetterSetter save_listDataHeader) {
@@ -1164,6 +1162,40 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         return list;
     }
 
+
+   //Upendra
+    public ArrayList<BrandMaster> getBrandMasterData() {
+
+        ArrayList<BrandMaster> list = new ArrayList<BrandMaster>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM Brand_Master", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BrandMaster sb = new BrandMaster();
+
+                    sb.setBrandId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand_Id"))));
+                    sb.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand")));
+                    sb.setCategoryId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Category_Id"))));
+                    sb.setBrandSequence(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand_Sequence"))));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+
+            return list;
+        }
+
+
+        return list;
+    }
     public ArrayList<PosmMaster> getSofMerchPosmHeaderData(int region_cd, int classification_cd, int store_type_cd) {
         Log.d("Fetching", "Storedata--------------->Start<------------");
         ArrayList<PosmMaster> list = new ArrayList<>();
@@ -1671,8 +1703,10 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
                     SkuMaster sb = new SkuMaster();
                     sb.setSku(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU")));
                     sb.setSkuId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU_CD"))));
+
                     sb.setNumber(dbcursor.getString(dbcursor.getColumnIndexOrThrow("NUMBER")));
                     sb.setMachine_on(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MACHINE_ON")));
+
                     sb.setIpos(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IPOS")));
                     sb.setIpos_img(dbcursor.getString(dbcursor.getColumnIndexOrThrow("IPOS_IMG")));
                     sb.setKey_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID)));
@@ -1989,8 +2023,6 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         }
         return l;
     }
-
-
     @SuppressLint("LongLogTag")
     public ArrayList<NonWorkingReason> getNonWorkingDataByFlag(boolean flag) {
         Log.d("FetchingAssetdata--------------->Start<------------",
@@ -2073,7 +2105,36 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         return list;
     }
 
+    public ArrayList<WindowMaster> getTrainingTypeData() {
 
+        ArrayList<WindowMaster> list = new ArrayList<WindowMaster>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM Training_Type", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    WindowMaster sb = new WindowMaster();
+
+                    sb.setTrainingTypeId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type_Id"))));
+                    sb.setTrainingType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+
+            return list;
+        }
+
+
+        return list;
+    }
 
     public ArrayList<WindowChecklist> getTrainingTopicData(String training_nameid) {
 
@@ -2176,38 +2237,6 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         db.execSQL("DELETE FROM DR_TRAINING WHERE ID = '" + user_id + "'");
     }
 
-    public ArrayList<BrandMaster> getBrandMasterData() {
-
-        ArrayList<BrandMaster> list = new ArrayList<BrandMaster>();
-        Cursor dbcursor = null;
-        try {
-            dbcursor = db.rawQuery("SELECT * FROM Brand_Master", null);
-
-            if (dbcursor != null) {
-                dbcursor.moveToFirst();
-                while (!dbcursor.isAfterLast()) {
-                    BrandMaster sb = new BrandMaster();
-
-                    sb.setBrandId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand_Id"))));
-                    sb.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand")));
-                    sb.setCategoryId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Category_Id"))));
-                    sb.setBrandSequence(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand_Sequence"))));
-
-                    list.add(sb);
-                    dbcursor.moveToNext();
-                }
-                dbcursor.close();
-                return list;
-            }
-
-        } catch (Exception e) {
-
-            return list;
-        }
-
-
-        return list;
-    }
 
     public ArrayList<StoreCategoryMaster> getRspDetailinsertData(String storeId) {
 
@@ -2397,7 +2426,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<JourneyPlan> getSpecificStoreDatawithdate(String visit_date, String store_cd) {
+    public ArrayList<JourneyPlan> getSpecificStoreDatawithdate(String visit_date,String store_cd) {
         ArrayList<JourneyPlan> list = new ArrayList<JourneyPlan>();
         Cursor dbcursor = null;
         try {
@@ -2451,7 +2480,6 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
         return list;
     }
-
 
     @SuppressLint("LongLogTag")
     public ArrayList<CoverageBean> getcoverageDataPrevious(String visitdate) {
@@ -2622,36 +2650,5 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
             return 0;
         }
     }
-    public ArrayList<WindowMaster> getTrainingTypeData() {
-
-        ArrayList<WindowMaster> list = new ArrayList<WindowMaster>();
-        Cursor dbcursor = null;
-        try {
-            dbcursor = db.rawQuery("SELECT * FROM Training_Type", null);
-
-            if (dbcursor != null) {
-                dbcursor.moveToFirst();
-                while (!dbcursor.isAfterLast()) {
-                    WindowMaster sb = new WindowMaster();
-
-                    sb.setTrainingTypeId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type_Id"))));
-                    sb.setTrainingType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type")));
-
-                    list.add(sb);
-                    dbcursor.moveToNext();
-                }
-                dbcursor.close();
-                return list;
-            }
-
-        } catch (Exception e) {
-
-            return list;
-        }
-
-
-        return list;
-    }
 
 }
-

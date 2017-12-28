@@ -311,13 +311,19 @@ public class SoftMerchVisibilityActivity extends AppCompatActivity {
                 holder.visibility_softame.setImageResource(R.mipmap.camera_orange);
             }
 
-
             if (!checkflag) {
                 boolean tempflag = false;
-                if (_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getSoft_merchIMG().equals("")) {
-                    tempflag = true;
-                } else if (_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getDeployment_Value().equals("")) {
-                    tempflag = true;
+                if (!_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getSoft_merchIMG().equals("")) {
+                    if (_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).
+                            getDeployment_Value().equals("")) {
+                        tempflag = true;
+                    }
+                } else if (!_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).
+                        getDeployment_Value().equals("")) {
+                    if (_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getSoft_merchIMG().equals("")) {
+                        tempflag = true;
+
+                    }
                 }
 
                 if (tempflag) {
@@ -399,16 +405,24 @@ public class SoftMerchVisibilityActivity extends AppCompatActivity {
             for (int j = 0; j < listDataChild2.get(listDataHeader2.get(i)).size(); j++) {
                 String deploymentValue = listDataChild2.get(listDataHeader2.get(i)).get(j).getDeployment_Value();
                 String soft_merchIMG = listDataChild2.get(listDataHeader2.get(i)).get(j).getSoft_merchIMG();
-                if (deploymentValue.equals("")) {
-                    flag = false;
-                    checkflag = false;
-                    Error_Message = CommonString.KEY_FOR_DEPLOYMENT;
-                    break;
-                } else if (soft_merchIMG.equals("")) {
-                    checkflag = false;
+                if (!deploymentValue.equals("")) {
+                    if (soft_merchIMG.equals("")) {
+                        checkflag = false;
+                        flag = false;
+                        Error_Message = CommonString.KEY_FOR_CAMERA_C;
+                        break;
+                    }
+                } else if (!soft_merchIMG.equals("")) {
+                    if (deploymentValue.equals("")) {
+                        flag = false;
+                        checkflag = false;
+                        Error_Message = CommonString.KEY_FOR_DEPLOYMENT;
+                        break;
+                    }
+                   /* checkflag = false;
                     flag = false;
                     Error_Message = CommonString.KEY_FOR_CAMERA_C;
-                    break;
+                    break;*/
                 } else {
                     checkflag = true;
                     flag = true;

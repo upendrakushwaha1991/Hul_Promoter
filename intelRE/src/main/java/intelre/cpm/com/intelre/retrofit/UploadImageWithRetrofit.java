@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 
+import intelre.cpm.com.intelre.IntelLoginActivty;
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.gettersetter.ReferenceVariablesForDownloadActivity;
@@ -70,7 +72,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
     String[] jj;
     boolean statusUpdated = true;
     int from;
-
+    ProgressDialog loading;
     public UploadImageWithRetrofit(Context context) {
         this.context = context;
     }
@@ -611,5 +613,88 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
         return CommonString.KEY_SUCCESS;
     }
 
+    public String downloadDataUniversal(final String jsonString, int type) {
+        try {
+            status = 0;
+            isvalid = false;
+            final String[] data_global = {""};
+            RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
+            adapter = new Retrofit.Builder()
+                    .baseUrl(CommonString.URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            PostApi api = adapter.create(PostApi.class);
+            Call<JsonObject> call = api.getGeotag(jsonData);
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    String responseBody =response.body().get("UploadJsonDetailResult").toString();
+                    String data = null;
+                    if (responseBody != null && response.isSuccessful()) {
+                        try {
+                            data = response.body().get("UploadJsonDetailResult").toString();
+
+                            if (data.equalsIgnoreCase("")) {
+                                data_global[0] = "";
+                                isvalid = true;
+                                status = 1;
+                            } else {
+                                data = data.substring(1, data.length() - 1).replace("\\", "");
+                                data_global[0] = data;
+                                isvalid = true;
+                                status = 1;
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            isvalid = true;
+                            status = -2;
+                        }
+                    } else {
+                        isvalid = true;
+                        status = -1;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    isvalid = true;
+                    if (t instanceof SocketTimeoutException) {
+                        status = 3;
+                    } else if (t instanceof IOException) {
+                        status = 3;
+                    } else {
+                        status = 3;
+                    }
+
+                }
+            });
+
+            while (isvalid == false) {
+                synchronized (this) {
+                    this.wait(25);
+                }
+            }
+            if (isvalid) {
+                synchronized (this) {
+                    this.notify();
+                }
+            }
+            if (status == 1) {
+                return data_global[0];
+            } else if (status == 2) {
+                return CommonString.MESSAGE_NO_RESPONSE_SERVER;
+            } else if (status == 3) {
+                return CommonString.MESSAGE_SOCKETEXCEPTION;
+            } else if (status == -2) {
+                return CommonString.MESSAGE_INVALID_JSON;
+            } else {
+                return CommonString.KEY_FAILURE;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonString.KEY_FAILURE;
+        }
+    }
 
 }

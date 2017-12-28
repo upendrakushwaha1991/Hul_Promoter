@@ -1,10 +1,12 @@
 package intelre.cpm.com.intelre.retrofit;
 
+import com.google.gson.JsonObject;
+
 import intelre.cpm.com.intelre.constant.CommonString;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
-import retrofit.http.POST;
+import retrofit2.http.POST;
 import retrofit2.Call;
 
 
@@ -54,5 +56,9 @@ public interface PostApi {
 
     @POST("Uploadimageswithpath")
     retrofit.Call<String> getUploadDataBaseBackup(@Body RequestBody body1);
+
+   @POST("UploadJsonDetail")
+   Call<JsonObject> getGeotag(@Body RequestBody request);
+
 }
 

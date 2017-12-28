@@ -50,6 +50,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
         db = new INTEL_RE_DB(this);
         db.open();
         declaration();
+        validate();
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,71 +115,10 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
 
                 }
                 update_flag = true;
-                /*else if (uienble() && !update_flag) {
-                    if (!flag) {
-                        btn_next.setVisibility(View.GONE);
-                        btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.save_icon));
-                        uienble();
-                        flag = true;
-                    } else if (flag && checkCondition()) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(StoreProfileActivity.this);
-                        builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
-                        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                db.open();
-                                storePGT = new StoreProfileGetterSetter();
-                                storePGT.setProfileStoreName(storeProfile_userN.
-                                        getText().toString());
-                                storePGT.setProfileAddress1(storeProfile_address_1
-                                        .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                                storePGT.setProfileCity(storeProfile_City.getText().toString());
-                                storePGT.setProfileOwner(storeProfile_ownerN.
-                                        getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                                storePGT.setProfileContact(storeProfile_contctN.getText().toString());
-                                storePGT.setProfileDOB(storeProfile_dob.getText().toString());
-                                storePGT.setProfileDOA(storeProfile_doa.getText().toString());
-                                storePGT.setProfileVisibilityLocation1(storeProfile_visibtLo
-                                        .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                                storePGT.setProfileDimension1(storeProfile_dimention.getText().toString());
-
-                                storePGT.setProfileVisibilityLocation2(storeProfile_visibtLo2
-                                        .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                                storePGT.setProfileDimension2(storeProfile_dimention2.getText().toString());
-
-                                storePGT.setProfileVisibilityLocation3(storeProfile_visibtLo3
-                                        .getText().toString().replaceAll("[(!@#$%^&*?)]", ""));
-                                storePGT.setProfileDimension3(storeProfile_dimention3.getText().toString());
 
 
-                                db.insertStoreProfileData(userId, store_cd, visit_date, storePGT);
-                                btn_next.setVisibility(View.VISIBLE);
-                                btn_save.setImageDrawable(ContextCompat.getDrawable(StoreProfileActivity.this, R.drawable.edit_txt));
-                                uidisableEnable(true);
-                                dialogInterface.dismiss();
-                                update_flag=false;
-                                //  startActivity(new Intent(StoreProfileActivity.this, StoreEntryActivity.class));
-                                // overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                            }
-                        });
-                        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        });
-                        builder.show();
-                    }*/
-
-                //}
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        validate();
     }
 
     private void validate() {
@@ -267,7 +207,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
                 dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        String dob = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                        String dob = (monthOfYear + 1)  + "/" +dayOfMonth+ "/" + year;
                         storeProfile_dob.setText(dob);
                     }
 
@@ -283,7 +223,7 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
                 dpd = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        String dob = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                        String dob = (monthOfYear + 1)  + "/" +dayOfMonth+ "/" + year;
                         storeProfile_doa.setText(dob);
                     }
 
@@ -299,43 +239,44 @@ public class StoreProfileActivity extends AppCompatActivity implements View.OnCl
     private boolean checkCondition() {
         boolean status = true;
         if (specifDATA.size() > 0) {
-            if (specifDATA.get(0).getAddress1().isEmpty() || storeProfile_address_1.getText().toString().isEmpty()) {
+            /*if (!specifDATA.get(0).getAddress1().isEmpty() || !storeProfile_address_1.getText().toString().isEmpty()) {
                 status = false;
                 meassage(CommonString.stpaddress1);
-            } else if (storeProfile_ownerN.getText().toString().isEmpty()) {
+            } else if (!storeProfile_ownerN.getText().toString().isEmpty()) {
                 meassage(CommonString.stpownname);
                 status = false;
-            } else if (storeProfile_contctN.getText().toString().isEmpty()) {
+            } else if (!storeProfile_contctN.getText().toString().isEmpty()) {
                 meassage(CommonString.stpcontactno);
                 status = false;
-            } else if (storeProfile_contctN.getText().toString().length() != 10) {
+            } else*/ if (!storeProfile_contctN.getText().toString().isEmpty() &&
+                    storeProfile_contctN.getText().toString().length()<10) {
                 meassage(CommonString.stpcontactnolenght);
                 status = false;
-            } else if (storeProfile_dob.getText().toString().isEmpty()) {
+            } /*else if (!storeProfile_dob.getText().toString().isEmpty()) {
                 meassage(CommonString.stpdob);
                 status = false;
-            } else if (storeProfile_doa.getText().toString().isEmpty()) {
+            } else if (!storeProfile_doa.getText().toString().isEmpty()) {
                 meassage(CommonString.stpdoa);
                 status = false;
-            } else if (storeProfile_visibtLo.getText().toString().isEmpty()) {
+            } else if (!storeProfile_visibtLo.getText().toString().isEmpty()) {
                 meassage(CommonString.stpvisibility1);
                 status = false;
-            } else if (storeProfile_dimention.getText().toString().isEmpty()) {
+            } else if (!storeProfile_dimention.getText().toString().isEmpty()) {
                 meassage(CommonString.stpdimension1);
                 status = false;
-            } else if (storeProfile_visibtLo2.getText().toString().isEmpty()) {
+            } else if (!storeProfile_visibtLo2.getText().toString().isEmpty()) {
                 meassage(CommonString.stpvisibility2);
                 status = false;
-            } else if (storeProfile_dimention2.getText().toString().isEmpty()) {
+            } else if (!storeProfile_dimention2.getText().toString().isEmpty()) {
                 meassage(CommonString.stpdimension2);
                 status = false;
-            } else if (storeProfile_visibtLo3.getText().toString().isEmpty()) {
+            } else if (!storeProfile_visibtLo3.getText().toString().isEmpty()) {
                 meassage(CommonString.stpvisibility3);
                 status = false;
-            } else if (storeProfile_dimention3.getText().toString().isEmpty()) {
+            } else if (!storeProfile_dimention3.getText().toString().isEmpty()) {
                 meassage(CommonString.stpdimension3);
                 status = false;
-            }
+            }*/
 
         }
         return status;

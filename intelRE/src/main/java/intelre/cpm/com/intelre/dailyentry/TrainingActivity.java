@@ -49,7 +49,6 @@ public class TrainingActivity extends AppCompatActivity implements AdapterView.O
     String visit_date, userId, user_type, store_cd;
     Spinner sp_rsp,sp_trainingtype,sp_topic;
     ImageView img_photoMar;
-    Button btn_add;
     RecyclerView marketinteligence_list;
     private SharedPreferences preferences;
     Toolbar toolbar;
@@ -67,7 +66,7 @@ public class TrainingActivity extends AppCompatActivity implements AdapterView.O
     ArrayList<TrainingGetterSetter> inserteslistData = new ArrayList<>();
     MyAdapter adapter;
     boolean sampleaddflag = false;
-    FloatingActionButton fab;
+    FloatingActionButton fab,btn_add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +89,7 @@ public class TrainingActivity extends AppCompatActivity implements AdapterView.O
         sp_trainingtype = (Spinner) findViewById(R.id.sp_trainingtype);
         sp_topic = (Spinner) findViewById(R.id.sp_topic);
         img_photoMar = (ImageView) findViewById(R.id.img_photoMar);
-        btn_add = (Button) findViewById(R.id.btn_add);
+        btn_add =  findViewById(R.id.btn_add);
         marketinteligence_list = (RecyclerView) findViewById(R.id.marketinteligence_list);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 

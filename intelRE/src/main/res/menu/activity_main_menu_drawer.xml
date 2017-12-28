@@ -20,6 +20,11 @@
             android:id="@+id/nav_geotag"
             android:icon="@mipmap/geotag_grey"
             android:title="@string/menu_geotag" />
+        <item
+            android:id="@+id/nav_store_search"
+            android:icon="@mipmap/search_icon"
+            android:title="@string/store_search" />
+
 
 
         <item

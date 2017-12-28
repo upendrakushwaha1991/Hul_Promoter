@@ -78,7 +78,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1.5"
                     android:gravity="center"
-                    android:text="RSP LIST"
+                    android:text="RSP"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_medium"
                     android:layout_marginBottom="3dp"

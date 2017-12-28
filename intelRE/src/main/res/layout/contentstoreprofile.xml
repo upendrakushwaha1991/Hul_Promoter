@@ -186,7 +186,7 @@
                         android:layout_weight="6"
                         android:background="@drawable/rouded_corner"
                         android:inputType="number"
-                        android:maxLength="10"
+                        android:maxLength="12"
                         android:padding="8dp"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
@@ -318,7 +318,7 @@
                         android:layout_weight="4"
                         android:gravity="center"
                         android:padding="8dp"
-                        android:text="Dimention 1"
+                        android:text="Dimension 1"
                         android:textSize="13sp"
                         android:textColor="@color/black" />
 
@@ -380,7 +380,7 @@
                         android:layout_weight="4"
                         android:gravity="center"
                         android:padding="8dp"
-                        android:text="Dimention 2"
+                        android:text="Dimension 2"
                         android:textSize="13sp"
                         android:textColor="@color/black" />
 
@@ -444,7 +444,7 @@
                         android:gravity="center"
                         android:textSize="13sp"
                         android:padding="8dp"
-                        android:text="Dimention 3"
+                        android:text="Dimension 3"
                         android:textColor="@color/black" />
 
                     <EditText

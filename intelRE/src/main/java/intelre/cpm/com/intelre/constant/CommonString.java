@@ -136,7 +136,7 @@ public class CommonString {
     //for store profile
     public static final String stpaddress1 = "Please fill store profile address 1";
     public static final String stpcontactno = "Please fill store profile contact number";
-    public static final String stpcontactnolenght = "Please fill 10 digit store profile contact number";
+    public static final String stpcontactnolenght = "Please fill atleast 10 digit contact number";
 
     public static final String stpownname = "Please fill store profile owner name";
     public static final String stpdob = " Please fill store profile DOB";
@@ -364,6 +364,7 @@ public class CommonString {
             + KEY_VISITDATE +" VARCHAR"
             + ")";
 
+
     public static final String TAG_FROM_NONWORKING = "from_NonWorking";
     public static final String TAG_OBJECT = "OBJECT";
     public static final String TABLE_STORE_GEOTAGGING = "STORE_GEOTAGGING";
@@ -390,7 +391,6 @@ public class CommonString {
             + "FRONT_IMAGE" + " VARCHAR)";
 
     public static final String MESSAGE_NO_JCP = "NO JCP FOR THIS DATE";
-
 
 
 

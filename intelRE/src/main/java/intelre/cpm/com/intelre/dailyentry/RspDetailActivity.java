@@ -25,6 +25,7 @@ import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
+import intelre.cpm.com.intelre.gettersetter.StoreProfileGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.BrandMaster;
 import intelre.cpm.com.intelre.gsonGetterSetter.JourneyPlan;
 import intelre.cpm.com.intelre.gsonGetterSetter.StoreCategoryMaster;
@@ -53,6 +54,7 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
     ArrayList<StoreCategoryMaster> categorymaster = new ArrayList<StoreCategoryMaster>();
     String flag;
     TextView store_name;
+    StoreProfileGetterSetter storePGT;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +65,9 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
         db = new INTEL_RE_DB(this);
         db.open();
         list = db.getBrandMasterData();
-        declaration();
 
-        //   setdata();
+
+        declaration();
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -114,11 +116,9 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
         sp_brand = (Spinner) findViewById(R.id.sp_brand);
         sp_registered = (Spinner) findViewById(R.id.sp_registered);
         store_name= (TextView) findViewById(R.id.store_name);
-       // storeCategoryMaster = new StoreCategoryMaster();
+
         flag = getIntent().getStringExtra(CommonString.KEY_FLAG);
         storeCategoryMaster = (StoreCategoryMaster) getIntent().getSerializableExtra(CommonString.KEY_OBJECT);
-
-
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         date = preferences.getString(CommonString.KEY_DATE, null);
@@ -126,10 +126,35 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
         user_type = preferences.getString(CommonString.KEY_USER_TYPE, null);
         store_cd = preferences.getString(CommonString.KEY_STORE_CD, null);
 
+        storelist = db.getStoreData(date);
+        if (storelist.size()>0){
+            for (int i = 0; i < storelist.size(); i++) {
+                store_name.setText(storelist.get(i).getStoreName());
+            }
+        }
+
+
+
+
         getSupportActionBar().setTitle(getString(R.string.title_activity_rsp_detail) + " \n- " + date);
 
+        ArrayAdapter aa3 = new ArrayAdapter(this, android.R.layout.simple_spinner_item, irep_registered);
+        aa3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_registered.setAdapter(aa3);
 
-      //  store_name.setText(storelist.get(0).getStoreName());
+
+        brand_adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
+        brand_adapter.add("Select Brand");
+        for (int i = 0; i < list.size(); i++) {
+            brand_adapter.add(list.get(i).getBrand());
+        }
+        sp_brand.setAdapter(brand_adapter);
+        brand_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+        sp_brand.setOnItemSelectedListener(this);
+        sp_registered.setOnItemSelectedListener(this);
+
         if (flag.equalsIgnoreCase(CommonString.KEY_EDIT)) {
             edit_espname.setEnabled(false);
             setdata();
@@ -141,27 +166,6 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
             }
 
         }
-
-
-        // list = db.getBrandMasterData();
-
-        ArrayAdapter aa3 = new ArrayAdapter(this, android.R.layout.simple_spinner_item, irep_registered);
-        aa3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_registered.setAdapter(aa3);
-
-
-
-
-
-        brand_adapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_item);
-        brand_adapter.add("Select Brand");
-        for (int i = 0; i < list.size(); i++) {
-            brand_adapter.add(list.get(i).getBrand());
-        }
-        sp_brand.setAdapter(brand_adapter);
-        brand_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_brand.setOnItemSelectedListener(this);
-        sp_registered.setOnItemSelectedListener(this);
 
     }
 
@@ -181,6 +185,7 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
                 if (position != 0) {
 
                     spinner_irepregisterd = String.valueOf(parent.getSelectedItemPosition());
+                   // String irepregisterd= spinner_irepregisterd;
                     storeCategoryMaster.setIREPStatus(Boolean.valueOf(spinner_irepregisterd));
                 } else {
                     storeCategoryMaster.setIREPStatus(Boolean.valueOf(false));
@@ -196,11 +201,6 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
     }
 
     public void rspDetailsSaveData() {
-        str_rspname = edit_espname.getText().toString().replaceAll("[&^<>{}'$]", " ");
-        str_emailid = edit_emailid.getText().toString().replaceAll("[&^<>{}'$]", " ");
-        str_phoneno = edit_phoneno.getText().toString().replaceAll("[&^<>{}'$]", " ");
-
-        // mode = getIntent().getStringExtra(CommonString.KEY_MODE);
 
         if (flag.equalsIgnoreCase(CommonString.KEY_ADD)) {
 
@@ -211,7 +211,13 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
         storeCategoryMaster.setEmail(str_emailid);
         storeCategoryMaster.setMobile(str_phoneno);
         storeCategoryMaster.setBrandId(Integer.valueOf(brand_id));
-        storeCategoryMaster.setIREPStatus(Boolean.valueOf(spinner_irepregisterd));
+        String repAddress= spinner_irepregisterd;
+        if (repAddress.equals("1")){
+            storeCategoryMaster.setIREPStatus(true);
+        }else {
+            storeCategoryMaster.setIREPStatus(false);
+        }
+      // storeCategoryMaster.setIREPStatus(Boolean.valueOf(spinner_irepregisterd));
 
         long id;
 
@@ -230,20 +236,26 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
         super.onResume();
         db.open();
         storelist = db.getStoreData(date);
+
     }
 
     public boolean validation() {
+        str_rspname = edit_espname.getText().toString().replaceAll("[&^<>{}'$]", " ");
+        str_emailid = edit_emailid.getText().toString().replaceAll("[&^<>{}'$]", " ");
+        str_phoneno = edit_phoneno.getText().toString().replaceAll("[&^<>{}'$]", " ");
+
 
         boolean value = true;
         if (edit_espname.getText().toString().isEmpty()) {
             value = false;
             showMessage("Please Enter RSP Name");
-        } else if (edit_emailid.getText().toString().isEmpty()) {
+        }
+        else if (!AlertandMessages.isValid(str_emailid)) {
             value = false;
-            showMessage("Please Enter Email Id");
-        } else if (edit_phoneno.getText().toString().isEmpty()) {
+            showMessage("Please Enter valid Email ID");
+        } else if (edit_phoneno.getText().toString().length() != 10) {
             value = false;
-            showMessage("Please Enter Phone No");
+            showMessage("Please fill 10 digit store profile contact number");
         } else if (sp_brand.getSelectedItemPosition() == 0) {
             value = false;
             showMessage("Please Select Brand");
@@ -293,21 +305,19 @@ public class RspDetailActivity extends AppCompatActivity implements AdapterView.
 
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getBrandId().equals(storeCategoryMaster.getBrandId())) {
-                sp_brand.setSelection(i);
+                sp_brand.setSelection(i+1);
                 break;
             }
         }
 
-        for (int i = 0; i < irep_registered.length; i++) {
-            if (irep_registered[i].equalsIgnoreCase("YES")) {
-                sp_registered.setSelection(i);
-                break;
-            }
-            if (irep_registered[i].equalsIgnoreCase("No")) {
-                sp_registered.setSelection(i);
-                break;
+        if (storeCategoryMaster!=null){
+            if (storeCategoryMaster.getIREPStatus()){
+                sp_registered.setSelection(1);
+            }else {
+                sp_registered.setSelection(2);
             }
         }
+
 
     }
 

@@ -74,7 +74,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
-                            android:layout_weight=".4"
+                            android:layout_weight=".3"
                             android:gravity="center"
                             android:text="@string/training_type"
                             android:textColor="@android:color/black"
@@ -86,7 +86,7 @@
                             android:id="@+id/sp_trainingtype"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight=".6"
+                            android:layout_weight=".7"
                             android:padding="7dp"
                             android:layout_gravity="center"
                             android:layout_centerHorizontal="true"
@@ -106,7 +106,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
-                            android:layout_weight=".4"
+                            android:layout_weight=".3"
                             android:text="@string/topic"
                             android:gravity="center"
                             android:textColor="@android:color/black"
@@ -117,7 +117,7 @@
                             android:id="@+id/sp_topic"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight=".6"
+                            android:layout_weight=".7"
                             android:padding="7dp"
                             android:textSize="12sp" />
 
@@ -135,7 +135,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginRight="10dp"
-                            android:layout_weight=".4"
+                            android:layout_weight=".3"
                             android:text="@string/rsp"
                             android:gravity="center"
                             android:textColor="@android:color/black"
@@ -169,14 +169,14 @@
                         <LinearLayout
                             android:padding="7dp"
                             android:layout_width="0dp"
-                            android:layout_weight=".2"
+                            android:layout_weight=".4"
                             android:textSize="12sp"
                             android:layout_height="match_parent" >
 
                             <ImageView
                                 android:id="@+id/img_photoMar"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="65dip"
+                                android:layout_height="65dip"
                                 android:layout_centerHorizontal="true"
                                 android:gravity="center"
                                 android:src="@mipmap/camera_orange"
@@ -187,22 +187,24 @@
                         <LinearLayout
                             android:padding="7dp"
                             android:layout_width="0dp"
+                            android:layout_gravity="center"
                             android:layout_weight=".4"
-                            android:textSize="12sp"
+                            android:gravity="center"
                             android:layout_height="match_parent" >
 
-                            <Button
+                            <android.support.design.widget.FloatingActionButton
                                 android:id="@+id/btn_add"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:gravity="center"
-                                android:textSize="12sp"
-                                android:text="Add"
-                                android:layout_gravity="center">
-                            </Button>
+                                android:layout_gravity="bottom|left"
+                                android:layout_marginBottom="6dp"
+                                android:layout_marginRight="16dp"
+                                android:src="@drawable/add" />
                         </LinearLayout>
                     </LinearLayout>
+
+
+
 
                 </LinearLayout>
 

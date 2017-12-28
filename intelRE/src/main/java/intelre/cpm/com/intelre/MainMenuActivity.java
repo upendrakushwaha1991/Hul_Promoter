@@ -43,8 +43,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
+import intelre.cpm.com.intelre.GeoTag.GeoTagStoreList;
 import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
+import intelre.cpm.com.intelre.dailyentry.JourneyPlanSearchActivity;
 import intelre.cpm.com.intelre.dailyentry.ServiceActivity;
 import intelre.cpm.com.intelre.dailyentry.StoreListActivity;
 import intelre.cpm.com.intelre.delegates.CoverageBean;
@@ -228,7 +230,9 @@ public class MainMenuActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_geotag) {
             if (db.getSkuMasterData().size() > 0 && downloadIndex == 0) {
-
+                Intent startDownload = new Intent(this, GeoTagStoreList.class);
+                startActivity(startDownload);
+                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
             }
 
 
@@ -245,6 +249,12 @@ public class MainMenuActivity extends AppCompatActivity
             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);*/
         }
 
+        else if (id == R.id.nav_store_search) {
+            Intent search = new Intent(this, JourneyPlanSearchActivity.class);
+            startActivity(search);
+            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

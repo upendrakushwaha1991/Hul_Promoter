@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -111,7 +112,7 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
         username = preferences.getString(CommonString.KEY_USERNAME, null);
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
         user_type = preferences.getString(CommonString.KEY_USER_TYPE, null);
-        getSupportActionBar().setTitle("Visibility-SM Merch -" + visit_date);
+        getSupportActionBar().setTitle("Visibility-SP Merch -" + visit_date);
         db = new INTEL_RE_DB(this);
         db.open();
         prepareListData();
@@ -265,34 +266,29 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
             TextView txtListChild = convertView.findViewById(R.id.lblListItem_v_soft);
             txtListChild.setText(childText.getPosm().toString());
             holder.perm_previous_txt.setText(childText.getPrev_Qty().toString());
-
-
-
-            if (!childText.getPrev_Qty().equals("0")){
-                holder.previous_Dep_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View v, boolean hasFocus) {
-                        final EditText Caption = (EditText) v;
-                        String value1 = Caption.getText().toString().replaceFirst("^0+(?!$)", "");
-                        if (value1.equals("")) {
-                            _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue("");
-                        } else {
-                            _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue(value1);
-                        }
-                    }
-
-                });
-                holder.previous_Dep_edt.setText(_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getPreV_dValue());
-
-            }else {
+            holder.perm_previous_txt.setBackgroundColor(Color.GRAY);
+            if (childText.getPrev_Qty().toString().equals("0")) {
                 holder.previous_Dep_edt.setEnabled(false);
+                holder.previous_Dep_edt.setBackgroundColor(Color.GRAY);
                 _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue("0");
                 holder.previous_Dep_edt.setText(_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getPreV_dValue());
-
+            } else {
+                holder.previous_Dep_edt.setEnabled(true);
             }
+            holder.previous_Dep_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    final EditText Caption = (EditText) v;
+                    String value1 = Caption.getText().toString().replaceFirst("^0+(?!$)", "");
+                    if (value1.equals("")) {
+                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue("");
+                    } else {
+                        _listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).setPreV_dValue(value1);
+                    }
+                }
 
-
-
+            });
+            holder.previous_Dep_edt.setText(_listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition).getPreV_dValue());
 
             holder.new_Dep_edt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -400,10 +396,25 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
             }
 
 
-
             if (!checkflag) {
                 boolean tempflag = false;
-                if (holder.previous_Dep_edt.getText().toString().equals("") &&
+                if (!holder.perm_previous_txt.getText().toString().equals("0")){
+                    if (holder.previous_Dep_edt.getText().toString().equals("")){
+                        tempflag = true;
+                    }
+                }else if (!holder.new_Dep_edt.getText().toString().equals("")){
+                    if (childText.getsPermanetIMG_1().equals("") ||childText.getsPermanetIMG_2().equals("")
+                            ||childText.getsPermanetIMG_3().equals("")) {
+                        tempflag = true;
+                    }
+                }else  if (!childText.getsPermanetIMG_1().equals("") || !childText.getsPermanetIMG_2().equals("")
+                        || !childText.getsPermanetIMG_3().equals("")) {
+                    if (holder.new_Dep_edt.getText().toString().equals("")){
+                        tempflag = true;
+                    }
+                }
+
+               /* if (holder.previous_Dep_edt.getText().toString().equals("") &&
                         holder.new_Dep_edt.getText().toString().equals("")) {
                     holder.previous_Dep_edt.setHintTextColor(getResources().getColor(R.color.red));
                     holder.new_Dep_edt.setHintTextColor(getResources().getColor(R.color.red));
@@ -418,13 +429,13 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
                         && childText.getsPermanetIMG_3().equals("")) {
                     tempflag = true;
                 }
-
+*/
                 if (tempflag) {
                     holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.red));
                 } else {
                     holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
                 }
-            }else {
+            } else {
                 holder.cardView.setCardBackgroundColor(getResources().getColor(R.color.white));
             }
 
@@ -500,27 +511,49 @@ public class VisibilitySpermanentActivity extends AppCompatActivity {
         checkHeaderArray.clear();
         for (int i = 0; i < listDataHeader2.size(); i++) {
             for (int j = 0; j < listDataChild2.get(listDataHeader2.get(i)).size(); j++) {
+                String prevValue = listDataChild2.get(listDataHeader2.get(i)).get(j).getPrev_Qty().toString();
                 String previousdeploymentValue = listDataChild2.get(listDataHeader2.get(i)).get(j).getPreV_dValue();
                 String NdeploymentValue = listDataChild2.get(listDataHeader2.get(i)).get(j).getNewDeploymnt_Value();
                 String posm = listDataChild2.get(listDataHeader2.get(i)).get(j).getPosm();
                 String smIMG1 = listDataChild2.get(listDataHeader2.get(i)).get(j).getsPermanetIMG_1();
                 String smIMG2 = listDataChild2.get(listDataHeader2.get(i)).get(j).getsPermanetIMG_2();
                 String smIMG3 = listDataChild2.get(listDataHeader2.get(i)).get(j).getsPermanetIMG_3();
-                if (previousdeploymentValue.equals("")) {
-                    flag = false;
-                    checkflag = false;
-                    Error_Message = CommonString.KEY_FOR_OLD_DEPLOYMENT + " of " + posm;
-                    break;
-                } else if (NdeploymentValue.equals("")) {
-                    flag = false;
-                    checkflag = false;
-                    Error_Message = CommonString.KEY_FOR_DEPLOYMENT + " of " + posm;
-                    break;
-                } else if (smIMG1.equals("") || smIMG2.equals("") || smIMG3.equals("")) {
-                    checkflag = false;
+                if (!prevValue.equals("0")) {
+                    if (previousdeploymentValue.equals("")) {
+                        flag = false;
+                        checkflag = false;
+                        Error_Message = CommonString.KEY_FOR_OLD_DEPLOYMENT + " of " + posm;
+                        break;
+                    }
+                } else if (!NdeploymentValue.equals("")) {
+                    if (smIMG1.equals("")) {
+                        checkflag = false;
+                        flag = false;
+                        Error_Message = CommonString.KEY_FOR_CAMERA_C_ALL + " of " + posm;
+                        break;
+                    } else if (smIMG2.equals("")) {
+                        checkflag = false;
+                        flag = false;
+                        Error_Message = CommonString.KEY_FOR_CAMERA_C_ALL + " of " + posm;
+                        break;
+
+                    } else if (smIMG3.equals("")) {
+                        checkflag = false;
+                        flag = false;
+                        Error_Message = CommonString.KEY_FOR_CAMERA_C_ALL + " of " + posm;
+                        break;
+                    }
+                } else if (!smIMG1.equals("") || !smIMG2.equals("") || !smIMG3.equals("")) {
+                    if (NdeploymentValue.equals("")){
+                        flag = false;
+                        checkflag = false;
+                        Error_Message = CommonString.KEY_FOR_DEPLOYMENT + " of " + posm;
+                        break;
+                    }
+                   /* checkflag = false;
                     flag = false;
                     Error_Message = CommonString.KEY_FOR_CAMERA_C_ALL + " of " + posm;
-                    break;
+                    break;*/
                 } else {
                     checkflag = true;
                     flag = true;

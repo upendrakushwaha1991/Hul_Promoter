@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.widget.Toast;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import intelre.cpm.com.intelre.R;
 
 /**
@@ -74,5 +77,23 @@ public class AlertandMessages {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+    public static boolean isValid(String email)
+    {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        //String expression = "^[\\w\\.-]+@(\\.)+[A-Z]{2,4}$";
+        CharSequence inputStr = email;
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches())
+        {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
 
 }

@@ -1,10 +1,14 @@
 package intelre.cpm.com.intelre.dailyentry;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
@@ -24,21 +28,37 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import intelre.cpm.com.intelre.Database.INTEL_RE_DB;
 import intelre.cpm.com.intelre.R;
+import intelre.cpm.com.intelre.constant.AlertandMessages;
 import intelre.cpm.com.intelre.constant.CommonString;
 import intelre.cpm.com.intelre.delegates.CoverageBean;
 import intelre.cpm.com.intelre.gsonGetterSetter.JCPGetterSetter;
 import intelre.cpm.com.intelre.gsonGetterSetter.JourneyPlan;
 import intelre.cpm.com.intelre.gsonGetterSetter.NonWorkingReason;
+import intelre.cpm.com.intelre.retrofit.PostApi;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NonWorkingReasonActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+        implements AdapterView.OnItemSelectedListener, View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     ArrayList<NonWorkingReason> reasondata = new ArrayList<>();
     private Spinner reasonspinner;
     private INTEL_RE_DB database;
@@ -49,17 +69,21 @@ public class NonWorkingReasonActivity extends AppCompatActivity
     protected String _pathforcheck = "";
     private String image1 = "";
     private SharedPreferences preferences;
-    String _UserId, visit_date, store_id;
+    String _UserId, visit_date, store_id, app_ver = "";
     protected boolean status = true;
     AlertDialog alert;
     ImageButton camera;
     RelativeLayout rel_cam;
     ArrayList<JourneyPlan> jcp;
     boolean update_flag = false;
+    GoogleApiClient mGoogleApiClient;
+    double lat = 0.0, lon = 0.0;
+    ProgressDialog loading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_non_working_reason);
         reasonspinner = (Spinner) findViewById(R.id.spinner2);
         camera = (ImageButton) findViewById(R.id.imgcam);
@@ -73,6 +97,8 @@ public class NonWorkingReasonActivity extends AppCompatActivity
         _UserId = preferences.getString(CommonString.KEY_USERNAME, "");
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
         store_id = preferences.getString(CommonString.KEY_STORE_CD, "");
+        app_ver = preferences.getString(CommonString.KEY_VERSION, "");
+
         getSupportActionBar().setTitle("Non Working -" + visit_date);
 
         database = new INTEL_RE_DB(this);
@@ -112,6 +138,21 @@ public class NonWorkingReasonActivity extends AppCompatActivity
         reasonspinner.setOnItemSelectedListener(this);
         camera.setOnClickListener(this);
         save.setOnClickListener(this);
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+
+        if (Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(getApplicationContext(),
+                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getApplicationContext(),
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
     }
 
     @Override
@@ -167,7 +208,6 @@ public class NonWorkingReasonActivity extends AppCompatActivity
                 }
                 break;
         }
-
     }
 
     @Override
@@ -267,19 +307,37 @@ public class NonWorkingReasonActivity extends AppCompatActivity
                                                 }
 
                                             } else {
-                                                CoverageBean cdata = new CoverageBean();
-                                                cdata.setStoreId(store_id);
-                                                cdata.setVisitDate(visit_date);
-                                                cdata.setUserId(_UserId);
-                                                cdata.setReason(reasonname);
-                                                cdata.setReasonid(reasonid);
-                                                cdata.setLatitude("0.0");
-                                                cdata.setLongitude("0.0");
-                                                cdata.setImage(image1);
-                                                cdata.setCkeckout_image(image1);
-                                                database.InsertCoverageData(cdata);
-                                                database.updateJaurneyPlanSpecificStoreStatus(store_id, visit_date,
-                                                        CommonString.STORE_STATUS_LEAVE);
+                                                try {
+                                                    CoverageBean cdata = new CoverageBean();
+                                                    cdata.setStoreId(store_id);
+                                                    cdata.setVisitDate(visit_date);
+                                                    cdata.setUserId(_UserId);
+                                                    cdata.setReason(reasonname);
+                                                    cdata.setReasonid(reasonid);
+                                                    cdata.setLatitude(String.valueOf(lat));
+                                                    cdata.setLongitude(String.valueOf(lon));
+                                                    cdata.setImage(image1);
+                                                    cdata.setCkeckout_image(image1);
+                                                    database.InsertCoverageData(cdata);
+                                                    database.updateJaurneyPlanSpecificStoreStatus(store_id, visit_date,
+                                                            CommonString.STORE_STATUS_LEAVE);
+                                                    JSONObject jsonObject = new JSONObject();
+                                                    jsonObject.put("StoreId", cdata.getStoreId());
+                                                    jsonObject.put("VisitDate", cdata.getVisitDate());
+                                                    jsonObject.put("Latitude", cdata.getLatitude());
+                                                    jsonObject.put("Longitude", cdata.getLongitude());
+                                                    jsonObject.put("ReasonId", cdata.getReasonid());
+                                                    jsonObject.put("SubReasonId", "0");
+                                                    jsonObject.put("Remark", "");
+                                                    jsonObject.put("ImageName", cdata.getImage());
+                                                    jsonObject.put("AppVersion", app_ver);
+                                                    jsonObject.put("UploadStatus", CommonString.STORE_STATUS_LEAVE);
+                                                    jsonObject.put("Checkout_Image", cdata.getCkeckout_image());
+                                                    jsonObject.put("UserId", _UserId);
+                                                    uploadCoverageIntimeDATA(jsonObject.toString());
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                             finish();
                                         }
@@ -351,4 +409,84 @@ public class NonWorkingReasonActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            lat = mLastLocation.getLatitude();
+            lon = mLastLocation.getLongitude();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+    }
+
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    public void uploadCoverageIntimeDATA(String jsondata) {
+        try {
+            loading = ProgressDialog.show(NonWorkingReasonActivity.this, "Processing", "Please wait...",
+                    false, false);
+            RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsondata.toString());
+            Retrofit adapter = new Retrofit.Builder().baseUrl(CommonString.URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            PostApi api = adapter.create(PostApi.class);
+            retrofit2.Call<ResponseBody> call = api.getCoverageDetail(jsonData);
+            call.enqueue(new retrofit2.Callback<ResponseBody>() {
+                @Override
+                public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    ResponseBody responseBody = response.body();
+                    String data = null;
+                    if (responseBody != null && response.isSuccessful()) {
+                        try {
+                            data = response.body().string();
+                            //  data = data.substring(1, data.length() - 1).replace("\\", "");
+                            if (!data.equals("0")) {
+                                overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                                NonWorkingReasonActivity.this.finish();
+                                loading.dismiss();
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            loading.dismiss();
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
+                    loading.dismiss();
+                    if (t instanceof SocketTimeoutException || t instanceof IOException || t instanceof Exception) {
+                        AlertandMessages.showAlertlogin(NonWorkingReasonActivity.this, t.toString());
+                    } else {
+                        AlertandMessages.showAlertlogin(NonWorkingReasonActivity.this, "Please check internet connection");
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            loading.dismiss();
+
+        }
+
+    }
+
+
 }
