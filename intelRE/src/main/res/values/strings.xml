@@ -85,13 +85,28 @@
     <string name="camera">Camera</string>
     <string name="name">Name</string>
     <string name="delete">Delete</string>
-
+    <string name="title_activity_geo_tag_store_list">Geo Tag Store List</string>
 
     <string name="checkout">Continue to store checkout</string>
     <string name="no_data_for_upload">No Data For Upload</string>
     <string name="title_store_list_download_data">Please Download Data First</string>
     <string name="for_checkout">Please Checkout Current Store</string>
     <string name="want_upload_data">Do you want to Upload Data?</string>
-
     <string name="title_store_list_geo_tag">Please Store GeoTag First</string>
+
+
+    //upendra 26 dec
+    <string name="title_geo_tag_activity_geo_already_done">Store Already Geotagged</string>
+    <string name="title_geo_tag_activity_geo_data">Store Geo Data Uploaded</string>
+    <string name="title_geo_tag_activity_upload_data">Store Uploaded</string>
+    <string name="title_activity_geo_tagging">GeoTaggingActivity</string>
+    <string name="title_activity_store_geotag">Geo Tag</string>
+    <string name="notsuppoted">This device is not supported.</string>
+    <string name="takeimage">Please Take Image</string>
+    <string name="gpsebale">Click ok to enable GPS.</string>
+    <string name="gps">GPS IS DISABLED...</string>
+    <string name="uploaddata">Uploading Data</string>
+    <string name="title_activity_journey_plan_search">Journey Plan Search</string>
+    <string name="store_search">Store Search</string>
+
 </resources>

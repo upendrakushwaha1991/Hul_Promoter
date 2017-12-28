@@ -35,6 +35,10 @@ public class StoreEntryActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
     String store_cd, visit_date, user_type, username;
+    ArrayList<StoreCategoryMaster> added_list = new ArrayList<>();
+    ArrayList<TrainingGetterSetter> inserteslistData = new ArrayList<>();
+
+    ArrayList<StoreCategoryMaster> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,10 @@ public class StoreEntryActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         db.open();
+        list = db.getRspDetailData(store_cd);
+
+        //added_list = db.getRspDetailinsertData(store_cd);
+
         adapter = new ValueAdapter(getApplicationContext(), getdata());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
@@ -141,14 +149,23 @@ public class StoreEntryActivity extends AppCompatActivity {
                         Intent in7 = new Intent(StoreEntryActivity.this, RspListActivity.class);
                         startActivity(in7);
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-
-                    if (current.getIconImg() == R.drawable.training || current.getIconImg() == R.drawable.training_done) {
-                        Intent in7 = new Intent(StoreEntryActivity.this, TrainingActivity.class);
-                        startActivity(in7);
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
                     }
+
+
+
+                    if (list.size()>0){
+                        if (current.getIconImg() == R.drawable.training || current.getIconImg() == R.drawable.training_done) {
+                            Intent in7 = new Intent(StoreEntryActivity.this, TrainingActivity.class);
+                            startActivity(in7);
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                        }
+                    }else {
+                        Snackbar.make(recyclerView, "No Rsp Found", Snackbar.LENGTH_SHORT).show();
+
+                    }
+
 
                 }
             });
@@ -174,7 +191,7 @@ public class StoreEntryActivity extends AppCompatActivity {
 
     public List<NavMenuItemGetterSetter> getdata() {
         List<NavMenuItemGetterSetter> data = new ArrayList<>();
-        int rspDetail = 0, storeAudit = 0, training, visibility, shoperMKTTool, marketInfo;
+        int rspDetail = 0, storeAudit=0, training, visibility, shoperMKTTool, marketInfo;
 
 
         if (db.getStoreAuditHeaderData().size() > 0) {
@@ -205,7 +222,7 @@ public class StoreEntryActivity extends AppCompatActivity {
             marketInfo = R.drawable.market_info;
         }
 
-        if (db.getinsertedTrainingData(store_cd, visit_date).size() > 0) {
+        if (db.getinsertedTrainingData(store_cd, visit_date).size()> 0) {
             training = R.drawable.training_done;
         } else {
             training = R.drawable.training;

@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import intelre.cpm.com.intelre.constant.CommonString;
+
+import intelre.cpm.com.intelre.gettersetter.GeotaggingBeans;
+
 import intelre.cpm.com.intelre.delegates.CoverageBean;
 import intelre.cpm.com.intelre.gettersetter.RspGetterSetter;
 import intelre.cpm.com.intelre.gettersetter.StoreProfileGetterSetter;
@@ -93,6 +96,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
             db.execSQL(CommonString.CREATE_TABLE_RXT_DATA);
             //upendra21
             db.execSQL(CommonString.CREATE_TABLE_TRAINING);
+            db.execSQL(CommonString.CREATE_TABLE_STORE_GEOTAGGING);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -162,6 +166,8 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
         }
     }
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -1776,6 +1782,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
                     sb.setMachine_on(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_MACHINE_ON")));
 
                     sb.setRxt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT")));
+
                     sb.setEngegment(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ENGEGMENT")));
                     sb.setRxt_img(dbcursor.getString(dbcursor.getColumnIndexOrThrow("RXT_IMG")));
                     sb.setKey_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID)));
@@ -1983,6 +1990,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         return l;
     }
 
+
     @SuppressLint("LongLogTag")
     public ArrayList<NonWorkingReason> getNonWorkingDataByFlag(boolean flag) {
         Log.d("FetchingAssetdata--------------->Start<------------",
@@ -2065,36 +2073,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<WindowMaster> getTrainingTypeData() {
 
-        ArrayList<WindowMaster> list = new ArrayList<WindowMaster>();
-        Cursor dbcursor = null;
-        try {
-            dbcursor = db.rawQuery("SELECT * FROM Training_Type", null);
-
-            if (dbcursor != null) {
-                dbcursor.moveToFirst();
-                while (!dbcursor.isAfterLast()) {
-                    WindowMaster sb = new WindowMaster();
-
-                    sb.setTrainingTypeId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type_Id"))));
-                    sb.setTrainingType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type")));
-
-                    list.add(sb);
-                    dbcursor.moveToNext();
-                }
-                dbcursor.close();
-                return list;
-            }
-
-        } catch (Exception e) {
-
-            return list;
-        }
-
-
-        return list;
-    }
 
     public ArrayList<WindowChecklist> getTrainingTopicData(String training_nameid) {
 
@@ -2382,7 +2361,7 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
 
         try {
             dbcursor = db.rawQuery("SELECT * FROM VISIBILITYSEMI_PERMANENT_MERCH_DATA" +
-                    " WHERE STORE_CD ='" + store_cd + "'", null);
+                    " WHERE STORE_CD ='" + store_cd +"'", null);
             if (dbcursor != null) {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
@@ -2570,5 +2549,109 @@ public class INTEL_RE_DB extends SQLiteOpenHelper {
         return sb;
     }
 
+//upendra 26 dec
+
+    public void updateStatus(String id, String status) {
+        ContentValues values = new ContentValues();
+        try {
+            values.put("GEO_TAG", status);
+            db.update("Journey_Plan", values, CommonString.KEY_STORE_ID + "='" + id + "'", null);
+        } catch (Exception ex) {
+        }
+    }
+
+    public long InsertSTOREgeotag(String storeid, double lat, double longitude, String path, String status) {
+
+        db.delete(CommonString.TABLE_STORE_GEOTAGGING, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        ContentValues values = new ContentValues();
+        try {
+            values.put("STORE_ID", storeid);
+            values.put("LATITUDE", Double.toString(lat));
+            values.put("LONGITUDE", Double.toString(longitude));
+            values.put("FRONT_IMAGE", path);
+            values.put("GEO_TAG", status);
+            values.put("STATUS", status);
+
+            return db.insert(CommonString.TABLE_STORE_GEOTAGGING, null, values);
+
+        } catch (Exception ex) {
+            Log.d("Database Exception ", ex.toString());
+            return 0;
+        }
+    }
+
+    public ArrayList<GeotaggingBeans> getinsertGeotaggingData(String storeid, String status) {
+        ArrayList<GeotaggingBeans> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("Select * from " + CommonString.TABLE_STORE_GEOTAGGING + "" +
+                    " where " + CommonString.KEY_STORE_ID + " ='" + storeid + "' and " + CommonString.KEY_STATUS + " = '" + status + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    GeotaggingBeans geoTag = new GeotaggingBeans();
+
+                    geoTag.setStoreid(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));
+                    geoTag.setLatitude(Double.parseDouble((dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LATITUDE)))));
+                    geoTag.setLongitude(Double.parseDouble((dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGITUDE)))));
+                    geoTag.setImage(((dbcursor.getString(dbcursor.getColumnIndexOrThrow("FRONT_IMAGE")))));
+                    list.add(geoTag);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception Brands",
+                    e.toString());
+            return list;
+        }
+        return list;
+
+    }
+
+    public long updateInsertedGeoTagStatus(String id, String status) {
+        ContentValues values = new ContentValues();
+        try {
+            values.put("GEO_TAG", status);
+            values.put("STATUS", status);
+            return db.update(CommonString.TABLE_STORE_GEOTAGGING, values, CommonString.KEY_STORE_ID + "='" + id + "'", null);
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+    public ArrayList<WindowMaster> getTrainingTypeData() {
+
+        ArrayList<WindowMaster> list = new ArrayList<WindowMaster>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM Training_Type", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    WindowMaster sb = new WindowMaster();
+
+                    sb.setTrainingTypeId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type_Id"))));
+                    sb.setTrainingType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+
+            return list;
+        }
+
+
+        return list;
+    }
 
 }
+

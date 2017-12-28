@@ -364,6 +364,33 @@ public class CommonString {
             + KEY_VISITDATE +" VARCHAR"
             + ")";
 
+    public static final String TAG_FROM_NONWORKING = "from_NonWorking";
+    public static final String TAG_OBJECT = "OBJECT";
+    public static final String TABLE_STORE_GEOTAGGING = "STORE_GEOTAGGING";
+    public static final String CREATE_TABLE_STORE_GEOTAGGING = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_STORE_GEOTAGGING
+            + " ("
+            + "KEY_ID"
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + "STORE_ID"
+            + " INTEGER,"
+
+            + "LATITUDE"
+            + " VARCHAR,"
+
+            + "LONGITUDE"
+            + " VARCHAR,"
+
+            + "GEO_TAG"
+            + " VARCHAR,"
+
+            + "STATUS"
+            + " VARCHAR,"
+
+            + "FRONT_IMAGE" + " VARCHAR)";
+
+    public static final String MESSAGE_NO_JCP = "NO JCP FOR THIS DATE";
+
 
 
 
