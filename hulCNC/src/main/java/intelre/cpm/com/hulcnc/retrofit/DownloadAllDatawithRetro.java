@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import intelre.cpm.com.hulcnc.constant.AlertandMessages;
 import intelre.cpm.com.hulcnc.constant.CommonString;
+import intelre.cpm.com.hulcnc.gettersetter.QuizQuestionGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.ReferenceVariablesForDownloadActivity;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.AuditQuestionGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.BrandMasterGetterSetter;
@@ -34,6 +35,7 @@ import intelre.cpm.com.hulcnc.gsonGetterSetter.MappingStockSetterGetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.NonWorkingReasonGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.PosmMasterGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.RspDetailGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.SalesReportGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SkuMasterGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SubCategoryMasteSetterGetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TableStructure;
@@ -203,19 +205,30 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                                             }
 
                                             break;
-                                        case "Notice_Board":
-                                           /* if (!data.contains("No Data")) {
-                                                mappingStockObject = new Gson().fromJson(data, MappingStockSetterGetter.class);
-                                                if (mappingStockObject != null && !db.insertMappingStockData(mappingStockObject)) {
+                                        case "Quiz_Question":
+                                            if (!data.contains("No Data")) {
+                                                quizQuestionGetterSetter = new Gson().fromJson(data, QuizQuestionGetterSetter.class);
+                                                if (quizQuestionGetterSetter != null && !db.insertQuizData(quizQuestionGetterSetter)) {
                                                     pd.dismiss();
                                                     AlertandMessages.showSnackbarMsg(context, "Mapping stock not saved");
                                                 }
                                             } else {
                                                 throw new java.lang.Exception();
-                                            }*/
+                                            }
 
                                             break;
+                                        case "Sales_Report":
+                                            if (!data.contains("No Data")) {
+                                                salesReportGetterSetter = new Gson().fromJson(data, SalesReportGetterSetter.class);
+                                                if (salesReportGetterSetter != null && !db.insertSalesReportData(salesReportGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Sales Report not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
 
+                                            break;
 
                                     }
                                 }

@@ -11,6 +11,7 @@ import intelre.cpm.com.hulcnc.gsonGetterSetter.MappingStockSetterGetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.NonWorkingReasonGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.PosmMasterGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.RspDetailGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.SalesReportGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SkuMasterGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SubCategoryMasteSetterGetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TableStructureGetterSetter;
@@ -38,6 +39,8 @@ public class ReferenceVariablesForDownloadActivity {
     protected SubCategoryMasteSetterGetter subCategoryMasteSetterGetter;
     protected InfoTypeMasterGetterSetter infotypeObject;
     protected MappingStockSetterGetter mappingStockObject;
+    protected QuizQuestionGetterSetter quizQuestionGetterSetter;
+    protected SalesReportGetterSetter salesReportGetterSetter;
 
 
 

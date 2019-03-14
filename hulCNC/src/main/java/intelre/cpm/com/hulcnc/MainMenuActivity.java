@@ -64,6 +64,7 @@ public class MainMenuActivity extends AppCompatActivity
     private ArrayList<JourneyPlan> storelist = new ArrayList<>();
     private ArrayList<CoverageBean> coverageList;
     ChunkFileClass  chunkFileClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -36,7 +37,8 @@ public class StoreEntryActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor = null;
     String store_cd, visit_date, user_type, username;
     ArrayList<JourneyPlan> specificStoreDATA = new ArrayList<>();
-    SearchSalesGetterSetter searchSalesGetterSetter;
+    String flag_quiz;
+    LinearLayout img_dot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +46,13 @@ public class StoreEntryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_store_entry);
         uivalidate();
         db = new HUL_CNC_DB(this);
+
     }
 
 
     private void uivalidate() {
         Toolbar toolbar = findViewById(R.id.toolbar);
+        img_dot = findViewById(R.id.img_dot);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,7 +63,20 @@ public class StoreEntryActivity extends AppCompatActivity {
         username = preferences.getString(CommonString.KEY_USERNAME, null);
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
         user_type = preferences.getString(CommonString.KEY_USER_TYPE, null);
+        flag_quiz = preferences.getString(CommonString.KEY_FLAG_QUIZ, null);
+
+
         getSupportActionBar().setTitle("Store Entry -" + visit_date);
+        img_dot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // Intent in7 = new Intent(StoreEntryActivity.this, SalesReportActivity.class);
+                Intent in7 = new Intent(StoreEntryActivity.this, SalesReportExpendable.class);
+                startActivity(in7);
+                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+            }
+        });
 
     }
 
@@ -72,6 +89,12 @@ public class StoreEntryActivity extends AppCompatActivity {
         adapter = new ValueAdapter(getApplicationContext(), getdata());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+
+        if (db.getSalesDone(store_cd).size() > 0) {
+            img_dot.setVisibility(View.VISIBLE);
+        }else {
+            img_dot.setVisibility(View.INVISIBLE);
+        }
 
     }
 
@@ -117,20 +140,17 @@ public class StoreEntryActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (current.getIconImg() == R.drawable.store_audit || current.getIconImg() == R.drawable.store_audit_done) {
-                     //   Intent in7 = new Intent(StoreEntryActivity.this, StockAvailabilityActivity.class);
+                        //   Intent in7 = new Intent(StoreEntryActivity.this, StockAvailabilityActivity.class);
                         Intent in7 = new Intent(StoreEntryActivity.this, CategoryList.class);
                         startActivity(in7);
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
                     }
-                   /* if (current.getIconImg() == R.drawable.rsp_detail || current.getIconImg() == R.drawable.rsp_detail_done) {
-                        Intent in7 = new Intent(StoreEntryActivity.this, RetailerListActivity.class);
-                        startActivity(in7);
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }*/
+
                     if (current.getIconImg() == R.drawable.rsp_detail || current.getIconImg() == R.drawable.rsp_detail_done) {
                         if (!db.isNoSaleDataFilled(store_cd)) {
-                            Intent in7 = new Intent(StoreEntryActivity.this, RetailerListActivity.class);
+                            //  Intent in7 = new Intent(StoreEntryActivity.this, RetailerListActivity.class);
+                            Intent in7 = new Intent(StoreEntryActivity.this, SelectCategoryActivity.class);
                             startActivity(in7);
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                         } else {
@@ -139,55 +159,14 @@ public class StoreEntryActivity extends AppCompatActivity {
 
                     }
 
-
-/*
-                    if (current.getIconImg() == R.drawable.store_audit || current.getIconImg() == R.drawable.store_audit_done) {
-                        if (db.getStoreAuditHeaderData().size() > 0) {
-                            Intent in7 = new Intent(StoreEntryActivity.this, StockAvailabilityActivity.class);
+                    if (current.getIconImg() == R.drawable.quiz || current.getIconImg() == R.drawable.quiz_done) {
+                        if (db.getHeaderQuizData().size() > 0) {
+                            Intent in7 = new Intent(StoreEntryActivity.this, QuizActivity.class);
                             startActivity(in7);
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        } else {
-                            Snackbar.make(recyclerView, "Store audit data not found", Snackbar.LENGTH_LONG).show();
                         }
-                    }
-*/
-
-                   /* if (current.getIconImg() == R.drawable.store_audit || current.getIconImg() == R.drawable.store_audit_done) {
-                        if (db.getStoreAuditHeaderData().size() > 0) {
-                            Intent in7 = new Intent(StoreEntryActivity.this, StockAvailabilityActivity.class);
-                            startActivity(in7);
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        } else {
-                            Snackbar.make(recyclerView, "Store audit data not found", Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                    if (current.getIconImg() == R.drawable.visibility || current.getIconImg() == R.drawable.visibility_done) {
-                        startActivity(new Intent(StoreEntryActivity.this, IntelVisibilityMenu.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-
-                    if (current.getIconImg() == R.drawable.market_info || current.getIconImg() == R.drawable.market_info_done) {
-                        startActivity(new Intent(StoreEntryActivity.this, MarketInfoActivity.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-                    if (current.getIconImg() == R.drawable.shopper_mktg_tool || current.getIconImg() == R.drawable.shopper_mktg_tool_done) {
-                        startActivity(new Intent(StoreEntryActivity.this, ShoperMToolMenu.class));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
                     }
-                    if (current.getIconImg() == R.drawable.rsp_detail || current.getIconImg() == R.drawable.rsp_detail_done) {
-                        Intent in7 = new Intent(StoreEntryActivity.this, RspListActivity.class);
-                        startActivity(in7);
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-
-                    }
-                    if (current.getIconImg() == R.drawable.training || current.getIconImg() == R.drawable.training_done) {
-                        Intent in7 = new Intent(StoreEntryActivity.this, TrainingActivity.class);
-                        startActivity(in7);
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    } else if (current.getIconImg() == R.drawable.training_grey) {
-                        Snackbar.make(recyclerView, "No Rsp Found", Snackbar.LENGTH_SHORT).show();
-                    }*/
 
                 }
             });
@@ -213,117 +192,36 @@ public class StoreEntryActivity extends AppCompatActivity {
 
     public List<NavMenuItemGetterSetter> getdata() {
         List<NavMenuItemGetterSetter> data = new ArrayList<>();
-        int storeAudit = 0, rspDetail = 0;
+        int stockAvalable = 0, sales = 0, quiz = 0;
 
         if (db.getStockDone(store_cd).size() > 0) {
-            storeAudit = R.drawable.store_audit_done;
+            stockAvalable = R.drawable.store_audit_done;
         } else {
-            storeAudit = R.drawable.store_audit;
-        }
-        searchSalesGetterSetter = db.getStoreDetailsData(store_cd);
-       /* searchSalesGetterSetter= db.getStoreDetailsData(store_cd);
-        if (!searchSalesGetterSetter.getCustomerName().isEmpty()){
-            card_view.setVisibility(View.VISIBLE);
-            customer_name.setText(searchSalesGetterSetter.getCustomerName()+"("+searchSalesGetterSetter.getCard_no()+")");
-            price.setText("Value: Rs "+searchSalesGetterSetter.getPrice());
-        }*/
-       /* if (!searchSalesGetterSetter.getCustomerName().isEmpty()) {
-            rspDetail = R.drawable.rsp_detail_done;
-        } else {
-            rspDetail = R.drawable.rsp_detail;
-        }*/
-        if (!searchSalesGetterSetter.getCustomerName().isEmpty() || db.getNosaleData(visit_date).size() > 0) {
-            rspDetail = R.drawable.rsp_detail_done;
-        } else {
-            rspDetail = R.drawable.rsp_detail;
+            stockAvalable = R.drawable.store_audit;
         }
 
-        int img[] = {storeAudit, rspDetail};
-        String name[] = {"Stock Availability", "Sale Entry"};
-        for (int i = 0; i < img.length; i++) {
-            NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
-            recData.setIconImg(img[i]);
-            recData.setIconName(name[i]);
-            data.add(recData);
+        if (db.getSalesDone(store_cd).size() > 0) {
+            sales = R.drawable.rsp_detail_done;
+        } else {
+            sales = R.drawable.rsp_detail;
         }
-        return data;
-    }
 
-/*
-    public List<NavMenuItemGetterSetter> getdata() {
-        List<NavMenuItemGetterSetter> data = new ArrayList<>();
-        int rspDetail = 0, storeAudit = 0, training, visibility = 0, shoperMKTTool, marketInfo;
-
-        if (db.getStoreAuditHeaderData().size() > 0) {
-            if (db.isStoreAuditFilled(store_cd)) {
-                storeAudit = R.drawable.store_audit_done;
+        if (flag_quiz.equals("Y")) {
+            if (db.getHeaderQuizData().size() > 0) {
+                if (db.isQuizFilled(store_cd)) {
+                    quiz = R.drawable.quiz_done;
+                } else {
+                    quiz = R.drawable.quiz;
+                }
             } else {
-                storeAudit = R.drawable.store_audit;
+                quiz = R.drawable.quiz_gray;
             }
+        }else {
+            quiz = R.drawable.quiz_gray;
         }
 
-/////visibility check condition
-
-        if (db.getSofMerchPosmHeaderData(specificStoreDATA.get(0).getRegionId(),
-                specificStoreDATA.get(0).getClassificationId(), specificStoreDATA.get(0).getStoreTypeId()).size() > 0
-                && db.getPemanentMerchPosmHeaderData(Integer.parseInt(store_cd)).size() > 0) {
-            if (db.isVisibilitySoftMerchFilled(store_cd) && db.isVisibilitySPMerchFilled(store_cd)) {
-                visibility = R.drawable.visibility_done;
-            } else {
-                visibility = R.drawable.visibility;
-            }
-        } else if (db.getSofMerchPosmHeaderData(specificStoreDATA.get(0).getRegionId(),
-                specificStoreDATA.get(0).getClassificationId(), specificStoreDATA.get(0).getStoreTypeId()).size() > 0) {
-            if (db.isVisibilitySoftMerchFilled(store_cd)) {
-                visibility = R.drawable.visibility_done;
-            } else {
-                visibility = R.drawable.visibility;
-            }
-        } else if (db.getPemanentMerchPosmHeaderData(Integer.parseInt(store_cd)).size() > 0) {
-            if (db.isVisibilitySPMerchFilled(store_cd)) {
-                visibility = R.drawable.visibility_done;
-            } else {
-                visibility = R.drawable.visibility;
-            }
-        }
-
-        if (db.isRXTFilled(store_cd) && db.isIPOSFilled(store_cd)) {
-            shoperMKTTool = R.drawable.shopper_mktg_tool_done;
-        } else {
-            shoperMKTTool = R.drawable.shopper_mktg_tool;
-        }
-
-        if (db.isMarketInfoFilled(store_cd)) {
-            marketInfo = R.drawable.market_info_done;
-        } else {
-            marketInfo = R.drawable.market_info;
-        }
-
-
-        if (db.getRspDetailData(store_cd).size() > 0 && db.getTrainingTypeData().size() > 0) {
-            if (db.getinsertedTrainingData(store_cd, visit_date).size() > 0) {
-                training = R.drawable.training_done;
-            } else {
-                training = R.drawable.training;
-            }
-
-        } else if (db.getRspDetailinsertData(store_cd).size() > 0 && db.getTrainingTypeData().size() > 0) {
-            if (db.getinsertedTrainingData(store_cd, visit_date).size() > 0) {
-                training = R.drawable.training_done;
-            } else {
-                training = R.drawable.training;
-            }
-        } else {
-            training = R.drawable.training_grey;
-        }
-
-        if (db.getRspDetailinsertData(store_cd).size() > 0) {
-            rspDetail = R.drawable.rsp_detail_done;
-        } else {
-            rspDetail = R.drawable.rsp_detail;
-        }
-        int img[] = {rspDetail, storeAudit, training, visibility, shoperMKTTool, marketInfo};
-        String name[] = {"RSP Detail", "Store Audit", "Training", "Visibility", "Shoper MKT Tool", "Market Info"};
+        int img[] = {stockAvalable, sales, quiz};
+        String name[] = {"Stock Availability", "Sale Entry", "Quiz"};
         for (int i = 0; i < img.length; i++) {
             NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
             recData.setIconImg(img[i]);
@@ -331,9 +229,28 @@ public class StoreEntryActivity extends AppCompatActivity {
             data.add(recData);
         }
 
+        /*if (flag_quiz.equals("Y")) {
+            int img[] = {stockAvalable, sales, quiz};
+            String name[] = {"Stock Availability", "Sale Entry", "Quiz"};
+            for (int i = 0; i < img.length; i++) {
+                NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
+                recData.setIconImg(img[i]);
+                recData.setIconName(name[i]);
+                data.add(recData);
+            }
+        } else {
+            int img[] = {stockAvalable, sales};
+            String name[] = {"Stock Availability", "Sale Entry"};
+            for (int i = 0; i < img.length; i++) {
+                NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
+                recData.setIconImg(img[i]);
+                recData.setIconName(name[i]);
+                data.add(recData);
+            }
+
+        }*/
+
         return data;
     }
-*/
-
 
 }

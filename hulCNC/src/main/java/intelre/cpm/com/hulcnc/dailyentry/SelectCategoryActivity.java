@@ -6,9 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,21 +14,17 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import cpm.com.hulcnc.R;
 import intelre.cpm.com.hulcnc.Database.HUL_CNC_DB;
 import intelre.cpm.com.hulcnc.constant.CommonString;
 import intelre.cpm.com.hulcnc.gettersetter.SalesEntryGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SearchStoreDataGetterSetter;
-import intelre.cpm.com.hulcnc.gsonGetterSetter.JourneyPlan;
 
 public class SelectCategoryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -39,14 +33,10 @@ public class SelectCategoryActivity extends AppCompatActivity {
     private String date;
     private HUL_CNC_DB database;
     private Context context;
-    private String userId,customer_name,card_no,customer_id,mobile_no;
     private ValueAdapter adapter;
     private ArrayList<SalesEntryGetterSetter> category_list = new ArrayList<>();
-    String store_cd, user_type, username, Error_Message, region_id, destributor_id;
-
-
+    String store_cd, region_id, destributor_id;
     SearchStoreDataGetterSetter AddstoreObject;
-    String key_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +59,6 @@ public class SelectCategoryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        key_id = getIntent().getStringExtra(CommonString.KEY_ID);
         AddstoreObject = (SearchStoreDataGetterSetter) getIntent().getSerializableExtra(CommonString.KEY_ADD_STORE_OBJECT);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -78,12 +66,6 @@ public class SelectCategoryActivity extends AppCompatActivity {
         date = preferences.getString(CommonString.KEY_DATE, null);
         region_id = preferences.getString(CommonString.KEY_REGION_ID, null);
         destributor_id = preferences.getString(CommonString.KEY_DESTRIBUTOR_ID, null);
-        userId = preferences.getString(CommonString.KEY_USERNAME, null);
-
-        customer_name = preferences.getString(CommonString.KEY_CUSTOMER_NAME, null);
-        card_no = preferences.getString(CommonString.KEY_CARD_NO, null);
-        mobile_no = preferences.getString(CommonString.KEY_PHONENO, null);
-
 
         recyclerView = (RecyclerView) findViewById(R.id.drawer_layout_recycle);
         context = this;
@@ -135,7 +117,8 @@ public class SelectCategoryActivity extends AppCompatActivity {
             final SalesEntryGetterSetter current = data.get(position);
 
             database.open();
-            if (database.getCategoryIdDoneData(store_cd,current.getCategory_id(),key_id).size()>0){
+           // if (database.getCategoryIdDoneData(store_cd,current.getCategory_id(),key_id).size()>0){
+            if (database.getCategoryIdDoneData(store_cd,current.getCategory_id()).size()>0){
                 viewHolder.chkbtn.setBackgroundResource(R.mipmap.tick);
             }
 
@@ -147,7 +130,7 @@ public class SelectCategoryActivity extends AppCompatActivity {
                     Intent intent = new Intent(SelectCategoryActivity.this, SalesEntryActivity.class);
                     intent.putExtra(CommonString.KEY_CATEGORY_CD, current.getCategory_id().toString());
                     intent.putExtra(CommonString.KEY_ADD_STORE_OBJECT, AddstoreObject);
-                    intent.putExtra(CommonString.KEY_ID, key_id + "");
+                  //  intent.putExtra(CommonString.KEY_ID, key_id + "");
                     startActivity(intent);
                     overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 

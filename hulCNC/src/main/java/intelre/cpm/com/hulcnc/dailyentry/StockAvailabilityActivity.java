@@ -114,6 +114,9 @@ public class StockAvailabilityActivity extends AppCompatActivity {
         prepareListData();
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         lvExp_audit.setAdapter(listAdapter);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++){
+            lvExp_audit.expandGroup(i);
+        }
     }
 
     private void prepareListData() {
@@ -178,10 +181,7 @@ public class StockAvailabilityActivity extends AppCompatActivity {
             txtListChild.setText(childText.getSku());
 
             final ArrayList<StockAvailabilityGetterSetter> reason_list = db.getastockAnswerData();
-          /*  StockAvailabilityGetterSetter non = new StockAvailabilityGetterSetter();
-            non.setAnswer("-Select Answer-");
-            non.setAnswerId(0);
-            reason_list.add(0, non);*/
+
             holder.audit_spin.setAdapter(new ReasonSpinnerAdapter(_context, R.layout.spinner_text_view, reason_list));
 
             for (int i = 0; i < reason_list.size(); i++) {

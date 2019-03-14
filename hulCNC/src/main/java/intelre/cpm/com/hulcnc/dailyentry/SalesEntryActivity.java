@@ -43,7 +43,7 @@ import intelre.cpm.com.hulcnc.gettersetter.SearchSalesGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SearchStoreDataGetterSetter;
 
 public class SalesEntryActivity extends AppCompatActivity {
-    private TextView customer_name,card_no;
+
     HUL_CNC_DB db;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
@@ -81,9 +81,7 @@ public class SalesEntryActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             db.open();
-                            db.insertSearchSalesData(store_cd,visit_date,searchSalesGetterSetter);
-                            db.insertSalesStockData(store_cd,category_cd,_customer_id, listDataChild, listDataHeader,_customer_name,_card_no,key_id,"No");
-                            db.updateSaveDataStatusMccain(key_id, "Yes");
+                            db.insertSalesStockData(store_cd,category_cd, listDataChild, listDataHeader);
                             finish();
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                         }
@@ -96,7 +94,6 @@ public class SalesEntryActivity extends AppCompatActivity {
                     });
                     builder.show();
                 } else {
-
                     Snackbar.make(lvExp_audit, "Please fill At Least one data and value greater then zero", Snackbar.LENGTH_SHORT).show();
                 }
 
@@ -110,9 +107,6 @@ public class SalesEntryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        customer_name=(TextView)findViewById(R.id.customer_name);
-        card_no=(TextView)findViewById(R.id.card_no);
         lvExp_audit = findViewById(R.id.lvExp_audit);
         storeAudit_fab = findViewById(R.id.storeAudit_fab);
 
@@ -137,10 +131,6 @@ public class SalesEntryActivity extends AppCompatActivity {
         _mobile_no = preferences.getString(CommonString.KEY_PHONENO, null);
 
         getSupportActionBar().setTitle("Sales Entry -" + visit_date);
-
-        customer_name.setText(_customer_name);
-        card_no.setText(_card_no);
-
         db = new HUL_CNC_DB(this);
         db.open();
         searchSalesGetterSetter=new SearchSalesGetterSetter();
@@ -151,10 +141,24 @@ public class SalesEntryActivity extends AppCompatActivity {
 
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         lvExp_audit.setAdapter(listAdapter);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++){
+            lvExp_audit.expandGroup(i);
+        }
 
         lvExp_audit.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                lvExp_audit.invalidate();
+
+                int lastItem = firstVisibleItem + visibleItemCount;
+
+                if (firstVisibleItem == 0) {
+                    storeAudit_fab.show();//.setVisibility(View.VISIBLE);
+                } else if (lastItem == totalItemCount) {
+                    storeAudit_fab.hide();//setVisibility(View.INVISIBLE);
+                } else {
+                    storeAudit_fab.show();//setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -231,7 +235,7 @@ public class SalesEntryActivity extends AppCompatActivity {
         if (listDataHeader.size() > 0) {
             for (int i = 0; i < listDataHeader.size(); i++) {
 
-                questionList = db.getSalesStockInsertedData(store_cd, listDataHeader.get(i).getBrand_id(),key_id);
+                questionList = db.getSalesStockInsertedData(store_cd, listDataHeader.get(i).getBrand_id());
                 if (questionList.size() > 0) {
                     storeAudit_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
                 } else {

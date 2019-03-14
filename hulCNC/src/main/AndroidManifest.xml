@@ -28,6 +28,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name="intelre.cpm.com.hulcnc.dailyentry.SalesReportExpendable"
+            android:label="@string/title_activity_sales_report_expendable"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name="intelre.cpm.com.hulcnc.dailyentry.SalesReportActivity"
+            android:label="@string/title_activity_sales_report"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="intelre.cpm.com.hulcnc.dailyentry.QuizActivity"
+            android:label="@string/title_activity_quiz"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name="intelre.cpm.com.hulcnc.SplashScreenActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:label="@string/app_name"
@@ -40,13 +52,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <!--
             <service
             android:name=".uploadimagesservice.BackgroundService"
             android:enabled="true" />
         -->
-
         <activity
             android:name="intelre.cpm.com.hulcnc.MainMenuActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"

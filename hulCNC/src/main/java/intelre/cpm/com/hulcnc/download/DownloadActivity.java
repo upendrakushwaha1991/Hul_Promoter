@@ -58,6 +58,8 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.add("Sku_Master");
             keysList.add("Mapping_Stock");
             keysList.add("Notice_Board");
+            keysList.add("Quiz_Question");
+            keysList.add("Sales_Report");
 
             if (keysList.size() > 0) {
                 for (int i = 0; i < keysList.size(); i++) {

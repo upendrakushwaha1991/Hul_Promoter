@@ -74,6 +74,7 @@ public class CommonString {
     public static final String FILE_PATH = Environment.getExternalStorageDirectory() + "/.Hulcnc_Images/";
     public static final String ONBACK_ALERT_MESSAGE = "Unsaved data will be lost - Do you want to continue?";
     public static final String KEY_USER_TYPE = "RIGHTNAME";
+    public static final String KEY_FLAG_QUIZ = "FLAG_QUIZ";
     public static final String KEY_IS_QUIZ_DONE = "is_quiz_done";
 
     //jeevan
@@ -166,9 +167,9 @@ public class CommonString {
     public static final String stpvisibility3 = "Please fill store profile visibility location 3";
     public static final String stpdimension3 = "Please fill store profile dimension 3";
 
-    public static final String TABLE_INSERT_STOCK_OPENINGHEADER_DATA = "STOCK_OPENINGHEADER_DATA";
-    public static final String TABLE_INSERT_SALES_STOCK_OPENINGHEADER_DATA = "SALES_STOCK_OPENINGHEADER_DATA";
 
+    public static final String TABLE_INSERT_SALES_STOCK_OPENINGHEADER_DATA = "SALES_STOCK_OPENINGHEADER_DATA";
+    public static final String TABLE_INSERT_STOCK_OPENINGHEADER_DATA = "STOCK_OPENINGHEADER_DATA";
     public static final String CREATE_TABLE_STOCK_OPENINGHEADER_DATA = "CREATE TABLE  IF NOT EXISTS "
             + TABLE_INSERT_STOCK_OPENINGHEADER_DATA + " (" + KEY_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_STORE_CD
@@ -189,9 +190,9 @@ public class CommonString {
             + "BRAND" + " VARCHAR)";
 
 
-    public static final String TABLE_STORE_STOCK_DATA = "STORE_STOCK_DATA";
-    public static final String TABLE_STORE_SALES_STOCK_DATA = "STORE_SALES_STOCK_DATA";
 
+    public static final String TABLE_STORE_SALES_STOCK_DATA = "STORE_SALES_STOCK_DATA";
+    public static final String TABLE_STORE_STOCK_DATA = "STORE_STOCK_DATA";
     public static final String CREATE_TABLE_STORE_STOCK_DATA = "CREATE TABLE  IF NOT EXISTS "
             + TABLE_STORE_STOCK_DATA + " (" + "Common_Id"
             + " INTEGER  ," + KEY_STORE_CD
@@ -468,5 +469,28 @@ public class CommonString {
             + KEY_SAVE_DATA_STATUS + " VARCHAR,"
             + KEY_USERNAME + " VARCHAR)";
 
+
+
+    public static final String TABLE_INSERT_QUIZ_OPENINGHEADER_DATA = "QUIZ_OPENINGHEADER_DATA";
+    public static final String CREATE_TABLE_QUIZ_OPENINGHEADER_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_INSERT_QUIZ_OPENINGHEADER_DATA + " (" + KEY_ID
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_STORE_CD
+            + " INTEGER, "
+            + " BRAND_CD" + " INTEGER,"
+            + " CATEGORY_ID" + " INTEGER,"
+            + " BRAND" + " VARCHAR)";
+
+    public static final String TABLE_STORE_QUIZ_DATA = "STORE_QUIZ_DATA";
+    public static final String CREATE_TABLE_STORE_QUIZ_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_STORE_QUIZ_DATA + " (" + "Common_Id"
+            + " INTEGER  ," + KEY_STORE_CD
+            + " INTEGER, "
+            + "BRAND_CD" + " INTEGER, "
+            + "QUESTION" + " VARCHAR, "
+            + "QUESTION_ID" + " INTEGER, "
+            + "RIGHT_ANSWER" + " INTEGER, "
+            + "CURRECT_ANSWER" + " VARCHAR, "
+            + "ANSWER_CD" + " INTEGER, "
+            + "BRAND" + " VARCHAR)";
 
 }

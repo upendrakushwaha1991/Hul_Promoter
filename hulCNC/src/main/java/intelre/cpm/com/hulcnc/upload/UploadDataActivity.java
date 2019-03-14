@@ -41,6 +41,7 @@ import intelre.cpm.com.hulcnc.constant.CommonString;
 import intelre.cpm.com.hulcnc.delegates.CoverageBean;
 import intelre.cpm.com.hulcnc.gettersetter.GeotaggingBeans;
 import intelre.cpm.com.hulcnc.gettersetter.NoSaleGetterSetter;
+import intelre.cpm.com.hulcnc.gettersetter.QuizGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SalesEntryGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SearchSalesGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SearchStoreDataGetterSetter;
@@ -126,8 +127,10 @@ public class UploadDataActivity extends AppCompatActivity {
                 keyList.add("CoverageDetail_latest");
                 keyList.add("STOCK_AVAILABILITY_DATA");
                 keyList.add("SALES_STOCK_DATA");
-                keyList.add("NO_SALES_DATA");
+               // keyList.add("NO_SALES_DATA");
+                keyList.add("QUIZ_DATA");
                 keyList.add("GeoTag");
+
 
             }
 
@@ -203,6 +206,8 @@ public class UploadDataActivity extends AppCompatActivity {
                             obj.put("UserId", userId);
                             obj.put("SKU_CD", auditList.get(j).getSku_id());
                             obj.put("PRESENT", auditList.get(j).getCurrectanswerCd());
+                            obj.put("CATEGORY_CD", auditList.get(j).getCategory_id());
+
                             promoArray.put(obj);
                         }
                         jsonObject = new JSONObject();
@@ -218,29 +223,54 @@ public class UploadDataActivity extends AppCompatActivity {
                     break;
 
                 case "SALES_STOCK_DATA":
-                    db.open();
-                    ArrayList<SearchStoreDataGetterSetter> list_key_id = db.getStoreSavedDataforUpload(coverageList.get(coverageIndex).getStoreId());
-                    if (list_key_id.size() > 0) {
-                        uploadSaleStockData(coverageList.get(coverageIndex).getStoreId(), String.valueOf(coverageList.get(coverageIndex).getMID()), list_key_id, 0);
-                    }
-                    break;
-                case "NO_SALES_DATA":
 
                     db.open();
-                    ArrayList<NoSaleGetterSetter> nosale = db.getNoSaleUploadData(coverageList.get(coverageIndex).getStoreId());
-                    if (nosale.size() > 0) {
+                    ArrayList<SalesEntryGetterSetter> salesEntry = db.getSalesStockUploadData_(coverageList.get(coverageIndex).getStoreId());
+                    if (salesEntry.size() > 0) {
                         JSONArray promoArray = new JSONArray();
-                        for (int j = 0; j < nosale.size(); j++) {
+
+                        for (int j = 0; j < salesEntry.size(); j++) {
                             JSONObject obj = new JSONObject();
                             obj.put("MID", coverageList.get(coverageIndex).getMID());
                             obj.put("UserId", userId);
-                            obj.put("SALES", nosale.get(j).getNo_sale());
+                            obj.put("SKU_CD", salesEntry.get(j).getSku_id());
+                            obj.put("SALE", salesEntry.get(j).getStock());
+                            obj.put("CATEGORY_CD", salesEntry.get(j).getCategory_id());
 
+                            promoArray.put(obj);
+                        }
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "NEW_SALES_STOCK_DATA");
+                        jsonObject.put("JsonData", promoArray.toString());
+                        jsonObject.put("UserId", userId);
+
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+
+                    break;
+
+                case "QUIZ_DATA":
+                    db.open();
+                    ArrayList<QuizGetterSetter> quiz_data = db.getQuizUploadData(coverageList.get(coverageIndex).getStoreId());
+                    if (quiz_data.size() > 0) {
+                        JSONArray promoArray = new JSONArray();
+                        for (int j = 0; j < quiz_data.size(); j++) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("MID", coverageList.get(coverageIndex).getMID());
+                            obj.put("UserId", userId);
+                            obj.put("QUESTION_ID", quiz_data.get(j).getQuestion_id());
+                            obj.put("ANSWER_CD", quiz_data.get(j).getCurrectanswerCd());
+                            obj.put("RIGHT_ANSWER", quiz_data.get(j).getRight_Answer());
+                            obj.put("BRAND_ID", quiz_data.get(j).getBrand_id());
+                            obj.put("VisitDate", coverageList.get(coverageIndex).getVisitDate());
                             promoArray.put(obj);
                         }
                         jsonObject = new JSONObject();
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
-                        jsonObject.put("Keys", "NO_SALES_DATA");
+                        jsonObject.put("Keys", "QUIZ_DATA");
                         jsonObject.put("JsonData", promoArray.toString());
                         jsonObject.put("UserId", userId);
 

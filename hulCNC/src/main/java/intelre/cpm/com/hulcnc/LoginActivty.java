@@ -745,8 +745,8 @@ public class LoginActivty extends AppCompatActivity {
         editor = preferences.edit();
         museridView = findViewById(R.id.userid);
         mPasswordView = findViewById(R.id.password);
-       /* museridView.setText("test");
-        mPasswordView.setText("gsk@123");*/
+        museridView.setText("test");
+        mPasswordView.setText("gsk@123");
         museridSignInButton = findViewById(R.id.user_login_button);
         museridSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -767,7 +767,7 @@ public class LoginActivty extends AppCompatActivity {
         }
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        tv_version.setText("Version -T1 " + app_ver);
+        tv_version.setText("Version " + app_ver);
         imei = new ImeiNumberClass(context);
         locationEnableCommon = new LocationEnableCommon();
         locationEnableCommon.checkgpsEnableDevice(this);
@@ -789,7 +789,7 @@ public class LoginActivty extends AppCompatActivity {
         }
         // Create a Folder for Images
         File file = new File(Environment.getExternalStorageDirectory(),
-                ".HulCnc_Images");
+                ".Hulcnc_Images");
         if (!file.isDirectory()) {
             file.mkdir();
         }

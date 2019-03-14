@@ -60,6 +60,17 @@ public class JourneyPlan {
     @SerializedName("City_Id")
     @Expose
     private Integer cityId;
+    @SerializedName("Quiz_Open")
+    @Expose
+    private String quizOpen;
+
+    public String getQuizOpen() {
+        return quizOpen;
+    }
+
+    public void setQuizOpen(String quizOpen) {
+        this.quizOpen = quizOpen;
+    }
 
     public Integer getStoreId() {
         return storeId;

@@ -126,6 +126,10 @@
     <string name="pos_salegreater">Please fill value greater then zero</string>
     <string name="title_activity_category_list">CategoryList</string>
     <string name="title_activity_add_bulk_buyer">AddBulkBuyer</string>
+    <string name="title_activity_quiz">QuizActivity</string>
+    <string name="select_dropdown">Please Select dropdown</string>
+    <string name="title_activity_sales_report">SalesReportActivity</string>
+    <string name="title_activity_sales_report_expendable">SalesReportExpendable</string>
 
 
 </resources>

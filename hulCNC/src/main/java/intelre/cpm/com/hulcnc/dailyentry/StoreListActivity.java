@@ -74,7 +74,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class StoreListActivity extends AppCompatActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private Context context;
-    private String userId;
+    private String userId,destributor_id;
     private ArrayList<CoverageBean> coverage = new ArrayList<>();
     private ArrayList<JourneyPlan> storelist = new ArrayList<>();
     private String date;
@@ -266,7 +266,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                 viewHolder.imageview.setVisibility(View.INVISIBLE);*/
 
                 //usk
-                if (chekDataforCheckout(current.getStoreId().toString(), current.getRegionId(), current.getStoreTypeId())) {
+                if (chekDataforCheckout(current.getStoreId().toString(), current.getRegionId().toString(), current.getQuizOpen())) {
                     viewHolder.chkbtn.setVisibility(View.VISIBLE);
                     viewHolder.imageview.setVisibility(View.INVISIBLE);
                 } else {
@@ -416,6 +416,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                         editor.putString(CommonString.KEY_STORE_CD, current.getStoreId().toString());
                         editor.putString(CommonString.KEY_REGION_ID, current.getRegionId().toString());
                         editor.putString(CommonString.KEY_DESTRIBUTOR_ID, current.getDistributorId().toString());
+                        editor.putString(CommonString.KEY_FLAG_QUIZ, current.getQuizOpen());
                         editor.commit();
                         dialog.cancel();
                         ArrayList<CoverageBean> specdata;
@@ -496,6 +497,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
         linearlay = (LinearLayout) findViewById(R.id.no_data_lay);
         recyclerView = (RecyclerView) findViewById(R.id.drawer_layout_recycle);
         userId = preferences.getString(CommonString.KEY_USERNAME, null);
+        destributor_id = preferences.getString(CommonString.KEY_DESTRIBUTOR_ID, null);
         context = this;
         getSupportActionBar().setTitle("Store List - " + date);
         locationEnableCommon = new LocationEnableCommon();
@@ -559,12 +561,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
             }
         }
 
-
-        // if (mRequestingLocationUpdates) {
         startLocationUpdates();
-        // }
-
-        // startLocationUpdates();
     }
 
     @Override
@@ -585,79 +582,54 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        // AppIndex.AppIndexApi.start(client, getIndexApiAction());
+
     }
 
 
-    private boolean chekDataforCheckout(String store_cd, int region_id, int storeType_id) {
+    private boolean chekDataforCheckout(String store_cd, String region_id, String quiz_open) {
         boolean status = false;
-        //store_audit data
         database.open();
-       // if (database.getStoreAuditHeaderData().size() > 0) {
+
+        if (database.getSelectCategoryData(region_id,destributor_id).size()>0){
             if (database.isStoreAuditFilled(store_cd)) {
                 status = true;
             }else {
                 status = false;
             }
-            if (status){
-                if (database.isSaleFilled(store_cd)||database.isNoSaleDataFilled(store_cd)) {
+        }else {
+            status = true;
+        }
+
+        if (status){
+            if (database.getSelectCategoryData(region_id,destributor_id).size()>0){
+                if (database.isSaleFilled(store_cd)) {
                     status = true;
                 }else {
                     status = false;
                 }
+            }else {
+                status = true;
             }
 
-       // }
-        /*else {
-            status = true;
-        }*/
-/*
-        //visibility filled data
-        if (database.getSofMerchPosmHeaderData(region_id, classification_id, storeType_id).size() > 0 &&
-                database.getPemanentMerchPosmHeaderData(Integer.parseInt(store_cd)).size() > 0) {
-            if (status && database.isVisibilitySoftMerchFilled(store_cd) && database.isVisibilitySPMerchFilled(store_cd)) {
-                status = true;
-            } else {
-                status = false;
-            }
-        } else if (database.getSofMerchPosmHeaderData(region_id, classification_id, storeType_id).size() > 0) {
-            if (status && database.isVisibilitySoftMerchFilled(store_cd)) {
-                status = true;
-            } else {
-                status = false;
-            }
-        } else if (database.getPemanentMerchPosmHeaderData(Integer.parseInt(store_cd)).size() > 0) {
-            if (status && database.isVisibilitySPMerchFilled(store_cd)) {
-                status = true;
-            } else {
-                status = false;
-            }
-        } else {
-            status = true;
-        }
-        //for shoper mkt tool
-        if (database.getSkuMasterData().size() > 0) {
-            if (status && database.isRXTFilled(store_cd) && database.isIPOSFilled(store_cd)) {
-                status = true;
-
-            } else {
-                status = false;
-            }
         }
 
-        //for market info
-        if (database.getbranddataformarketinfo().size() > 0) {
-            if (status && database.isMarketInfoFilled(store_cd)) {
+        if (status){
+            if (quiz_open.equals("Y")) {
+                if (database.getHeaderQuizData().size()>0){
+                    if (database.isQuizFilled(store_cd)) {
+                        status = true;
+                    }else {
+                        status = false;
+                    }
+                }else {
+                    status = true;
+                }
+            }else {
                 status = true;
-            } else {
-                status = false;
             }
-        } else {
-            status = true;
-        }*/
 
+
+        }
         return status;
     }
 
