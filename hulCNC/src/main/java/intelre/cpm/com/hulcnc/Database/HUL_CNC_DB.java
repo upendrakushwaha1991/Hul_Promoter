@@ -21,10 +21,12 @@ import intelre.cpm.com.hulcnc.gettersetter.QuizQuestion;
 import intelre.cpm.com.hulcnc.gettersetter.QuizQuestionGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SaleReportsGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SalesEntryGetterSetter;
+import intelre.cpm.com.hulcnc.gettersetter.SampledGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SearchSalesGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SearchStoreDataGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.StockAvailabilityGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.TrainingGetterSetter;
+import intelre.cpm.com.hulcnc.gettersetter.TrainingQuizGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.AuditQuestion;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.InfoTypeMaster;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.MappingStock;
@@ -55,10 +57,16 @@ import intelre.cpm.com.hulcnc.gsonGetterSetter.PosmMasterGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.RspDetailGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SkuMaster;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SkuMasterGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.StorewiseFocusSalesReport;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.StorewiseFocusSalesReportGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.StorewiseSalesReport;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.StorewiseSalesReportGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SubCategoryMasteSetterGetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SubCategoryMaster;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingTopicGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingType;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingTypeGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingTypeQuizGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.WindowChecklist;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.WindowMaster;
 
@@ -68,8 +76,8 @@ import intelre.cpm.com.hulcnc.gsonGetterSetter.WindowMaster;
  */
 
 public class HUL_CNC_DB extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "HUL_CNC";
-    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "HUL_CNC5";
+    public static final int DATABASE_VERSION = 2;
     private SQLiteDatabase db;
     Context context;
 
@@ -102,9 +110,11 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
             db.execSQL(CommonString.CREATE_TABLE_SEARCH_SALES_ENTRY_DATA);
             db.execSQL(CommonString.CREATE_TABLE_NO_SALE);
             db.execSQL(CommonString.CREATE_TABLE_SEARCH_STORE);
-
             db.execSQL(CommonString.CREATE_TABLE_QUIZ_OPENINGHEADER_DATA);
             db.execSQL(CommonString.CREATE_TABLE_STORE_QUIZ_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_INSERT_EXPENSEIMAGE_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_INSERT_CUSTOMER_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_INSERT_CUSTOMER_POPUP_DATA);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -119,13 +129,16 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
         db.delete(CommonString.TABLE_STORE_STOCK_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_STORE_SALES_STOCK_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_SEARCH_SALES_ENTRY_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
-
         db.delete(CommonString.TABLE_NO_SALE, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_SEARCH_STORE_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
-
-
         db.delete(CommonString.TABLE_INSERT_QUIZ_OPENINGHEADER_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_STORE_QUIZ_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_INSERT_CUSTOMER_POPUP_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_INSERT_CUSTOMER_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+
+        db.delete(CommonString.TABLE_INSERT_QUIZ_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+
+
 
     }
 
@@ -140,9 +153,12 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
         db.delete(CommonString.TABLE_SEARCH_SALES_ENTRY_DATA, null, null);
         db.delete(CommonString.TABLE_NO_SALE, null, null);
         db.delete(CommonString.TABLE_SEARCH_STORE_DATA, null, null);
-
         db.delete(CommonString.TABLE_INSERT_QUIZ_OPENINGHEADER_DATA, null, null);
         db.delete(CommonString.TABLE_STORE_QUIZ_DATA, null, null);
+        db.delete(CommonString.TABLE_INSERT_CUSTOMER_POPUP_DATA, null, null);
+        db.delete(CommonString.TABLE_INSERT_CUSTOMER_DATA, null, null);
+        db.delete(CommonString.TABLE_INSERT_QUIZ_DATA, null, null);
+
 
     }
 
@@ -163,9 +179,8 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                     db.delete(CommonString.TABLE_STORE_SALES_STOCK_DATA, null, null);
                     db.delete(CommonString.TABLE_SEARCH_SALES_ENTRY_DATA, null, null);
                     db.delete(CommonString.TABLE_NO_SALE, null, null);
-
                     db.delete(CommonString.TABLE_SEARCH_STORE_DATA, null, null);
-
+                    db.delete(CommonString.TABLE_INSERT_QUIZ_DATA, null, null);
                     db.delete(CommonString.TABLE_INSERT_QUIZ_OPENINGHEADER_DATA, null, null);
                     db.delete(CommonString.TABLE_STORE_QUIZ_DATA, null, null);
                 }
@@ -217,7 +232,6 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                 values.put("Contact_No", jcpList.get(i).getContactNo());
                 values.put("City", jcpList.get(i).getCity());
                 values.put("Store_Type", jcpList.get(i).getStoreType());
-
                 values.put("Store_Type_Id", jcpList.get(i).getStoreTypeId());
                 values.put("Reason_Id", jcpList.get(i).getReasonId());
                 values.put("Upload_Status", jcpList.get(i).getUploadStatus());
@@ -226,6 +240,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                 values.put("City_Id", jcpList.get(i).getCityId());
                 values.put("Region_id", jcpList.get(i).getRegionId());
                 values.put("Quiz_Open", jcpList.get(i).getQuizOpen());
+                values.put("Time_Period", jcpList.get(i).getTimePeriod());
 
                 long id = db.insert("Journey_Plan", null, values);
                 if (id == -1) {
@@ -443,6 +458,89 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertTrainingTypeQuizData(TrainingTypeQuizGetterSetter infotype) {
+        db.delete("Training_Type", null, null);
+        ContentValues values = new ContentValues();
+        List<TrainingType> data = infotype.getTrainingType();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("Training_Type", data.get(i).getTrainingType());
+                values.put("Training_Type_Id", data.get(i).getTrainingTypeId());
+
+                long id = db.insert("Training_Type", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean insertStoreWiseData(StorewiseSalesReportGetterSetter infotype) {
+        db.delete("Storewise_Sales_Report", null, null);
+        ContentValues values = new ContentValues();
+        List<StorewiseSalesReport> data = infotype.getStorewiseSalesReport();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("Achivement", data.get(i).getAchivement());
+                values.put("Srno", data.get(i).getSrno());
+                values.put("Store_Id", data.get(i).getStoreId());
+                values.put("Time_Period", data.get(i).getTimePeriod());
+                values.put("Target", data.get(i).getTarget());
+                values.put("Ach_Per", data.get(i).getAchPer());
+
+
+                long id = db.insert("Storewise_Sales_Report", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean insertStorefocusWiseData(StorewiseFocusSalesReportGetterSetter infotype) {
+        db.delete("Storewise_Focus_Sales_Report", null, null);
+        ContentValues values = new ContentValues();
+        List<StorewiseFocusSalesReport> data = infotype.getStorewiseFocusSalesReport();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("Achivement", data.get(i).getAchivement());
+                values.put("Srno", data.get(i).getSrno());
+                values.put("Store_Id", data.get(i).getStoreId());
+                values.put("Time_Period", data.get(i).getTimePeriod());
+                values.put("Target", data.get(i).getTarget());
+                values.put("Ach_Per", data.get(i).getAchPer());
+
+
+                long id = db.insert("Storewise_Focus_Sales_Report", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+
     public ArrayList<JourneyPlan> getStoreData(String date) {
         ArrayList<JourneyPlan> list = new ArrayList<JourneyPlan>();
         Cursor dbcursor = null;
@@ -473,6 +571,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                     sb.setDistributorId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Distributor_Id"))));
                     sb.setCityId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("City_Id"))));
                     sb.setQuizOpen(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Quiz_Open")));
+                    sb.setTimePeriod(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Time_Period"))));
 
                     list.add(sb);
                     dbcursor.moveToNext();
@@ -629,6 +728,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                     sb.setDistributorId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Distributor_Id"))));
                     sb.setCityId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("City_Id"))));
                     sb.setQuizOpen(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Quiz_Open")));
+                    sb.setTimePeriod(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Time_Period"))));
 
                     list.add(sb);
                     dbcursor.moveToNext();
@@ -824,6 +924,34 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                     StockAvailabilityGetterSetter df = new StockAvailabilityGetterSetter();
                     df.setAnswerId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Answer_Id"))));
                     df.setAnswer(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Answer")));
+
+                    list.add(df);
+                    dbcursor.moveToNext();
+                }
+
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+
+    }
+
+    public ArrayList<TrainingType> getTrainingData() {
+        ArrayList<TrainingType> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("Select * from Training_Type", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    TrainingType df = new TrainingType();
+                    df.setTrainingTypeId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type_Id"))));
+                    df.setTrainingType(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Training_Type")));
 
                     list.add(df);
                     dbcursor.moveToNext();
@@ -1541,6 +1669,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                     sb.setGeoTag(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Geo_Tag")));
                     sb.setDistributorId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Distributor_Id"))));
                     sb.setCityId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("City_Id"))));
+                    sb.setTimePeriod(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Time_Period"))));
 
                     list.add(sb);
                     dbcursor.moveToNext();
@@ -1636,6 +1765,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                     sb.setDistributorId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Distributor_Id"))));
                     sb.setCityId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("City_Id"))));
                     sb.setQuizOpen(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Quiz_Open")));
+                    sb.setTimePeriod(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Time_Period"))));
                     dbcursor.moveToNext();
                 }
                 dbcursor.close();
@@ -1933,7 +2063,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
         Cursor dbcursor = null;
 
         try {
-         //   dbcursor = db.rawQuery("SELECT * FROM SALES_STOCK_OPENINGHEADER_DATA WHERE STORE_CD ='" + store_cd + "' AND CATEGORY_ID=" + category_id + " AND COMMONID=" + key_id + "", null);
+            //   dbcursor = db.rawQuery("SELECT * FROM SALES_STOCK_OPENINGHEADER_DATA WHERE STORE_CD ='" + store_cd + "' AND CATEGORY_ID=" + category_id + " AND COMMONID=" + key_id + "", null);
             dbcursor = db.rawQuery("SELECT * FROM SALES_STOCK_OPENINGHEADER_DATA WHERE STORE_CD ='" + store_cd + "' AND CATEGORY_ID=" + category_id + "", null);
 
             if (dbcursor != null) {
@@ -1994,13 +2124,13 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
     }
 */
 
-    public ArrayList<SalesEntryGetterSetter> getSalesStockUploadData_key_id(String store_cd,String key_id) {
+    public ArrayList<SalesEntryGetterSetter> getSalesStockUploadData_key_id(String store_cd, String key_id) {
         Log.d("Fetching", "Storedata--------------->Start<------------");
         ArrayList<SalesEntryGetterSetter> list = new ArrayList<>();
         Cursor dbcursor = null;
 
         try {
-            dbcursor = db.rawQuery("SELECT * FROM STORE_SALES_STOCK_DATA WHERE STORE_CD =" + store_cd +"  AND COMMONID=" + key_id + "", null);
+            dbcursor = db.rawQuery("SELECT * FROM STORE_SALES_STOCK_DATA WHERE STORE_CD =" + store_cd + "  AND COMMONID=" + key_id + "", null);
             if (dbcursor != null) {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
@@ -2327,7 +2457,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<SearchStoreDataGetterSetter> getStoreSavedData(String saveDataStatus,String store_cd) {
+    public ArrayList<SearchStoreDataGetterSetter> getStoreSavedData(String saveDataStatus, String store_cd) {
         Log.d("FetchStoreType>Start<--", "----");
         ArrayList<SearchStoreDataGetterSetter> list = new ArrayList<>();
         Cursor dbcursor = null;
@@ -2364,7 +2494,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
     public SearchStoreDataGetterSetter getStoreSavedData1(String store_cd, String key_id) {
         Log.d("FetchStoreType>Start<--", "----");
         Cursor dbcursor = null;
-        SearchStoreDataGetterSetter df=null;
+        SearchStoreDataGetterSetter df = null;
 
         try {
 
@@ -2487,7 +2617,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
             if (dbcursor != null) {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
-                    SearchStoreDataGetterSetter  df = new SearchStoreDataGetterSetter();
+                    SearchStoreDataGetterSetter df = new SearchStoreDataGetterSetter();
                     df.setKey_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID)));
                     df.setCard_no(dbcursor.getString(dbcursor.getColumnIndexOrThrow("CARD_NO")));
                     df.setUser_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("USERNAME")));
@@ -2505,9 +2635,6 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
 
 
     }
-
-
-
 
 
     public ArrayList<SalesEntryGetterSetter> getSalesDone(String store_cd) {
@@ -2596,8 +2723,8 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
 
 
     public void insertQuizData(String storeid,
-                                HashMap<QuizGetterSetter,
-                                        List<QuizGetterSetter>> data, List<QuizGetterSetter> save_listDataHeader) {
+                               HashMap<QuizGetterSetter,
+                                       List<QuizGetterSetter>> data, List<QuizGetterSetter> save_listDataHeader) {
 
         db.delete(CommonString.TABLE_INSERT_QUIZ_OPENINGHEADER_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_STORE_QUIZ_DATA, CommonString.KEY_STORE_CD + "='" + storeid + "'", null);
@@ -2619,8 +2746,9 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                     values1.put("QUESTION", data.get(save_listDataHeader.get(i)).get(j).getQuestion());
                     values1.put("QUESTION_ID", data.get(save_listDataHeader.get(i)).get(j).getQuestion_id());
                     values1.put("CURRECT_ANSWER", data.get(save_listDataHeader.get(i)).get(j).getCurrectanswer());
-                    values1.put("ANSWER_CD", Integer.parseInt(data.get(save_listDataHeader.get(i)).get(j).getCurrectanswerCd()));
-                    values1.put("RIGHT_ANSWER", Integer.parseInt(String.valueOf(data.get(save_listDataHeader.get(i)).get(j).getRight_Answer())));
+                    // values1.put("ANSWER_CD", Integer.parseInt(data.get(save_listDataHeader.get(i)).get(j).getCurrectanswerCd()));
+                    values1.put("ANSWER_CD", data.get(save_listDataHeader.get(i)).get(j).getCurrectanswerCd());
+                    values1.put("RIGHT_ANSWER", String.valueOf(data.get(save_listDataHeader.get(i)).get(j).getRight_Answer()));
 
                     db.insert(CommonString.TABLE_STORE_QUIZ_DATA, null, values1);
                 }
@@ -2695,12 +2823,12 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<QuizGetterSetter> getQuizchildData( String brand_id) {
+    public ArrayList<QuizGetterSetter> getQuizchildData(String brand_id) {
         ArrayList<QuizGetterSetter> list = new ArrayList<>();
         Cursor dbcursor = null;
 
         try {
-            dbcursor = db.rawQuery("select DISTINCT  Q.Question_Id, Q.Question FROM Quiz_Question Q "+
+            dbcursor = db.rawQuery("select DISTINCT  Q.Question_Id, Q.Question FROM Quiz_Question Q " +
                     " where Q.Brand_Id = '" + brand_id + "'", null);
 
             if (dbcursor != null) {
@@ -2727,7 +2855,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<QuizGetterSetter> getQuizAnswerData(String question_id,String  select) {
+    public ArrayList<QuizGetterSetter> getQuizAnswerData(String question_id, String select) {
         ArrayList<QuizGetterSetter> list = new ArrayList<>();
 
         QuizGetterSetter sb1 = new QuizGetterSetter();
@@ -2737,7 +2865,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
         list.add(0, sb1);
         Cursor dbcursor = null;
         try {
-            dbcursor = db.rawQuery("select DISTINCT  Q.Answer_Id, Q.Answer, Q.Right_Answer FROM Quiz_Question Q "+
+            dbcursor = db.rawQuery("select DISTINCT  Q.Answer_Id, Q.Answer, Q.Right_Answer FROM Quiz_Question Q " +
                     " where Question_Id = " + question_id + "", null);
             if (dbcursor != null) {
                 dbcursor.moveToFirst();
@@ -2765,12 +2893,12 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
     }
 
 
-
     public ArrayList<QuizGetterSetter> getQuizUploadData(String store_cd) {
         ArrayList<QuizGetterSetter> list = new ArrayList<>();
         Cursor dbcursor = null;
 
         try {
+            // dbcursor = db.rawQuery("SELECT * FROM STORE_QUIZ_DATA WHERE STORE_CD ='" + store_cd + "'", null);
             dbcursor = db.rawQuery("SELECT * FROM STORE_QUIZ_DATA WHERE STORE_CD ='" + store_cd + "'", null);
 
             if (dbcursor != null) {
@@ -2884,7 +3012,7 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
 
             dbcursor = db.rawQuery(" Select distinct SK.Sku_Id,SK.Sku from Sales_Report SR " +
                     " INNER JOIN SKU_MASTER SK ON SR.Sku_Id = SK.Sku_Id " +
-                    " where SR.Store_Id = '" + store_id  + "'", null);
+                    " where SR.Store_Id = '" + store_id + "'", null);
 
 
             if (dbcursor != null) {
@@ -2893,6 +3021,38 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
                     SaleReportsGetterSetter sb = new SaleReportsGetterSetter();
                     sb.setSku_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Sku_Id")));
                     sb.setSku(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Sku")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public ArrayList<SaleReportsGetterSetter> getHeaderSalesInsertReportData(String store_id) {
+
+        ArrayList<SaleReportsGetterSetter> list = new ArrayList<SaleReportsGetterSetter>();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery(" Select distinct SK.SKU_CD,SK.SKU from STORE_SALES_STOCK_DATA SK " +
+                    " where SK.STORE_CD = '" + store_id + "'", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    SaleReportsGetterSetter sb = new SaleReportsGetterSetter();
+                    sb.setSku_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU_CD")));
+                    sb.setSku(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU")));
 
                     list.add(sb);
                     dbcursor.moveToNext();
@@ -2952,6 +3112,457 @@ public class HUL_CNC_DB extends SQLiteOpenHelper {
         return list;
     }
 
+    public ArrayList<SaleReportsGetterSetter> getSalesReportInsertTotalData(String store_cd, String sku_id) {
+        ArrayList<SaleReportsGetterSetter> list = new ArrayList<>();
+        Cursor dbcursor = null;
 
+        try {
+
+            dbcursor = db.rawQuery("Select sku_Id, Sku, Sale_Type, 0.0 as MTD, FTD, FTD as Total  from " +
+                    " (Select sk.Sku_Id,  sk.Sku, 'Value' as Sale_Type,  sum(ifnull(d.Stock,0)*sk.MRP) as FTD from STORE_SALES_STOCK_DATA d inner join Sku_Master sk on d.sku_cd = sk.sku_Id " +
+                    " where d.Store_cd ='" + store_cd + "' and sk.Sku_Id ='" + sku_id + "' group by sk.Sku, sk.Sku_Id " +
+                    " union " +
+                    " Select sk.Sku_Id, sk.Sku,  'Volume' as Sale_Type, sum(ifnull(d.Stock,0)) as FTD from STORE_SALES_STOCK_DATA d inner join Sku_Master sk on d.sku_cd = sk.sku_Id " +
+                    " where d.Store_cd ='" + store_cd + "' and sk.Sku_Id ='" + sku_id + "' group by sk.Sku, sk.Sku_Id) as t", null);
+
+
+           /* Select sku_Id, Sku, Sale_Type, 0.0 as MTD, FTD, FTD as Total  from
+                    (Select sk.Sku_Id,  sk.Sku, 'Value' as Sale_Type,  sum(ifnull(d.Stock,0)*sk.MRP) as FTD from STORE_SALES_STOCK_DATA d inner join Sku_Master sk on d.sku_cd = sk.sku_Id
+                            where d.Store_cd = 9 and sk.Sku_Id = 168 group by sk.Sku, sk.Sku_Id
+                            Union
+                            Select sk.Sku_Id, sk.Sku,  'Volume' as Sale_Type, sum(ifnull(d.Stock,0)) as FTD from STORE_SALES_STOCK_DATA d inner join Sku_Master sk on d.sku_cd = sk.sku_Id
+                            where d.Store_cd = 9 and sk.Sku_Id = 168 group by sk.Sku, sk.Sku_Id) as t*/
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    SaleReportsGetterSetter sb = new SaleReportsGetterSetter();
+                    sb.setValue(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Sale_Type")));
+                    sb.setMtd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MTD")));
+                    sb.setFtd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("FTD")));
+                    sb.setTotal(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Total")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+
+            return list;
+        }
+        return list;
+    }
+
+
+    public SaleReportsGetterSetter getSaleData1() {
+        Cursor dbcursor = null;
+        SaleReportsGetterSetter sb = new SaleReportsGetterSetter();
+        try {
+            dbcursor = db.rawQuery(" Select a.Store_cd, b.MTD,a.FTD, a.FTD+b.MTD as Total from" +
+                    "(select store_cd, SUM(STOCK) as FTD from  STORE_SALES_STOCK_DATA Group By Store_Cd) a inner join" +
+                    "(Select store_id as store_cd, sum(MTD) as MTD from Sales_Report where lower(Sale_Type) = 'volume' group by Store_id) b on a.Store_cd=b.Store_cd", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    sb.setMtd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MTD")));
+                    sb.setFtd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("FTD")));
+                    sb.setTotal(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Total")));
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return sb;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception get JCP!", e.toString());
+            return sb;
+        }
+        return sb;
+    }
+
+
+    public SaleReportsGetterSetter getSaleData2() {
+        Cursor dbcursor = null;
+        SaleReportsGetterSetter sb = new SaleReportsGetterSetter();
+        try {
+            dbcursor = db.rawQuery("Select a.Store_cd, b.ValueMTD,a.ValueFTD, a.ValueFTD+b.ValueMTD as TotalValue from " +
+                    "(Select Store_cd, SUM(ValueMRP) as ValueFTD from " +
+                    "(select store_cd,  SUM(STOCK)* MRP as ValueMRP from  STORE_SALES_STOCK_DATA sd inner join sku_master sm on sd.SKU_CD=sm.SKU_ID Group By sd.Store_Cd, sd.SKU_CD)) a" +
+                    " inner join (Select store_id as store_cd, sum(MTD) as ValueMTD from Sales_Report where lower(Sale_Type)= 'value' group by Store_id) b on a.Store_cd=b.Store_cd", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    sb.setMtd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ValueMTD")));
+                    sb.setFtd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("ValueFTD")));
+                    sb.setTotal(dbcursor.getString(dbcursor.getColumnIndexOrThrow("TotalValue")));
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return sb;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception get JCP!", e.toString());
+            return sb;
+        }
+        return sb;
+    }
+
+    public long insertTrainingQuizData(String user_name, String visit_date, String store_id, String trainingData, String trainingId, String traing) {
+        db.delete(CommonString.TABLE_INSERT_QUIZ_DATA, "STORE_ID='" + store_id + "'", null);
+        long l = 0;
+        ContentValues values = new ContentValues();
+        try {
+            values.put("STORE_ID", store_id);
+            values.put("VISIT_DATE", visit_date);
+            values.put("TRAINING_DATE", trainingData);
+            values.put("TRAINING_ID", trainingId);
+            values.put("TRAINING", traing);
+            values.put("USER_ID", user_name);
+
+            l = db.insert(CommonString.TABLE_INSERT_QUIZ_DATA, null, values);
+
+        } catch (Exception ex) {
+            Log.d("Database Exception ", ex.toString());
+        }
+        return l;
+    }
+
+
+    public TrainingQuizGetterSetter getTraingTypeData(String storeId) {
+        TrainingQuizGetterSetter sb = new TrainingQuizGetterSetter();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("Select * from " + CommonString.TABLE_INSERT_QUIZ_DATA + "" + " where " + CommonString.KEY_STORE_ID + " = '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    sb.setStoreId(dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")));
+                    sb.setTraining(dbcursor.getString(dbcursor.getColumnIndexOrThrow("TRAINING")));
+                    sb.setTrainingId(dbcursor.getString(dbcursor.getColumnIndexOrThrow("TRAINING_ID")));
+                    sb.setTrainingDate(dbcursor.getString(dbcursor.getColumnIndexOrThrow("TRAINING_DATE")));
+                    sb.setUser_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("USER_ID")));
+                    sb.setVisit_date(dbcursor.getString(dbcursor.getColumnIndexOrThrow("VISIT_DATE")));
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return sb;
+            }
+
+        } catch (Exception e) {
+
+            return sb;
+        }
+
+        return sb;
+    }
+
+
+    public ArrayList<StorewiseSalesReport> getPerformanceDataStorewiseReport() {
+        ArrayList<StorewiseSalesReport> list = new ArrayList<StorewiseSalesReport>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM Storewise_Sales_Report order by Srno", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    StorewiseSalesReport sb = new StorewiseSalesReport();
+                    sb.setSrno(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Srno"))));
+                    sb.setStoreId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Id"))));
+                    sb.setAchivement(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Achivement"))));
+                    sb.setTimePeriod(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Time_Period")));
+                    sb.setAchPer(Double.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Ach_Per"))));
+                    sb.setTarget(Double.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Target"))));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+
+            return list;
+        }
+
+
+        return list;
+    }
+
+    public ArrayList<StorewiseFocusSalesReport> getStorePerformanceDataStorewiseFocusReport() {
+        ArrayList<StorewiseFocusSalesReport> list = new ArrayList<StorewiseFocusSalesReport>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM Storewise_Focus_Sales_Report order by Srno", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    StorewiseFocusSalesReport sb = new StorewiseFocusSalesReport();
+                    sb.setSrno(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Srno"))));
+                    sb.setStoreId(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Id"))));
+                    sb.setAchivement(Integer.parseInt(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Achivement"))));
+                    sb.setTimePeriod(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Time_Period")));
+                    sb.setAchPer(Double.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Ach_Per"))));
+                    sb.setTarget(Double.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Target"))));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+
+            return list;
+        }
+
+
+        return list;
+    }
+
+    public ArrayList<BrandMaster> getCustomer_data() {
+
+        ArrayList<BrandMaster> list = new ArrayList<BrandMaster>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * from Brand_Master", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BrandMaster pgs = new BrandMaster();
+
+                    pgs.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand")));
+                    pgs.setBrandId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand_Id"))));
+                    list.add(pgs);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            return list;
+        }
+
+        return list;
+
+    }
+
+    public ArrayList<BrandMaster> getInsertCustomerPoData() {
+        ArrayList<BrandMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            //  dbcursor = db.rawQuery("SELECT * FROM " + CommonString.TABLE_INSERT_CUSTOMER_POP + " WHERE " + CommonString.KEY_COMMON_ID + " = " + key_id, null);
+            //  dbcursor = db.rawQuery("SELECT * FROM " + CommonString.TABLE_INSERT_CUSTOMER_POP + " WHERE " + CommonString.KEY_COMMON_ID + " = " + key_id, null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BrandMaster sb = new BrandMaster();
+
+                    sb.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BRAND_NAME)));
+                    sb.setBrandId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BRAND_ID))));
+                    sb.setStock_liens(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CUSTOMER_QTY)));
+                    sb.setKey_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_COMMON_ID)));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+
+            return list;
+        }
+
+        return list;
+    }
+
+    public long InsertFeedbackData(ArrayList<BrandMaster> data, String date, String store_id, String key_id) {
+
+        db.delete(CommonString.TABLE_INSERT_CUSTOMER_POP, CommonString.KEY_STORE_ID + "='" + store_id + "' and " + CommonString.KEY_COMMON_ID + " = '" + key_id + "'", null);
+
+        ContentValues values = new ContentValues();
+        long id = 0;
+        try {
+            for (int i = 0; i < data.size(); i++) {
+                values.put(CommonString.KEY_COMMON_ID, key_id);
+                values.put(CommonString.KEY_BRAND_ID, data.get(i).getBrandId());
+                values.put(CommonString.KEY_BRAND, data.get(i).getBrand());
+                values.put(CommonString.KEY_VISIT_DATE, date);
+                values.put(CommonString.KEY_CUSTOMER_QTY, data.get(i).getStock_liens());
+
+                id = db.insert(CommonString.TABLE_INSERT_CUSTOMER_POP, null, values);
+            }
+
+            return id;
+        } catch (Exception ex) {
+            return -1;
+        }
+
+    }
+
+    public void removesampledata(String user_id) {
+        db.execSQL("DELETE FROM CUSTOMER_DATA WHERE KEY_ID = '" + user_id + "'");
+        db.execSQL("DELETE FROM CUSTOMER_POPUP_DATA WHERE KEY_ID = '" + user_id + "'");
+    }
+
+    public void removealSamplingData(String store_id) {
+        db.delete(CommonString.TABLE_INSERT_CUSTOMER_DATA, CommonString.KEY_STORE_ID + "='" + store_id + "'", null);
+        db.delete(CommonString.TABLE_INSERT_CUSTOMER_POPUP_DATA, CommonString.KEY_STORE_ID + "='" + store_id + "'", null);
+    }
+
+    public long insertSampledData(String store_id, String visit_Date, String user_name, ArrayList<SampledGetterSetter> list) {
+        db.delete(CommonString.TABLE_INSERT_CUSTOMER_DATA, "STORE_ID" + "='" + store_id + "'AND VISIT_DATE='" + visit_Date + "'", null);
+        db.delete(CommonString.TABLE_INSERT_CUSTOMER_POPUP_DATA, "STORE_ID" + "='" + store_id + "'", null);
+        long l = 0, l2 = 0;
+
+        ContentValues values = new ContentValues();
+        ContentValues values2 = new ContentValues();
+        try {
+            for (int i = 0; i < list.size(); i++) {
+
+                values.put("STORE_ID", store_id);
+                values.put("USER_ID", user_name);
+                values.put("VISIT_DATE", visit_Date);
+                values.put("MOBILE", list.get(i).getMobile());
+                values.put("NAME", list.get(i).getName());
+                values.put("CUSTOMER_SALES_CD", list.get(i).getCustomerSales_cd());
+                values.put("CHECKBOX", list.get(i).isExists());
+
+                l = db.insert(CommonString.TABLE_INSERT_CUSTOMER_DATA, null, values);
+                for (int j = 0; j < list.get(i).getSamplingChecklistData().size(); j++) {
+                    if (!list.get(i).getSamplingChecklistData().get(j).getStock_liens().equalsIgnoreCase("")) {
+                        values2.put("STORE_ID", store_id);
+                        values2.put("COMMON_ID", l);
+                        values2.put("BRAND_ID", list.get(i).getSamplingChecklistData().get(j).getBrandId());
+
+                        if (!list.get(i).getSamplingChecklistData().get(j).getStock_liens().equals("")) {
+                            values2.put("QTY", list.get(i).getSamplingChecklistData().get(j).getStock_liens());
+                        } else {
+                            values2.put("QTY", "0");
+                        }
+
+                        l2 = db.insert(CommonString.TABLE_INSERT_CUSTOMER_POPUP_DATA, null, values2);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+
+        }
+        return l2;
+    }
+
+
+    public ArrayList<SampledGetterSetter> getinsertedsampledData(String store_cd, String visit_date) {
+
+        ArrayList<SampledGetterSetter> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("Select * from CUSTOMER_DATA where STORE_ID='" + store_cd + "'AND VISIT_DATE='" + visit_date + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    SampledGetterSetter sb = new SampledGetterSetter();
+
+
+
+                    sb.setMobile(dbcursor.getString(dbcursor.getColumnIndexOrThrow("MOBILE")));
+                    sb.setName(dbcursor.getString(dbcursor.getColumnIndexOrThrow("NAME")));
+                    sb.setKey_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("KEY_ID")));
+                    sb.setCustomerSales_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow("CUSTOMER_SALES_CD")));
+                    String sales=dbcursor.getString(dbcursor.getColumnIndexOrThrow("CUSTOMER_SALES_CD"));
+                    if (sales.equals("1")){
+                        sb.setCustomerSales_cd("1");
+                    }else {
+                        sb.setCustomerSales_cd("0");
+                    }
+                    String value = dbcursor.getString(dbcursor.getColumnIndexOrThrow("CHECKBOX"));
+                    if (value.equals("0")) {
+                        sb.setExists(false);
+                    } else {
+                        sb.setExists(true);
+                    }
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            return list;
+        }
+        return list;
+    }
+
+
+    public ArrayList<BrandMaster> getInsertedSamplingData(String storeId, String key_id) {
+
+        ArrayList<BrandMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("Select * from CUSTOMER_POPUP_DATA where STORE_ID='" + storeId + "' and COMMON_ID = '" + key_id + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BrandMaster sb = new BrandMaster();
+                    sb.setBrandId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("BRAND_ID"))));
+                    sb.setStock_liens(dbcursor.getString(dbcursor.getColumnIndexOrThrow("QTY")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            return list;
+        }
+        return list;
+    }
+
+    public boolean isCustomerDataFilled(String storeId) {
+        boolean filled = false;
+
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM CUSTOMER_DATA WHERE STORE_ID= '" + storeId + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                int icount = dbcursor.getInt(0);
+                dbcursor.close();
+                if (icount > 0) {
+                    filled = true;
+                } else {
+                    filled = false;
+                }
+
+            }
+
+        } catch (Exception e) {
+
+            return filled;
+        }
+
+        return filled;
+    }
 
 }

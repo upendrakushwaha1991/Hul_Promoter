@@ -19,6 +19,9 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/parinaam"
@@ -27,10 +30,30 @@
         android:roundIcon="@mipmap/parinaam"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name="intelre.cpm.com.hulcnc.dailyentry.QuizSummaryActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:label="@string/title_activity_new_customer"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"></activity>
+        <activity
+            android:name="intelre.cpm.com.hulcnc.dailyentry.NewCustomerActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:label="@string/title_activity_new_customer"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="intelre.cpm.com.hulcnc.dailyentry.CustomerDataActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:label="@string/title_activity_customer_data"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="intelre.cpm.com.hulcnc.dailyentry.SalesReportExpendable"
             android:label="@string/title_activity_sales_report_expendable"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="intelre.cpm.com.hulcnc.dailyentry.SalesReportActivity"
             android:label="@string/title_activity_sales_report"
@@ -214,6 +237,16 @@
             android:name="intelre.cpm.com.hulcnc.dailyentry.CategoryList"
             android:label="@string/title_activity_category_list"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
 
 </manifest>

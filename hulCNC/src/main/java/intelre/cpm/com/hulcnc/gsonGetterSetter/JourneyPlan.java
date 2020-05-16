@@ -64,6 +64,18 @@ public class JourneyPlan {
     @Expose
     private String quizOpen;
 
+    @SerializedName("Time_Period")
+    @Expose
+    private Integer timePeriod;
+
+    public Integer getTimePeriod() {
+        return timePeriod;
+    }
+
+    public void setTimePeriod(Integer timePeriod) {
+        this.timePeriod = timePeriod;
+    }
+
     public String getQuizOpen() {
         return quizOpen;
     }

@@ -46,6 +46,8 @@ public class SalesReportExpendable extends AppCompatActivity {
     HashMap<SaleReportsGetterSetter, List<SaleReportsGetterSetter>> listDataChild;
     ExpandableListAdapter listAdapter;
     boolean checkflag = true;
+    SaleReportsGetterSetter saleObj2,saleObj1;
+    TextView value1,value2,mtd1,mtd2,ftd1,ftd2,total1,total2;
     ArrayList<Integer> checkHeaderArray = new ArrayList<>();
 
     @Override
@@ -54,9 +56,7 @@ public class SalesReportExpendable extends AppCompatActivity {
         setContentView(R.layout.activity_sales_report_expendable);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getviewUI();
-
     }
 
     private void getviewUI() {
@@ -65,6 +65,15 @@ public class SalesReportExpendable extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         lvExp_audit = findViewById(R.id.lvExp_audit);
+        value1 = (TextView)findViewById(R.id.value1);
+        mtd1 = (TextView)findViewById(R.id.mtd1);
+        ftd1 = (TextView)findViewById(R.id.ftd1);
+        total1 = (TextView)findViewById(R.id.total1);
+        value2 = (TextView)findViewById(R.id.value2);
+        mtd2 = (TextView)findViewById(R.id.mtd2);
+        ftd2 = (TextView)findViewById(R.id.ftd2);
+        total2 = (TextView)findViewById(R.id.total2);
+
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
         store_cd = preferences.getString(CommonString.KEY_STORE_CD, null);
@@ -77,6 +86,16 @@ public class SalesReportExpendable extends AppCompatActivity {
         db.open();
 
         prepareListData();
+        saleObj1 = db.getSaleData1();
+        saleObj2 = db.getSaleData2();
+
+        mtd1.setText(saleObj1.getMtd());
+        ftd1.setText(saleObj1.getFtd());
+        total1.setText(saleObj1.getTotal());
+
+        mtd2.setText(saleObj2.getMtd());
+        ftd2.setText(saleObj2.getFtd());
+        total2.setText(saleObj2.getTotal());
 
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         lvExp_audit.setAdapter(listAdapter);
@@ -159,12 +178,22 @@ public class SalesReportExpendable extends AppCompatActivity {
         db.open();
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();
+
         listDataHeader = db.getHeaderSalesReportData(store_cd);
+
+        if (!(listDataHeader.size() > 0)) {
+            listDataHeader = db.getHeaderSalesInsertReportData(store_cd);
+        }
         if (listDataHeader.size() > 0) {
             for (int i = 0; i < listDataHeader.size(); i++) {
 
                 questionList = db.getSalesReportTotalData(store_cd, listDataHeader.get(i).getSku_id());
+
+                if (!(questionList.size() > 0)) {
+                    questionList = db.getSalesReportInsertTotalData(store_cd, listDataHeader.get(i).getSku_id());
+                }
                 listDataChild.put(listDataHeader.get(i), questionList); // Header, Child data
+
             }
         }
     }

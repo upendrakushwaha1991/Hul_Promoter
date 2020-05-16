@@ -37,11 +37,14 @@ import intelre.cpm.com.hulcnc.gsonGetterSetter.PosmMasterGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.RspDetailGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SalesReportGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SkuMasterGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.StorewiseFocusSalesReportGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.StorewiseSalesReportGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SubCategoryMasteSetterGetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TableStructure;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TableStructureGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingTopicGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingTypeGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingTypeQuizGetterSetter;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
@@ -224,11 +227,46 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                                                     pd.dismiss();
                                                     AlertandMessages.showSnackbarMsg(context, "Sales Report not saved");
                                                 }
+                                            }/* else {
+                                                throw new java.lang.Exception();
+                                            }*/
+
+                                            break;
+                                        case "Training_Type":
+                                            if (!data.contains("No Data")) {
+                                                trainingTypeQuizGetterSetter = new Gson().fromJson(data, TrainingTypeQuizGetterSetter.class);
+                                                if (trainingTypeQuizGetterSetter != null && !db.insertTrainingTypeQuizData(trainingTypeQuizGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Training_Type not saved");
+                                                }
                                             } else {
                                                 throw new java.lang.Exception();
                                             }
-
                                             break;
+
+                                        case "Storewise_Sales_Report":
+                                            if (!data.contains("No Data")) {
+                                                storewiseSalesReportGetterSetter = new Gson().fromJson(data, StorewiseSalesReportGetterSetter.class);
+                                                if (storewiseSalesReportGetterSetter != null && !db.insertStoreWiseData(storewiseSalesReportGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Training_Type not saved");
+                                                }
+                                            } /*else {
+                                                throw new java.lang.Exception();
+                                            }*/
+                                            break;
+                                        case "Storewise_Focus_Sales_Report":
+                                            if (!data.contains("No Data")) {
+                                                storewiseFocusSalesReportGetterSetter = new Gson().fromJson(data, StorewiseFocusSalesReportGetterSetter.class);
+                                                if (storewiseFocusSalesReportGetterSetter != null && !db.insertStorefocusWiseData(storewiseFocusSalesReportGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Storewise_Focus_Sales_Report not saved");
+                                                }
+                                            } /*else {
+                                                throw new java.lang.Exception();
+                                            }*/
+                                            break;
+
 
                                     }
                                 }
@@ -243,8 +281,10 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                             } else {
                                 editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
                                 editor.apply();
-                                pd.setMessage("Downloading Images");
-                                new DownloadImageTask().execute();
+                                pd.dismiss();
+                                AlertandMessages.showAlert((Activity) context, "All data downloaded Successfully", true);
+                              /*  pd.setMessage("Downloading Images");
+                                new DownloadImageTask().execute();*/
                             }
 
                         } catch (Exception e) {
@@ -252,8 +292,8 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                             editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, finalJsonIndex[0]);
                             editor.apply();
                             pd.dismiss();
-                           // AlertandMessages.showAlert((Activity) context, finalKeyName + " Data not found ", true);
-                            AlertandMessages.showAlert((Activity) context,  " No Journey plan for today please contact your supervisor ", true);
+                            AlertandMessages.showAlert((Activity) context, "Error in downloading Data at " + finalKeyName, true);
+                            // AlertandMessages.showAlert((Activity) context,  " No Journey plan for today please contact your supervisor ", true);
                         }
                     } else {
                         editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, finalJsonIndex[0]);
@@ -269,8 +309,8 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                     isvalid = true;
                     pd.dismiss();
                     if (t instanceof SocketTimeoutException || t instanceof IOException || t instanceof SocketException) {
-                      //  AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE + "(" + t.getMessage().toString() + ")", true);
-                        AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE , true);
+                        //  AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE + "(" + t.getMessage().toString() + ")", true);
+                        AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
                     } else {
                         AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
                     }

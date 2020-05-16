@@ -1,5 +1,6 @@
 package intelre.cpm.com.hulcnc.dailyentry;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,7 +29,9 @@ import android.os.StatFs;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.Formatter;
@@ -131,12 +134,12 @@ public class StoreimageActivity extends AppCompatActivity implements
         }
 
         if (Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission(getApplicationContext(),
-                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getApplicationContext(),
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
+
         specific_store = database.getSpecificStoreData(store_cd);
 
 
@@ -202,7 +205,7 @@ public class StoreimageActivity extends AppCompatActivity implements
         switch (id) {
             case R.id.img_cam_selfie:
                 try {
-                    long freeSpace =  getAvailableSpaceInMB();
+                    long freeSpace = getAvailableSpaceInMB();
                     if (freeSpace < 70) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle("Memory Error").setMessage("Your device storage is almost full.Your free space should be 70 MB.");
                         builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -311,9 +314,10 @@ public class StoreimageActivity extends AppCompatActivity implements
 
     protected void startCameraActivity() {
         try {
+
             Log.i("MakeMachine", "startCameraActivity()");
             File file = new File(_path);
-            Uri outputFileUri = Uri.fromFile(file);
+            Uri outputFileUri = FileProvider.getUriForFile(StoreimageActivity.this, "cpm.com.hulcnc.fileprovider", file);
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             startActivityForResult(intent, 0);
@@ -463,6 +467,16 @@ public class StoreimageActivity extends AppCompatActivity implements
     @Override
     public void onConnected(Bundle bundle) {
         try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
                 lat = mLastLocation.getLatitude();
@@ -611,13 +625,13 @@ public class StoreimageActivity extends AppCompatActivity implements
         return Double.parseDouble(freeSpace);
     }
 
-    public static long getAvailableSpaceInMB(){
+    public static long getAvailableSpaceInMB() {
         final long SIZE_KB = 1024L;
         final long SIZE_MB = SIZE_KB * SIZE_KB;
         long availableSpace = -1L;
         StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
         availableSpace = (long) stat.getAvailableBlocks() * (long) stat.getBlockSize();
-        return availableSpace/SIZE_MB;
+        return availableSpace / SIZE_MB;
     }
 }
 

@@ -13,10 +13,13 @@ import intelre.cpm.com.hulcnc.gsonGetterSetter.PosmMasterGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.RspDetailGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SalesReportGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SkuMasterGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.StorewiseFocusSalesReportGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.StorewiseSalesReportGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.SubCategoryMasteSetterGetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TableStructureGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingTopicGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingTypeGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingTypeQuizGetterSetter;
 
 /**
  * Created by upendrak on 15-12-2017.
@@ -41,6 +44,9 @@ public class ReferenceVariablesForDownloadActivity {
     protected MappingStockSetterGetter mappingStockObject;
     protected QuizQuestionGetterSetter quizQuestionGetterSetter;
     protected SalesReportGetterSetter salesReportGetterSetter;
+    protected TrainingTypeQuizGetterSetter trainingTypeQuizGetterSetter;
+    protected StorewiseSalesReportGetterSetter storewiseSalesReportGetterSetter;
+    protected StorewiseFocusSalesReportGetterSetter storewiseFocusSalesReportGetterSetter;
 
 
 

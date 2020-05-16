@@ -63,5 +63,22 @@ public class BrandMaster {
     public void setBrandSequence(Integer brandSequence) {
         this.brandSequence = brandSequence;
     }
+    String stock_liens="";
+    String key_id;
 
+    public String getKey_id() {
+        return key_id;
+    }
+
+    public void setKey_id(String key_id) {
+        this.key_id = key_id;
+    }
+
+    public String getStock_liens() {
+        return stock_liens;
+    }
+
+    public void setStock_liens(String stock_liens) {
+        this.stock_liens = stock_liens;
+    }
 }

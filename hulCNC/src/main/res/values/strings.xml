@@ -130,6 +130,10 @@
     <string name="select_dropdown">Please Select dropdown</string>
     <string name="title_activity_sales_report">SalesReportActivity</string>
     <string name="title_activity_sales_report_expendable">SalesReportExpendable</string>
+    <string name="start_time">MM/DD/YYYY</string>
+    <string name="title_activity_customer_data">CustomerDataActivity</string>
+    <string name="title_activity_new_customer">NewCustomerActivity</string>
+    <string name="messageM">All the data will be deleted.\nAre you sure you want to delete the data</string>
 
 
 </resources>

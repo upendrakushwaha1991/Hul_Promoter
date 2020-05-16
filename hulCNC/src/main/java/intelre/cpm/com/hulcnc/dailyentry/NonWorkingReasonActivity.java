@@ -22,6 +22,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -230,10 +231,16 @@ public class NonWorkingReasonActivity extends AppCompatActivity
 
     protected void startCameraActivity() {
         try {
-            Log.i("MakeMachine", "startCameraActivity()");
+           /* Log.i("MakeMachine", "startCameraActivity()");
             File file = new File(_path);
             Uri outputFileUri = Uri.fromFile(file);
             Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            startActivityForResult(intent, 0);*/
+            Log.i("MakeMachine", "startCameraActivity()");
+            File file = new File(_path);
+            Uri outputFileUri = FileProvider.getUriForFile(NonWorkingReasonActivity.this, "cpm.com.hulcnc.fileprovider", file);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             startActivityForResult(intent, 0);
         } catch (Exception e) {

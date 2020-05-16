@@ -45,7 +45,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center_horizontal"
-                        android:text="Valume"
+                        android:text="Value"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="12sp" />
 
