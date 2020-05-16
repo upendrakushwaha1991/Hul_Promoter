@@ -345,5 +345,6 @@ public class MainMenuActivity extends AppCompatActivity
         downloadIndex = preferences.getInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
         coverageList = db.getCoverageData(visit_date);
     }
+    //comm
 
 }
