@@ -149,6 +149,7 @@ public class DownloadAllDatawithRetro extends ReferenceVariablesForDownloadActiv
                                                 throw new java.lang.Exception();
                                             }
                                             break;
+
                                         case "Non_Working_Reason":
                                             if (!data.contains("No Data")) {
                                                 nonWorkingObj = new Gson().fromJson(data, NonWorkingReasonGetterSetter.class);
