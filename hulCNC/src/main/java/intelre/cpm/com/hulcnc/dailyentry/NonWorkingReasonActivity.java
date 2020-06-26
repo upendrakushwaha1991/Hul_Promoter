@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+import intelre.cpm.com.hulcnc.constant.CommonFunctions;
 import intelre.cpm.com.hulcnc.retrofit.PostApi;
 import intelre.cpm.com.hulcnc.Database.HUL_CNC_DB;
 import cpm.com.hulcnc.R;
@@ -318,7 +319,8 @@ public class NonWorkingReasonActivity extends AppCompatActivity
             _pathforcheck = store_id + "_NONWORKING_" + visit_date.replace("/", "") +
                     "_" + getCurrentTime().replace(":", "") + ".jpg";
             _path = CommonString.FILE_PATH + _pathforcheck;
-            startCameraActivity();
+          //  startCameraActivity();
+            CommonFunctions.startAnncaCameraActivity(this, _path, null, false);
         }
         if (v.getId() == R.id.save) {
             if (checkNetIsAvailable()) {

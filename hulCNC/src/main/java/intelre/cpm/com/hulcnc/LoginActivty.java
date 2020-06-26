@@ -21,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
@@ -36,7 +37,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 
-import org.apache.commons.logging.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,8 +44,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import cpm.com.hulcnc.R;
@@ -103,7 +107,7 @@ public class LoginActivty extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_STORAGE_READ = 12;
     private static final int MY_PERMISSIONS_REQUEST_STORAGE_WRITE = 14;
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-
+    private static final int PERMISSION_ALL = 99;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,14 +115,6 @@ public class LoginActivty extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_intel_login_activty);
         Ui_declaration();
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_PHONE_STATE},
-                    PERMISSIONS_REQUEST_READ_PHONE_STATE);
-        } else {
-            imeiNumbers = imei.getDeviceImei();
-        }
         getDeviceName();
 
     }
@@ -200,7 +196,7 @@ public class LoginActivty extends AppCompatActivity {
                 jsonObject.put("IMEINumber1", "0");
                 jsonObject.put("IMEINumber2", "0");
             }*/
-            if (imeiNumbers.length > 0) {
+           /* if (imeiNumbers.length > 0) {
                 jsonObject.put("IMEINumber1", imeiNumbers[0]);
                 if (imeiNumbers.length > 1) {
                     jsonObject.put("IMEINumber2", imeiNumbers[1]);
@@ -210,7 +206,29 @@ public class LoginActivty extends AppCompatActivity {
             } else {
                 jsonObject.put("IMEINumber1", "0");
                 jsonObject.put("IMEINumber2", "0");
+            }*/
+
+            if (imeiNumbers!=null && imeiNumbers.length > 0) {
+                if (imeiNumbers[0] == null) {
+                    jsonObject.put("IMEINumber1", "0");
+                } else {
+                    jsonObject.put("IMEINumber1", imeiNumbers[0]);
+                }
+                if (imeiNumbers!=null && imeiNumbers.length > 1) {
+                    if (imeiNumbers[1] == null) {
+                        jsonObject.put("IMEINumber2", "0");
+                    } else {
+                        jsonObject.put("IMEINumber2", imeiNumbers[1]);
+                    }
+                } else {
+                    jsonObject.put("IMEINumber2", "0");
+                }
+            } else {
+                jsonObject.put("IMEINumber1", "0");
+                jsonObject.put("IMEINumber2", "0");
             }
+
+
             String jsonString = jsonObject.toString();
             try {
                 final String[] data_global = {""};
@@ -486,20 +504,7 @@ public class LoginActivty extends AppCompatActivity {
 
 
 
-   /* @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_READ_PHONE_STATE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            imeiNumbers = imei.getDeviceImei();
-        }
-        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(getApplicationContext(),
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-    }*/
-   @Override
+  /* @Override
    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
        checkAppPermission(Manifest.permission.CAMERA, MY_PERMISSIONS_REQUEST_CAMERA);
@@ -515,23 +520,87 @@ public class LoginActivty extends AppCompatActivity {
            return;
        }
 
-      /* if (checkPlayServices()) {
-           // Building the GoogleApi client
-           buildGoogleApiClient();
+   }*/
+  @Override
+  public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+      android.util.Log.d("", "Permission callback called-------");
+      switch (requestCode) {
+          case PERMISSION_ALL: {
+              Map<String, Integer> perms = new HashMap<>();
+              // Initialize the map with both permissions
+              perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+              perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+              perms.put(Manifest.permission.ACCESS_NETWORK_STATE, PackageManager.PERMISSION_GRANTED);
+              perms.put(Manifest.permission.ACCESS_COARSE_LOCATION, PackageManager.PERMISSION_GRANTED);
+              perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
+              perms.put(Manifest.permission.READ_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+              perms.put(Manifest.permission.READ_PHONE_STATE, PackageManager.PERMISSION_GRANTED);
+              // Fill with actual results from user
+              if (grantResults.length > 0) {
+                  for (int i = 0; i < permissions.length; i++)
+                      perms.put(permissions[i], grantResults[i]);
+                  // Check for both permissions
+                  if (perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                          && perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                          && perms.get(Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED
+                          && perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                          && perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                          && perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                          && perms.get(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
 
-           createLocationRequest();
-       }
+                       imeiNumbers = imei.getDeviceImei();
+                      // Create a Folder for Images
+                     /* File file = new File(Environment.getExternalStorageDirectory(), ".Himalaya_BA_Images");
+                      if (!file.isDirectory()) {
+                          file.mkdir();
+                      }*/
+                      android.util.Log.d("", "sms & location services permission granted");
+                      // process the normal flow
+                      //else any one or both the permissions are not granted
+                  } else {
+                      Log.d("", "Some permissions are not granted ask again ");
+                      //permission is denied (this is the first time, when "never ask again" is not checked) so ask again explaining the usage of permission
+//                        // shouldShowRequestPermissionRationale will return true
+                      //show the dialog or snackbar saying its necessary and try again otherwise proceed with setup.
+                      if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                              ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA) ||
+                              ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_NETWORK_STATE) ||
+                              ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+                              ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION) ||
+                              ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                              ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+                          showDialogOK("Location,Photos,media,file,manage phone calls and Camera Services Permission required for this app",
+                                  new DialogInterface.OnClickListener() {
+                                      @Override
+                                      public void onClick(DialogInterface dialog, int which) {
+                                          switch (which) {
+                                              case DialogInterface.BUTTON_POSITIVE:
+                                                  checkAndRequestPermissions();
+                                                  break;
+                                              case DialogInterface.BUTTON_NEGATIVE:
+                                                  // proceed with logic by disabling the related features or quit the app.
+                                                  Intent startMain = new Intent(Intent.ACTION_MAIN);
+                                                  startMain.addCategory(Intent.CATEGORY_HOME);
+                                                  startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-       // Create an instance of GoogleAPIClient.
-       if (mGoogleApiClient == null) {
-           mGoogleApiClient = new GoogleApiClient.Builder(this)
-                   .addConnectionCallbacks(this)
-                   .addOnConnectionFailedListener(this)
-                   .addApi(LocationServices.API)
-                   .build();
-       }*/
+                                                  startActivity(startMain);
+                                                  break;
+                                          }
+                                      }
+                                  });
+                      }
+                      //permission is denied (and never ask again is  checked)
+                      //shouldShowRequestPermissionRationale will return false
+                      else {
+                          Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG).show();
+                          //                            //proceed with logic by disabling the related features or quit the app.
+                      }
+                  }
+              }
+          }
+      }
 
-   }
+  }
 
 
 
@@ -587,8 +656,8 @@ public class LoginActivty extends AppCompatActivity {
         editor = preferences.edit();
         museridView = findViewById(R.id.userid);
         mPasswordView = findViewById(R.id.password);
-      /*  museridView.setText("test");
-        mPasswordView.setText("gsk@123");*/
+       museridView.setText("test");
+        mPasswordView.setText("gsk@123");
        // museridView.setText("testpromo");
        // museridView.setText("sunny.s");
        // mPasswordView.setText("cpm123");
@@ -596,6 +665,7 @@ public class LoginActivty extends AppCompatActivity {
 
     /*    museridView.setText("mandava.s");
         mPasswordView.setText("cpm123");*/
+        checkAndRequestPermissions();
         museridSignInButton = findViewById(R.id.user_login_button);
         museridSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -621,20 +691,13 @@ public class LoginActivty extends AppCompatActivity {
         locationEnableCommon = new LocationEnableCommon();
         locationEnableCommon.checkgpsEnableDevice(this);
         imei = new ImeiNumberClass(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE},
-                    PERMISSIONS_REQUEST_READ_PHONE_STATE);
+        imeiNumbers = imei.getDeviceImei();
+        if (imeiNumbers.length == 2) {
+            imei1 = imeiNumbers[0];
+            imei2 = imeiNumbers[1];
         } else {
-            imeiNumbers = imei.getDeviceImei();
-            if (imeiNumbers.length == 2) {
-                imei1 = imeiNumbers[0];
-                imei2 = imeiNumbers[1];
-            } else {
-                imei1 = imeiNumbers[0];
-                imei2 = "";
-            }
-
+            imei1 = imeiNumbers[0];
+            imei2 = "";
         }
         // Create a Folder for Images
         File file = new File(Environment.getExternalStorageDirectory(), ".Hulcnc_Images");
@@ -751,6 +814,54 @@ public class LoginActivty extends AppCompatActivity {
             }
         });*/
         builder.show();
+    }
+
+
+    private boolean checkAndRequestPermissions() {
+
+        int permissionwrite_storage = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int CAMERA = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int ACCESS_NETWORK_STATE = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_NETWORK_STATE);
+        int ACCESS_COARSE_LOCATION = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        int locationPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int READ_EXTERNAL_STORAGE = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int READ_PHONE_STATE = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
+        if (permissionwrite_storage != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (CAMERA != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+
+        if (ACCESS_NETWORK_STATE != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_NETWORK_STATE);
+        }
+        if (ACCESS_COARSE_LOCATION != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+        if (locationPermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if (READ_EXTERNAL_STORAGE != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (READ_PHONE_STATE != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
+        }
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), PERMISSION_ALL);
+            return false;
+        }
+        return true;
+    }
+
+    private void showDialogOK(String message, DialogInterface.OnClickListener okListener) {
+        new android.support.v7.app.AlertDialog.Builder(this).setMessage(message).setPositiveButton("OK", okListener).setNegativeButton("Cancel", okListener).create().show();
     }
 
 

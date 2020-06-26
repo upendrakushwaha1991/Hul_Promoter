@@ -43,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import intelre.cpm.com.hulcnc.constant.CommonFunctions;
 import intelre.cpm.com.hulcnc.retrofit.PostApi;
 import intelre.cpm.com.hulcnc.Database.HUL_CNC_DB;
 import cpm.com.hulcnc.R;
@@ -170,7 +171,8 @@ public class CheckoutActivty extends AppCompatActivity implements View.OnClickLi
                         "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
                 intime = getCurrentTime();
-                startCameraActivity();
+               // startCameraActivity();
+                CommonFunctions.startAnncaCameraActivity(this, _path, null, false);
 
                 break;
 

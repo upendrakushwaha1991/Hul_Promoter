@@ -66,6 +66,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import intelre.cpm.com.hulcnc.Database.HUL_CNC_DB;
+import intelre.cpm.com.hulcnc.constant.CommonFunctions;
 import intelre.cpm.com.hulcnc.retrofit.PostApi;
 import cpm.com.hulcnc.R;
 import intelre.cpm.com.hulcnc.constant.AlertandMessages;
@@ -222,7 +223,8 @@ public class StoreimageActivity extends AppCompatActivity implements
                                 "_" + getCurrentTime().replace(":", "") + ".jpg";
                         _path = CommonString.FILE_PATH + _pathforcheck;
                         intime = getCurrentTime();
-                        startCameraActivity();
+                        CommonFunctions.startAnncaCameraActivity(this, _path, null, false);
+
                     }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
@@ -230,7 +232,8 @@ public class StoreimageActivity extends AppCompatActivity implements
                             "_" + getCurrentTime().replace(":", "") + ".jpg";
                     _path = CommonString.FILE_PATH + _pathforcheck;
                     intime = getCurrentTime();
-                    startCameraActivity();
+                    CommonFunctions.startAnncaCameraActivity(this, _path, null, false);
+
                 }
 
                 break;
@@ -386,7 +389,7 @@ public class StoreimageActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    Bitmap getViewBitmap(View view, Bitmap bmp) {
+   /* Bitmap getViewBitmap(View view, Bitmap bmp) {
         //Get the dimensions of the view so we can re-layout the view at its current size
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         String dateTime = sdf.format(Calendar.getInstance().getTime());
@@ -454,7 +457,7 @@ public class StoreimageActivity extends AppCompatActivity implements
         //Now that the view is laid out and we have a canvas, ask the view to draw itself into the canvas
         view.draw(c);
         return b;
-    }
+    }*/
 
 
     public String getCurrentTime() {

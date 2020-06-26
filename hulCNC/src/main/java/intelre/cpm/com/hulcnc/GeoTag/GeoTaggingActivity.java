@@ -69,6 +69,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import intelre.cpm.com.hulcnc.constant.AlertandMessages;
+import intelre.cpm.com.hulcnc.constant.CommonFunctions;
 import intelre.cpm.com.hulcnc.constant.CommonString;
 import intelre.cpm.com.hulcnc.dailyentry.NonWorkingReasonActivity;
 import intelre.cpm.com.hulcnc.retrofit.DownloadAllDatawithRetro;
@@ -203,7 +204,8 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
             public void onClick(View view) {
                 _pathforcheck = storeid + "_GeoTag_" + visitData.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
-                startCameraActivity();
+               // startCameraActivity();
+                CommonFunctions.startAnncaCameraActivity(GeoTaggingActivity.this, _path, null, false);
 
             }
         });

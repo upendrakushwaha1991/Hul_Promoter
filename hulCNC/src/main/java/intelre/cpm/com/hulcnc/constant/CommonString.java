@@ -7,6 +7,7 @@ import android.os.Environment;
  */
 
 public class CommonString {
+    public static final int CAPTURE_MEDIA = 131;
     public static final String KEY_CHECKOUT_IMAGE = "CHECKOUT_IMAGE";
     //preference
     public static final String KEY_USERNAME = "USERNAME";
