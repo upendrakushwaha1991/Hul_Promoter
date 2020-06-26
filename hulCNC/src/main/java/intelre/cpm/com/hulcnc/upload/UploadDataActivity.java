@@ -43,12 +43,15 @@ import intelre.cpm.com.hulcnc.gettersetter.GeotaggingBeans;
 import intelre.cpm.com.hulcnc.gettersetter.NoSaleGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.QuizGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SalesEntryGetterSetter;
+import intelre.cpm.com.hulcnc.gettersetter.SampledGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SearchSalesGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.SearchStoreDataGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.StockAvailabilityGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.StoreProfileGetterSetter;
 import intelre.cpm.com.hulcnc.gettersetter.TrainingGetterSetter;
+import intelre.cpm.com.hulcnc.gettersetter.TrainingQuizGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.AuditQuestion;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.BrandMaster;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.ImageNMResponseGetterSetter;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.InfoTypeMaster;
 import intelre.cpm.com.hulcnc.gsonGetterSetter.JourneyPlan;
@@ -130,6 +133,7 @@ public class UploadDataActivity extends AppCompatActivity {
                // keyList.add("NO_SALES_DATA");
                 keyList.add("QUIZ_DATA");
                 keyList.add("GeoTag");
+                keyList.add("CUSTOMER_DATA");
 
 
             }
@@ -254,6 +258,17 @@ public class UploadDataActivity extends AppCompatActivity {
 
                 case "QUIZ_DATA":
                     db.open();
+                    TrainingQuizGetterSetter traingData = db.getTraingTypeData(coverageList.get(coverageIndex).getStoreId());
+                    JSONArray topUpQuizArray = new JSONArray();
+                    JSONObject trainingobj = new JSONObject();
+                    trainingobj.put("MID", coverageList.get(coverageIndex).getMID());
+                    trainingobj.put("UserId", userId);
+                    trainingobj.put(CommonString.KEY_VISIT_DATE, traingData.getVisit_date());
+                    trainingobj.put("TRAINING_DATE", traingData.getTrainingDate());
+                    trainingobj.put("TRAINING_ID", traingData.getTrainingId());
+
+                    topUpQuizArray.put(trainingobj);
+
                     ArrayList<QuizGetterSetter> quiz_data = db.getQuizUploadData(coverageList.get(coverageIndex).getStoreId());
                     if (quiz_data.size() > 0) {
                         JSONArray promoArray = new JSONArray();
@@ -268,10 +283,16 @@ public class UploadDataActivity extends AppCompatActivity {
                             obj.put("VisitDate", coverageList.get(coverageIndex).getVisitDate());
                             promoArray.put(obj);
                         }
+
+                        JSONObject   jsonObject4 = new JSONObject();
+                        jsonObject4.put("quiz_list_data", promoArray);
+                        jsonObject4.put("quiz_training_data", topUpQuizArray);
                         jsonObject = new JSONObject();
+
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
-                        jsonObject.put("Keys", "QUIZ_DATA");
-                        jsonObject.put("JsonData", promoArray.toString());
+                        jsonObject.put("Keys", "QUIZ_DATA_NEW");
+                      //  jsonObject.put("JsonData", promoArray.toString());
+                        jsonObject.put("JsonData", jsonObject4.toString());
                         jsonObject.put("UserId", userId);
 
                         jsonString = jsonObject.toString();
@@ -305,6 +326,62 @@ public class UploadDataActivity extends AppCompatActivity {
                         type = CommonString.UPLOADJsonDetail;
                     }
 
+                    break;
+
+                    case "CUSTOMER_DATA":
+                    db.open();
+                    List<SampledGetterSetter> sampling = db.getinsertedsampledData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+
+                    String valuesampling = "";
+                    if (sampling.size() > 0) {
+                        JSONObject jsonData = new JSONObject();
+                        JSONObject jsonObject2 = new JSONObject();
+                        JSONArray samplingData = new JSONArray();
+                        for (int i = 0; i < sampling.size(); i++) {
+                            JSONArray samplingData1 = new JSONArray();
+                            boolean exist = sampling.get(i).isExists();
+                            if (exist) {
+                                valuesampling = "1";
+                            } else {
+                                valuesampling = "0";
+                            }
+                            jsonObject2 = new JSONObject();
+                            jsonObject2.put("MID", coverageList.get(coverageIndex).getMID());
+                            jsonObject2.put("User_Id", userId);
+                            jsonObject2.put("Mobile", sampling.get(i).getMobile());
+                            jsonObject2.put("Name", sampling.get(i).getName());
+                            jsonObject2.put("Customer_Sale", sampling.get(i).getCustomerSales_cd());
+                            jsonObject2.put("Present", valuesampling);
+                            jsonObject2.put("Id", sampling.get(i).getKey_id());
+
+                            List<BrandMaster> sampleData = db.getInsertedSamplingData(coverageList.get(coverageIndex).getStoreId(),sampling.get(i).getKey_id());
+
+                            for(int k=0;k<sampleData.size();k++){
+
+                                JSONObject jsonObj = new JSONObject();
+                                jsonObj.put("Id", sampling.get(i).getKey_id());
+                                jsonObj.put("MID", coverageList.get(coverageIndex).getMID());
+                                jsonObj.put("Brand_id", sampleData.get(k).getBrandId());
+                                jsonObj.put("Purchased", sampleData.get(k).getStock_liens());
+                                samplingData1.put(jsonObj);
+                            }
+
+                            jsonObject2.put("Customer_data",samplingData1);
+                            samplingData.put(jsonObject2);
+                        }
+
+                        jsonData.put("Customer_popup_data",samplingData);
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "CUSTOMER_DATA");
+                        jsonObject.put("JsonData", jsonData.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+                    //endregion
                     break;
 
 

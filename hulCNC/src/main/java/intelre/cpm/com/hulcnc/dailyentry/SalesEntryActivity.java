@@ -386,7 +386,6 @@ public class SalesEntryActivity extends AppCompatActivity {
                          List<SalesEntryGetterSetter> listDataHeader2) {
         boolean flag = false;
         checkHeaderArray.clear();
-        loop1:
         for (int i = 0; i < listDataHeader2.size(); i++) {
 
             for (int j = 0; j < listDataChild2.get(listDataHeader.get(i)).size(); j++) {

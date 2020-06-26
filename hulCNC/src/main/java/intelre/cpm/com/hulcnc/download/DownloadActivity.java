@@ -52,6 +52,7 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.clear();
             keysList.add("Table_Structure");
             keysList.add("Journey_Plan");
+            keysList.add("Notice_Period");
             keysList.add("Non_Working_Reason");
             keysList.add("Category_Master");
             keysList.add("Brand_Master");
@@ -60,6 +61,9 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.add("Notice_Board");
             keysList.add("Quiz_Question");
             keysList.add("Sales_Report");
+            keysList.add("Training_Type");
+            keysList.add("Storewise_Sales_Report");
+            keysList.add("Storewise_Focus_Sales_Report");
 
             if (keysList.size() > 0) {
                 for (int i = 0; i < keysList.size(); i++) {

@@ -1,11 +1,16 @@
 package intelre.cpm.com.hulcnc.dailyentry;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,25 +25,43 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.DatePicker;
 import android.widget.ExpandableListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.gson.JsonSyntaxException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+
 import cpm.com.hulcnc.R;
 import intelre.cpm.com.hulcnc.Database.HUL_CNC_DB;
+import intelre.cpm.com.hulcnc.constant.AlertandMessages;
 import intelre.cpm.com.hulcnc.constant.CommonString;
 import intelre.cpm.com.hulcnc.gettersetter.QuizGetterSetter;
+import intelre.cpm.com.hulcnc.gettersetter.StockAvailabilityGetterSetter;
+import intelre.cpm.com.hulcnc.gettersetter.TrainingQuizGetterSetter;
+import intelre.cpm.com.hulcnc.gsonGetterSetter.TrainingType;
+import intelre.cpm.com.hulcnc.retrofit.DownloadAllDatawithRetro;
 
 
-public class QuizActivity extends AppCompatActivity {
+public class QuizActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     HUL_CNC_DB db;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
-    String store_cd, visit_date, user_type, username, Error_Message, region_id, destributor_id;
+    String store_cd, visit_date, user_type, username, Error_Message, region_id, destributor_id, training_time;
     ExpandableListView lvExp_audit;
     FloatingActionButton storeAudit_fab;
     List<QuizGetterSetter> listDataHeader;
@@ -48,26 +71,92 @@ public class QuizActivity extends AppCompatActivity {
     boolean checkflag = true;
     ArrayList<Integer> checkHeaderArray = new ArrayList<>();
     private String stock_category_cd;
+    TextView txt_timer, icon_date, add_date;
+    Spinner head_spin;
+    ArrayList<TrainingType> trainingData = new ArrayList<>();
+    private ArrayAdapter<CharSequence> categoryAdapter;
+    //
+    DatePickerDialog datePickerDialog;
+    int year;
+    int month;
+    int dayOfMonth;
+    Calendar calendar;
+    String cdSpinValue, SpinValue;
+    DownloadAllDatawithRetro upload;
+    String dateset = "";
+    CountDownTimer waitTimer;
+    int time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
         getviewUI();
+        getSpinnerData();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        dateset = df.format(Calendar.getInstance().getTime());
+        add_date.setText(dateset);
+
+        icon_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calendar = Calendar.getInstance();
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = new DatePickerDialog(QuizActivity.this, new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+
+                        dateset = day + "/" + (month + 1) + "/" + year;
+
+                        add_date.setText(dateset);
+
+                    }
+                }, year, month, dayOfMonth);
+
+                // datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis() - 86400000 * 6);
+                try {
+                    datePickerDialog.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        // reverseTimer(600, txt_timer);
+        int trainingTym = Integer.parseInt(training_time);
+         time = (trainingTym * 40);
+        reverseTimer(time, txt_timer);
+        // time = (2 * 40);
+
+
         storeAudit_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 lvExp_audit.clearFocus();
-               // lvExp_audit.invalidateViews();
-               // listAdapter.notifyDataSetChanged();
+                // lvExp_audit.invalidateViews();
+                // listAdapter.notifyDataSetChanged();
+                if (validation()) {
                 if (validateData(listDataChild, listDataHeader)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(QuizActivity.this);
                     builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
                     builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            if(waitTimer != null) {
+                                waitTimer.cancel();
+                                waitTimer = null;
+                            }
                             db.open();
+                            db.insertTrainingQuizData(username, visit_date, store_cd, dateset, cdSpinValue, SpinValue);
                             db.insertQuizData(store_cd, listDataChild, listDataHeader);
+                            Intent intent=new Intent(QuizActivity.this,QuizSummaryActivity.class);
+                            startActivity(intent);
                             finish();
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                         }
@@ -82,6 +171,7 @@ public class QuizActivity extends AppCompatActivity {
                 } else {
                     Snackbar.make(lvExp_audit, Error_Message, Snackbar.LENGTH_LONG).show();
                 }
+            }
 
             }
         });
@@ -91,9 +181,13 @@ public class QuizActivity extends AppCompatActivity {
     private void getviewUI() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       // getSupportActionBar().setHomeButtonEnabled(true);
+       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        head_spin = findViewById(R.id.head_spin);
+        add_date = findViewById(R.id.add_date);
+        icon_date = findViewById(R.id.icon_date);
+        txt_timer = findViewById(R.id.txt_timer);
         lvExp_audit = findViewById(R.id.lvExp_audit);
         storeAudit_fab = findViewById(R.id.storeAudit_fab);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -105,16 +199,19 @@ public class QuizActivity extends AppCompatActivity {
         username = preferences.getString(CommonString.KEY_USERNAME, null);
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
         user_type = preferences.getString(CommonString.KEY_USER_TYPE, null);
+        training_time = preferences.getString(CommonString.KEY_FLAG_TRAINING_TIME, null);
 
         region_id = preferences.getString(CommonString.KEY_REGION_ID, null);
         destributor_id = preferences.getString(CommonString.KEY_DESTRIBUTOR_ID, null);
         getSupportActionBar().setTitle("Quiz -" + visit_date);
         db = new HUL_CNC_DB(this);
         db.open();
+        lvExp_audit.setVisibility(View.INVISIBLE);
+
         prepareListData();
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         lvExp_audit.setAdapter(listAdapter);
-        for (int i = 0; i < listAdapter.getGroupCount(); i++){
+        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
             lvExp_audit.expandGroup(i);
         }
     }
@@ -174,13 +271,13 @@ public class QuizActivity extends AppCompatActivity {
                 holder.audit_spin = convertView.findViewById(R.id.audit_spin);
                 convertView.setTag(holder);
             } else {
-                holder = (ViewHolder)convertView.getTag();
+                holder = (ViewHolder) convertView.getTag();
             }
 
             TextView txtListChild = convertView.findViewById(R.id.lblListItem);
             txtListChild.setText(childText.getQuestion());
             String select = getString(R.string.select_dropdown);
-            final ArrayList<QuizGetterSetter> reason_list = db.getQuizAnswerData(childText.getQuestion_id(),select);
+            final ArrayList<QuizGetterSetter> reason_list = db.getQuizAnswerData(childText.getQuestion_id(), select);
 
             holder.audit_spin.setAdapter(new ReasonSpinnerAdapter(_context, R.layout.spinner_text_view, reason_list));
 
@@ -284,8 +381,6 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
-
-
     public class ReasonSpinnerAdapter extends ArrayAdapter<QuizGetterSetter> {
         List<QuizGetterSetter> list;
         Context context;
@@ -326,6 +421,12 @@ public class QuizActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+       // super.onBackPressed();
+
+    }
+
+    /* @Override
+    public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(QuizActivity.this);
         builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
                 .setCancelable(false)
@@ -333,6 +434,10 @@ public class QuizActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
                         QuizActivity.this.finish();
+                       *//* if(waitTimer != null) {
+                            waitTimer.cancel();
+                            waitTimer = null;
+                        }*//*
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -342,32 +447,8 @@ public class QuizActivity extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
-    }
+    }*/
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(QuizActivity.this);
-            builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
-                            QuizActivity.this.finish();
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-        return super.onOptionsItemSelected(item);
-    }
     boolean validateData(HashMap<QuizGetterSetter, List<QuizGetterSetter>> listDataChild2, List<QuizGetterSetter> listDataHeader2) {
         checkflag = true;
         checkHeaderArray.clear();
@@ -395,5 +476,256 @@ public class QuizActivity extends AppCompatActivity {
         return checkflag;
     }
 
+
+    public void reverseTimer(int Seconds, final TextView tv) {
+
+        waitTimer =  new CountDownTimer(Seconds * 1000 + 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                int seconds = (int) (millisUntilFinished / 1000);
+
+                int hours = seconds / (60 * 60);
+                int tempMint = (seconds - (hours * 60 * 60));
+                int minutes = tempMint / 60;
+                seconds = tempMint - (minutes * 60);
+
+                tv.setText("START TIME : " + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
+            }
+
+            public void onFinish() {
+                tv.setText("Completed");
+                db.open();
+
+                db.insertTrainingQuizData(username, visit_date, store_cd, dateset, cdSpinValue, SpinValue);
+                db.insertQuizData(store_cd, listDataChild, listDataHeader);
+
+                AlertandMessages.showToastMsg(QuizActivity.this, "Quiz Saved Successfully");
+                finish();
+
+                // new GeoTagUpload(QuizActivity.this).execute();
+
+
+            }
+        }.start();
+
+    }
+
+
+
+    public void getSpinnerData() {
+        db.open();
+        trainingData = db.getTrainingData();
+        categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
+        categoryAdapter.add("-Select-");
+        for (int i = 0; i < trainingData.size(); i++) {
+            categoryAdapter.add(trainingData.get(i).getTrainingType());
+        }
+        head_spin.setAdapter(categoryAdapter);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        head_spin.setOnItemSelectedListener(this);
+
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (parent.getId()) {
+            case R.id.head_spin:
+                if (position != 0) {
+
+                    cdSpinValue = String.valueOf(trainingData.get(position - 1).getTrainingTypeId());
+                    SpinValue = trainingData.get(position - 1).getTrainingType();
+                    lvExp_audit.setVisibility(View.VISIBLE);
+                 //   reverseTimer(time, txt_timer);
+
+                   /* prepareListData();
+                    listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+                    lvExp_audit.setAdapter(listAdapter);
+                    for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+                        lvExp_audit.expandGroup(i);
+                    }*/
+
+                   //
+                } else {
+
+                    cdSpinValue = "0";
+                    SpinValue = "";
+
+                }
+                break;
+
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    public class GeoTagUpload extends AsyncTask<Void, Void, String> {
+
+        boolean uploadflag;
+        String errormsg = "";
+        private Context context;
+        private Dialog dialog;
+        private ProgressBar pb;
+
+        GeoTagUpload(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new Dialog(context);
+            dialog.setContentView(R.layout.custom);
+            dialog.setTitle(getResources().getString(R.string.dialog_title));
+            dialog.setCancelable(false);
+            dialog.show();
+            pb = (ProgressBar) dialog.findViewById(R.id.progressBar1);
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                // uploading Quiz
+                uploadflag = false;
+                db.open();
+
+                TrainingQuizGetterSetter traingData = db.getTraingTypeData(store_cd);
+                JSONArray topUpArray = new JSONArray();
+                JSONObject trainingobj = new JSONObject();
+                trainingobj.put("USER_ID", username);
+                trainingobj.put(CommonString.KEY_VISIT_DATE, traingData.getVisit_date());
+                trainingobj.put("TRAINING_DATE", traingData.getTrainingDate());
+                trainingobj.put("TRAINING_ID", traingData.getTrainingId());
+
+                topUpArray.put(trainingobj);
+
+
+                ArrayList<QuizGetterSetter> quiz_data = db.getQuizUploadData(store_cd);
+                if (quiz_data.size() > 0) {
+                    JSONArray promoArray = new JSONArray();
+                    for (int j = 0; j < quiz_data.size(); j++) {
+                        JSONObject obj = new JSONObject();
+                        obj.put("MID", "0");
+                        obj.put("UserId", username);
+                        obj.put("QUESTION_ID", quiz_data.get(j).getQuestion_id());
+                        obj.put("ANSWER_CD", quiz_data.get(j).getCurrectanswerCd());
+                        obj.put("RIGHT_ANSWER", quiz_data.get(j).getRight_Answer());
+                        obj.put("BRAND_ID", quiz_data.get(j).getBrand_id());
+                        obj.put("VisitDate", quiz_data.get(j).getVisit_date());
+                        promoArray.put(obj);
+                    }
+
+                    JSONObject jsonObject4 = new JSONObject();
+                    jsonObject4.put("quiz_list_data", promoArray);
+                    jsonObject4.put("quiz_training_data", topUpArray);
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("MID", "0");
+                    jsonObject.put("Keys", "QUIZ_DATA");
+                    // jsonObject.put("JsonData", promoArray.toString());
+                    jsonObject.put("JsonData", jsonObject4.toString());
+                    jsonObject.put("UserId", username);
+
+
+                    String jsonString2 = jsonObject.toString();
+                    String result = upload.downloadDataUniversal(jsonString2, CommonString.UPLOADJsonDetail);
+
+                    if (result.equalsIgnoreCase(CommonString.MESSAGE_NO_RESPONSE_SERVER)) {
+                        uploadflag = false;
+                        throw new SocketTimeoutException();
+                    } else if (result.equalsIgnoreCase(CommonString.MESSAGE_SOCKETEXCEPTION)) {
+                        uploadflag = false;
+                        throw new IOException();
+                    } else if (result.equalsIgnoreCase(CommonString.MESSAGE_INVALID_JSON)) {
+                        uploadflag = false;
+                        throw new JsonSyntaxException("Primary_Grid_Image");
+                    } else if (result.equalsIgnoreCase(CommonString.KEY_FAILURE)) {
+                        uploadflag = false;
+                        throw new Exception();
+                    } else {
+                        uploadflag = true;
+                    }
+                }
+
+            } catch (SocketException ex) {
+                uploadflag = false;
+                ex.printStackTrace();
+                errormsg = CommonString.MESSAGE_INTERNET_NOT_AVALABLE;
+            } catch (IOException ex) {
+                uploadflag = false;
+                ex.printStackTrace();
+                errormsg = CommonString.MESSAGE_INTERNET_NOT_AVALABLE;
+            } catch (JsonSyntaxException ex) {
+                uploadflag = false;
+                ex.printStackTrace();
+                errormsg = CommonString.MESSAGE_INVALID_JSON;
+            } catch (NumberFormatException e) {
+                uploadflag = false;
+                errormsg = CommonString.MESSAGE_NUMBER_FORMATE_EXEP;
+            } catch (Exception ex) {
+                uploadflag = false;
+                errormsg = CommonString.MESSAGE_EXCEPTION;
+            }
+
+            if (uploadflag) {
+                return CommonString.KEY_SUCCESS;
+            } else {
+                return errormsg;
+            }
+
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            //  dialog.dismiss();
+            if (result.equals(CommonString.KEY_SUCCESS) || result.equalsIgnoreCase("")) {
+
+               /* db.open();
+                if (db.updateInsertExpenseStatus(campaign_id, status) > 0) {
+                    AlertandMessages.showToastMsg(context, "Expense Saved Successfully");
+                    finish();
+                } else {
+                    AlertandMessages.showAlert((android.app.Activity) context, "Error in updating Expense status", true);
+                }
+                db.updateCStatus(campaign_id, status);*/
+
+                db.open();
+                if (db.getQuizUploadData(store_cd).size() > 0) {
+                    AlertandMessages.showToastMsg(context, "Expense Saved Successfully");
+                    Intent intent = new Intent(QuizActivity.this, StoreListActivity.class);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                    finish();
+                } else {
+                    AlertandMessages.showAlert((android.app.Activity) context, "Error in updating Quiz status", true);
+                }
+
+            } else {
+                AlertandMessages.showAlert((Activity) context, getResources().getString(R.string.failure) + " : " + errormsg, true);
+                finish();
+            }
+        }
+
+    }
+
+    public boolean validation() {
+        boolean value = true;
+        if (head_spin.getSelectedItem().toString().equalsIgnoreCase("-Select-")) {
+            value = false;
+            showMessage("Please Select Type Of Trainig");
+        }
+
+        return value;
+    }
+    public void showMessage(String message) {
+        Snackbar.make(head_spin, message, Snackbar.LENGTH_SHORT).show();
+    }
 
 }

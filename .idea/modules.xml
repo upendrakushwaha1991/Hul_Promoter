@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Hul_Promoter.iml" filepath="$PROJECT_DIR$/Hul_Promoter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/hulCNC/hulCNC.iml" filepath="$PROJECT_DIR$/hulCNC/hulCNC.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Hul_Promoter.iml" filepath="$PROJECT_DIR$/Hul_Promoter.iml" group="Hul_Promoter" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/annca/annca.iml" filepath="$PROJECT_DIR$/.idea/modules/annca/annca.iml" group="Hul_Promoter/annca" />
+      <module fileurl="file://$PROJECT_DIR$/hulCNC/hulCNC.iml" filepath="$PROJECT_DIR$/hulCNC/hulCNC.iml" group="Hul_Promoter/hulCNC" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/library/library.iml" filepath="$PROJECT_DIR$/.idea/modules/library/library.iml" group="Hul_Promoter/library" />
     </modules>
   </component>
 </project>

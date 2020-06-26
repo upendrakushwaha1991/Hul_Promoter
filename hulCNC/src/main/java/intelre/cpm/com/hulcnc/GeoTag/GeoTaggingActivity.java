@@ -30,6 +30,7 @@ import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -68,7 +69,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import intelre.cpm.com.hulcnc.constant.AlertandMessages;
+import intelre.cpm.com.hulcnc.constant.CommonFunctions;
 import intelre.cpm.com.hulcnc.constant.CommonString;
+import intelre.cpm.com.hulcnc.dailyentry.NonWorkingReasonActivity;
 import intelre.cpm.com.hulcnc.retrofit.DownloadAllDatawithRetro;
 import intelre.cpm.com.hulcnc.Database.HUL_CNC_DB;
 import cpm.com.hulcnc.R;
@@ -201,7 +204,8 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
             public void onClick(View view) {
                 _pathforcheck = storeid + "_GeoTag_" + visitData.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
-                startCameraActivity();
+               // startCameraActivity();
+                CommonFunctions.startAnncaCameraActivity(GeoTaggingActivity.this, _path, null, false);
 
             }
         });
@@ -212,9 +216,10 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
 
     protected void startCameraActivity() {
         try {
+
             Log.i("MakeMachine", "startCameraActivity()");
             File file = new File(_path);
-            Uri outputFileUri = Uri.fromFile(file);
+            Uri outputFileUri = FileProvider.getUriForFile(GeoTaggingActivity.this, "cpm.com.hulcnc.fileprovider", file);
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             startActivityForResult(intent, 0);

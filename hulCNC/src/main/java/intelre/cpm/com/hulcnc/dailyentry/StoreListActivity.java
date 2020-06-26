@@ -74,7 +74,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class StoreListActivity extends AppCompatActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private Context context;
-    private String userId,destributor_id;
+    private String userId, destributor_id;
     private ArrayList<CoverageBean> coverage = new ArrayList<>();
     private ArrayList<JourneyPlan> storelist = new ArrayList<>();
     private String date;
@@ -171,7 +171,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
 
     protected void onResume() {
         super.onResume();
-        database.open();
+       /* database.open();
         storelist = database.getStoreData(date);
         downloadIndex = preferences.getInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
         if (storelist.size() > 0 && downloadIndex == 0) {
@@ -182,7 +182,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
             fab.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }
-
+*/
+        setListData();
     }
 
     @Override
@@ -417,6 +418,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                         editor.putString(CommonString.KEY_REGION_ID, current.getRegionId().toString());
                         editor.putString(CommonString.KEY_DESTRIBUTOR_ID, current.getDistributorId().toString());
                         editor.putString(CommonString.KEY_FLAG_QUIZ, current.getQuizOpen());
+                        editor.putString(CommonString.KEY_FLAG_TRAINING_TIME, current.getTimePeriod().toString());
+
                         editor.commit();
                         dialog.cancel();
                         ArrayList<CoverageBean> specdata;
@@ -504,6 +507,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
         locationEnableCommon.checkgpsEnableDevice(this);
         database = new HUL_CNC_DB(this);
         database.open();
+        setListData();
     }
 
 
@@ -586,23 +590,13 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-    private boolean chekDataforCheckout(String store_cd, String region_id, String quiz_open) {
-        boolean status = false;
-        database.open();
+    /*
+        private boolean chekDataforCheckout(String store_cd, String region_id, String quiz_open) {
+            boolean status = false;
+            database.open();
 
-        if (database.getSelectCategoryData(region_id,destributor_id).size()>0){
-            if (database.isStoreAuditFilled(store_cd)) {
-                status = true;
-            }else {
-                status = false;
-            }
-        }else {
-            status = true;
-        }
-
-        if (status){
             if (database.getSelectCategoryData(region_id,destributor_id).size()>0){
-                if (database.isSaleFilled(store_cd)) {
+                if (database.isStoreAuditFilled(store_cd)) {
                     status = true;
                 }else {
                     status = false;
@@ -611,12 +605,26 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                 status = true;
             }
 
-        }
+            if (status){
+                if (quiz_open.equals("Y")) {
+                    if (database.getHeaderQuizData().size()>0){
+                        if (database.isQuizFilled(store_cd)) {
+                            status = true;
+                        }else {
+                            status = false;
+                        }
+                    }else {
+                        status = true;
+                    }
+                }else {
+                    status = true;
+                }
 
-        if (status){
-            if (quiz_open.equals("Y")) {
-                if (database.getHeaderQuizData().size()>0){
-                    if (database.isQuizFilled(store_cd)) {
+            }
+
+            if (status){
+                if (database.getSelectCategoryData(region_id,destributor_id).size()>0){
+                    if (database.isSaleFilled(store_cd)) {
                         status = true;
                     }else {
                         status = false;
@@ -624,12 +632,62 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                 }else {
                     status = true;
                 }
-            }else {
+
+            }
+
+
+            return status;
+        }
+    */
+    private boolean chekDataforCheckout(String store_cd, String region_id, String quiz_open) {
+        boolean status = false;
+        database.open();
+
+
+            if (database.isStoreAuditFilled(store_cd)) {
                 status = true;
+            } else {
+                status = false;
+            }
+
+
+        if (status) {
+            if (quiz_open.equals("Y")) {
+                if (database.getHeaderQuizData().size() > 0) {
+                    if (database.isQuizFilled(store_cd)) {
+                        status = true;
+                    } else {
+                        status = false;
+                    }
+                } else {
+                    status = true;
+                }
+            } else {
+                status = true;
+            }
+
+        }
+
+        if (status) {
+
+                if (database.isSaleFilled(store_cd)) {
+                    status = true;
+                } else {
+                    status = false;
+                }
+
+        }
+        if (status) {
+
+            if (database.isCustomerDataFilled(store_cd)) {
+                status = true;
+            } else {
+                status = false;
             }
 
 
         }
+
         return status;
     }
 
@@ -699,5 +757,21 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
             AlertandMessages.showAlertlogin((Activity) context, getResources().getString(R.string.nonetwork));
         }
     }
+
+    void setListData() {
+        database.open();
+        storelist = database.getStoreData(date);
+        downloadIndex = preferences.getInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
+        if (storelist.size() > 0 && downloadIndex == 0) {
+            adapter = new ValueAdapter(StoreListActivity.this, storelist);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            linearlay.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+
 }
 

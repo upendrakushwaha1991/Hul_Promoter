@@ -160,13 +160,21 @@ public class StoreEntryActivity extends AppCompatActivity {
                     }
 
                     if (current.getIconImg() == R.drawable.quiz || current.getIconImg() == R.drawable.quiz_done) {
-                        if (db.getHeaderQuizData().size() > 0) {
+                        if (!db.isQuizFilled(store_cd)) {
                             Intent in7 = new Intent(StoreEntryActivity.this, QuizActivity.class);
                             startActivity(in7);
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        }else {
+                            Snackbar.make(recyclerView, "Data cannot be changed", Snackbar.LENGTH_LONG).show();
                         }
 
                     }
+                    if (current.getIconImg() == R.drawable.customer || current.getIconImg() == R.drawable.customer_done) {
+
+                            Intent in7 = new Intent(StoreEntryActivity.this, NewCustomerActivity.class);
+                            startActivity(in7);
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        }
 
                 }
             });
@@ -192,7 +200,7 @@ public class StoreEntryActivity extends AppCompatActivity {
 
     public List<NavMenuItemGetterSetter> getdata() {
         List<NavMenuItemGetterSetter> data = new ArrayList<>();
-        int stockAvalable = 0, sales = 0, quiz = 0;
+        int stockAvalable = 0, sales = 0, quiz = 0,customer=0;
 
         if (db.getStockDone(store_cd).size() > 0) {
             stockAvalable = R.drawable.store_audit_done;
@@ -204,6 +212,12 @@ public class StoreEntryActivity extends AppCompatActivity {
             sales = R.drawable.rsp_detail_done;
         } else {
             sales = R.drawable.rsp_detail;
+        }
+
+        if (db.isCustomerDataFilled(store_cd)) {
+            customer = R.drawable.customer_done;
+        } else {
+            customer = R.drawable.customer;
         }
 
         if (flag_quiz.equals("Y")) {
@@ -220,8 +234,8 @@ public class StoreEntryActivity extends AppCompatActivity {
             quiz = R.drawable.quiz_gray;
         }
 
-        int img[] = {stockAvalable, sales, quiz};
-        String name[] = {"Stock Availability", "Sale Entry", "Quiz"};
+        int img[] = {stockAvalable, sales, quiz,customer};
+        String name[] = {"Stock Availability", "Sale Entry", "Quiz","Customer Data"};
         for (int i = 0; i < img.length; i++) {
             NavMenuItemGetterSetter recData = new NavMenuItemGetterSetter();
             recData.setIconImg(img[i]);

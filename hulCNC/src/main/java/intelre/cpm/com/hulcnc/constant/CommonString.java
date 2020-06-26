@@ -7,6 +7,7 @@ import android.os.Environment;
  */
 
 public class CommonString {
+    public static final int CAPTURE_MEDIA = 131;
     public static final String KEY_CHECKOUT_IMAGE = "CHECKOUT_IMAGE";
     //preference
     public static final String KEY_USERNAME = "USERNAME";
@@ -23,9 +24,7 @@ public class CommonString {
     public static final String KEY_DATE = "DATE";
     public static final String KEY_YYYYMMDD_DATE = "yyyymmddDate";
     public static final String KEY_STOREVISITED_STATUS = "STOREVISITED_STATUS";
-    // public static String URL = "http://intelre.parinaam.in/webservice/intelwebservice.svc/";
     public static String URL = "http://hulcnc.parinaam.in/webservice/UnileverWebservice.svc/";
-    // public static String URLGORIMAG = "http://intelre.parinaam.in/webservice/Imageupload.asmx/";
     public static String URLGORIMAG = "http://hulcnc.parinaam.in/webservice/Imageupload.asmx/";
 
     public static final String KEY_PATH = "PATH";
@@ -75,6 +74,7 @@ public class CommonString {
     public static final String ONBACK_ALERT_MESSAGE = "Unsaved data will be lost - Do you want to continue?";
     public static final String KEY_USER_TYPE = "RIGHTNAME";
     public static final String KEY_FLAG_QUIZ = "FLAG_QUIZ";
+    public static final String KEY_FLAG_TRAINING_TIME = "FLAG_TRAINING_TIME";
     public static final String KEY_IS_QUIZ_DONE = "is_quiz_done";
 
     //jeevan
@@ -232,6 +232,8 @@ public class CommonString {
     public static final String KEY_EMAILID = "Email";
     public static final String KEY_PHONENO = "Mobile";
     public static final String KEY_BRAND = "Brand_Id";
+    public static final String KEY_BRAND_ID = "BRAND_ID";
+    public static final String KEY_BRAND_NAME = "BRAND_NAME";
     public static final String KEY_IREP_REGISTERED = "IREP_Status";
 
     public static final String KEY_VISITDATE = "VISIT_DATE";
@@ -492,5 +494,98 @@ public class CommonString {
             + "CURRECT_ANSWER" + " VARCHAR, "
             + "ANSWER_CD" + " INTEGER, "
             + "BRAND" + " VARCHAR)";
+
+    public static final String TABLE_INSERT_QUIZ_DATA = "QUIZ_DATA";
+    public static final String KEY_COMMON_ID = "COMMON_ID";
+    public static final String KEY_CUSTOMER_QTY = "CUSTOMER_QTY";
+    public static final String CREATE_TABLE_INSERT_EXPENSEIMAGE_DATA = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_INSERT_QUIZ_DATA
+            + "("
+            + "KEY_ID"
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+
+            + "USER_ID"
+            + " VARCHAR,"
+
+            + "TRAINING_DATE"
+            + " VARCHAR,"
+
+            + "TRAINING_ID"
+            + " VARCHAR,"
+
+            + "TRAINING"
+            + " VARCHAR,"
+
+            + "VISIT_DATE"
+            + " VARCHAR,"
+
+            + "STORE_ID"
+            + " INTEGER)";
+
+
+    public static final String TABLE_INSERT_CUSTOMER_POP = "CUSTOMER_POP";
+    public static final String CREATE_TABLE_FEEDBACK = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_INSERT_CUSTOMER_POP
+            + "("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_COMMON_ID + " INTEGER,"
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_BRAND_NAME + " VARCHAR,"
+            + KEY_BRAND_ID + " VARCHAR,"
+            + KEY_CUSTOMER_QTY + " VARCHAR,"
+            + KEY_STORE_ID + " INTEGER"
+            + ")";
+
+
+    public static final String TABLE_INSERT_CUSTOMER_DATA = "CUSTOMER_DATA";
+    public static final String CREATE_TABLE_INSERT_CUSTOMER_DATA = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_INSERT_CUSTOMER_DATA
+            + "("
+            + "KEY_ID"
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+
+            + "CUSTOMER_SALES_CD"
+            + " INTEGER,"
+
+            + "CHECKBOX"
+            + " boolean,"
+
+            + "FEEDBACK"
+            + " VARCHAR,"
+
+            + "VISIT_DATE"
+            + " VARCHAR,"
+
+            + "USER_ID"
+            + " VARCHAR,"
+
+            + "MOBILE"
+            + " VARCHAR,"
+
+            + "NAME"
+            + " VARCHAR,"
+
+            + "STORE_ID"
+            + " INTEGER)";
+
+    public static final String TABLE_INSERT_CUSTOMER_POPUP_DATA = "CUSTOMER_POPUP_DATA";
+    public static final String CREATE_TABLE_INSERT_CUSTOMER_POPUP_DATA = "CREATE TABLE IF NOT EXISTS "
+            + TABLE_INSERT_CUSTOMER_POPUP_DATA
+            + "("
+            + "KEY_ID"
+            + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+
+            + "COMMON_ID"
+            + " INTEGER,"
+
+            + "BRAND_ID"
+            + " VARCHAR,"
+
+            + "STORE_ID"
+            + " INTEGER,"
+
+            + "QTY"
+            + " INTEGER)";
+
 
 }

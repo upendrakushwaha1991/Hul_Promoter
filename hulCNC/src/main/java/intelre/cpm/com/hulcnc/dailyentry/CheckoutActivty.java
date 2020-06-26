@@ -21,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -42,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import intelre.cpm.com.hulcnc.constant.CommonFunctions;
 import intelre.cpm.com.hulcnc.retrofit.PostApi;
 import intelre.cpm.com.hulcnc.Database.HUL_CNC_DB;
 import cpm.com.hulcnc.R;
@@ -169,7 +171,8 @@ public class CheckoutActivty extends AppCompatActivity implements View.OnClickLi
                         "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
                 intime = getCurrentTime();
-                startCameraActivity();
+               // startCameraActivity();
+                CommonFunctions.startAnncaCameraActivity(this, _path, null, false);
 
                 break;
 
@@ -234,7 +237,7 @@ public class CheckoutActivty extends AppCompatActivity implements View.OnClickLi
         try {
             Log.i("MakeMachine", "startCameraActivity()");
             File file = new File(_path);
-            Uri outputFileUri = Uri.fromFile(file);
+            Uri outputFileUri = FileProvider.getUriForFile(CheckoutActivty.this, "cpm.com.hulcnc.fileprovider", file);
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
             startActivityForResult(intent, 0);
